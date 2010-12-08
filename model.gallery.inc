@@ -12,7 +12,7 @@
 include_once "upload.php";
 include_once "mySqlForm.php";
 
-template::setCss('/js/fancybox/jquery.fancybox-1.3.3.css', 30);
+template::setCss('/templates/fancybox/jquery.fancybox-1.3.3.css', 30);
 template::setJs("/js/fancybox/jquery.fancybox-1.3.3.pack.js", 30);
 template::setInlineJs(_COS_PATH . '/modules/gallery/fancybox.js');
 
