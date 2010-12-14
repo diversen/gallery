@@ -312,7 +312,7 @@ class galleryImage extends db{
 
         }
         $str.="</tr></table>\n";
-        if (isset($_SESSION['admin'])){
+        if (session::isAdmin()){
             $str.= '<table>';
             $str.= '<tr><td>';
             $str.= '<form action="/gallery/view/' . $this->id;
@@ -341,7 +341,7 @@ class galleryImage extends db{
      */
     public function getAdminCells(){
         $str = '';
-        if (isset($_SESSION['admin']) && !empty($this->fileId)){
+        if (session::isAdmin() && !empty($this->fileId)){
             $str.= '<td>';
             $str.= '<form action="/gallery/delete/' . $this->id . '/' . $this->fileId;
             $str.= '" method="post" name="test" enctype="1" >';
@@ -350,7 +350,7 @@ class galleryImage extends db{
             $str.= '</form>';
             $str.= '</td>';
         }
-        if (isset($_SESSION['admin'])){
+        if (session::isAdmin()){
 
             $str.= '<td>';
             $str.= '<form action="/gallery/view/' . $this->id;

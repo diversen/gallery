@@ -159,7 +159,8 @@ class gallery extends galleryImage {
             //print lang::translate('Name') . ": $val[title]" . "<br />";
             //print "<hr id=\"thin_hr\"/>\n";
             echo "<div id=\"smallfont\">";
-            if (isset($_SESSION['admin'])){
+
+            if (session::isAdmin()){
                 print create_link ("/gallery/view/$val[id]", lang::translate('Edit this gallery')) . " \n";
                 print create_link ("/gallery/admin/edit/$val[id]", lang::translate('Edit gallery name')) . " \n";
             } else {
@@ -210,7 +211,7 @@ class gallery extends galleryImage {
             //print lang::translate('Name') . ": $val[title]" . "<br />";
             //print "<hr id=\"thin_hr\"/>\n";
             echo "<div id=\"smallfont\">";
-            if (isset($_SESSION['admin'])){
+            if (session::isAdmin()){
                 print create_link ("/gallery/view/$val[id]", lang::translate('Edit this gallery')) . " \n";
                 print create_link ("/gallery/admin/edit/$val[id]", lang::translate('Edit gallery name')) . " \n";
             } else {
