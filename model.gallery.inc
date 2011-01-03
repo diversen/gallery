@@ -225,7 +225,7 @@ class galleryImage extends db{
             $file = $this->uploadDir;
             $file.= '/' . $val['file_name'];
             $str.= "<a href=\"$file\">$val[file_name]<a>";
-            if (isset($_SESSION['admin'])){
+            if (session::isAdmin()){
                 $str.="&nbsp;<a href=\"$this->path/delete/$this->id/$val[id]\">" . lang::translate('Delete') . "</a>";
                 //$str.="&nbsp;<a href=\"$this->path/update/$this->id/$val[id]\">Update</a>";
             }
@@ -292,7 +292,7 @@ class galleryImage extends db{
             $thumb_url = "/files/gallery/$this->id/thumb-$val[file_name]";
             
             $str.="<td><a rel=\"example_group\" href=\"$image_url\" ><img src=\"$thumb_url\" /></a>";
-            if (isset($_SESSION['admin'])){
+            if (session::isAdmin()){
                     //$str.= '<td>';
                     $str.= '<form action="/gallery/delete/' . $this->id . '/' . $val['id'];
                     $str.= '" method="post" name="test" enctype="1" >';
