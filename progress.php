@@ -4,9 +4,9 @@
  * @package    gallery
  */
 
-headScript::setJavascript("/js/jquery-1.3.2.min.js");
-headScript::setJavascript("/js/apcquery.js");
-headScript::setCss("/css/apcquery.css");
+//headScript::setJavascript("/js/jquery-1.3.2.min.js");
+template::setJs("/js/apcquery.js");
+template::setCss("/css/apcquery.css");
 
 ?>
 <div>
