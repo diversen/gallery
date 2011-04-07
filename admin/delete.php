@@ -1,15 +1,5 @@
 <?php
 
-/**
- * controller file for content/category/delete
- * delete a categories
- *
- * @package gallery
- */
-if (!session::checkAccessControl('allow_edit_gallery')){
-    return;
-}
-
 template::setTitle(lang::translate('Delete Gallery'));
 $gallery = new gallery();
 if (!empty($_POST['submit'])){
