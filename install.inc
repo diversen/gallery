@@ -14,7 +14,7 @@ $_INSTALL['MAIN_MENU_ITEM'] = array (
     'weight' => 2,
 );
 
-$_INSTALL['VERSION'] = 1.3;
+$_INSTALL['VERSION'] = 1.31;
 
 $_INSTALL['PUBLIC_CLONE_URL'] = 'git://github.com/diversen/gallery.git';
 $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
