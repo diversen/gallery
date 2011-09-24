@@ -6,12 +6,12 @@
  *
  * @package gallery
  */
-if (!session::checkAccessControl('allow_edit_gallery')){
+if (!session::checkAccessControl('gallery_allow_edit')){
     return;
 }
 
 template::setTitle(lang::translate('Add Gallery'));
-$gallery = new gallery(true);
+$gallery = new galleryAdmin(true);
 if (!empty($_POST['submit'])){
 
     $gallery->validate();

@@ -5,12 +5,12 @@
  *
  * @package    gallery
  */
-$galImg = new galleryImage(true);
+$galImg = new gallery(true);
 
 template::setTitle(lang::translate('View gallery'));
 if (isset($_POST['submit'])){
 
-    if (!session::checkAccessControl('allow_edit_gallery')){
+    if (!session::checkAccessControl('gallery_allow_edit')){
         return;
     }
 
@@ -26,12 +26,7 @@ if (isset($_POST['submit'])){
     }
 }
 
+$options = array ('gallery_id' => $galImg->id);
 $files = $galImg->getAllFiles();
 $info = $galImg->getAllFileInfo($galImg->id);
-
-if (get_module_ini('use_jquery_gallery')){
-    print $galImg->getThumbTableHTMLJquery($info);
-} else {
-    print $galImg->getThumbTableHTML($info);
-
-}
+echo $galImg->getThumbTableHTML($info, $options);

@@ -12,9 +12,8 @@
 include_once "upload.php";
 include_once "mySqlForm.php";
 
-template::setCss('/templates/fancybox/jquery.fancybox-1.3.4.css', 30);
-template::setJs("/templates/fancybox/jquery.fancybox-1.3.4.pack.js", 30);
-template::setInlineJs(_COS_PATH . '/modules/gallery/fancybox.js');
+include_template_inc('fancybox');
+fancybox_include();
 
 /**
  * class content files is used for keeping track of file changes
@@ -22,7 +21,7 @@ template::setInlineJs(_COS_PATH . '/modules/gallery/fancybox.js');
  *
  * @package gallery
  */
-class galleryImage extends db{
+class gallery extends db{
     // {{{ vars uploadFile (object) errors (array) status (array) id (int) fileId (int) uploadDir (string) path (string)
     /** @var    object   holding an uploadFile object */
     public $uploadFile;
@@ -31,7 +30,7 @@ class galleryImage extends db{
     /** @var    array   array holding   status messages */
     public $status = null;
     /** @var    int     gallery id */
-    public $id;
+    public static $id;
     /** @var    int     holding file id */
     public $fileId;
     /** @var    string  holding sever path to upload dir e.g: /files/content */
@@ -135,13 +134,9 @@ class galleryImage extends db{
         // scales uploaded image down
         $normal = _COS_PATH . '/htdocs' . $this->uploadDir . '/' . $values['file_name'];
         $this->scaleImage($filename, $normal, get_module_ini('gallery_image_size'));
-       
 
-        try {
-                $res = $this->insert('gallery_file', $values);
-        } catch (PDOException $e) {
-                $this->fatalError($e->getMessage());
-        }
+        $res = $this->insert('gallery_file', $values);
+        return $res;
 
     }
     // }}}
@@ -186,31 +181,24 @@ class galleryImage extends db{
      *
      * @return      array   rows of a select query
      */
-    public function getAllFiles(){
-        try {
-            $rows = $this->select('gallery_file', 'gallery_id', $this->id);
-        } catch (PDOException $e) {
-            $this->fatalError($e->getMessage());
+    public function getAllFiles($id = null){
+        if (!$id) { 
+            $id = $this->id;
         }
+        $rows = $this->select('gallery_file', 'gallery_id', $id);
         return $rows;
     }
-    // }}}
-    // {{{ method getAllFiles() get all files as rows from db table file
+
     /**
-     * method for getting all files connected to a parent id
+     * method for getting all connected to a gallery
      *
      * @return      array   rows of a select query
      */
     public function getAllFileInfo($gallery_id ){
-        try {
-            $rows = $this->select('gallery_file', 'gallery_id', $gallery_id);
-            
-        } catch (PDOException $e) {
-            $this->fatalError($e->getMessage());
-        }
+        $rows = $this->select('gallery_file', 'gallery_id', $gallery_id);
         return $rows;
     }
-    // }}}
+    
     // {{{ method getFilesHTML return string with all files
     /**
      * method for getting files
@@ -219,6 +207,7 @@ class galleryImage extends db{
      * @param   array    opt unused so far
      * @return  string   html displaying files connect to article.
      */
+    /*
     public function getFilesHTML($rows, $opt = null){
         $str = '';
         foreach ($rows as $key => $val) {
@@ -232,21 +221,40 @@ class galleryImage extends db{
             $str.= "<br />";
         }
         return $str;
-    }
+    }*/
     // }}}
     // {{{ method getFilesHTML return string with all files
     /**
      * method for getting files
      * 
      * @param   array   array from a db query $rows
-     * @param   array    opt unused so far
+     * @param   array   array ('no_admin' => 1, 'gallery_id => 1);
+     * 
      * @return  string  html displaying files connect to article.
      */
-    public function getThumbTableHTML($rows, $opt = null){
-        if (get_module_ini('use_jquery')){
-            return $this->getThumbTableHTMLJquery($rows);
-        }
+    public function getThumbTableHTML($rows, $options = array()){
         $str = '';
+        //$num_rows = $this->getNumImagesGallery();
+        $vars = array();
+        $vars['rows'] = $this->getAllFileInfo($options['gallery_id']);
+        
+        if (isset($options['no_admin'])) {
+            $vars['no_admin'] = 1;
+        }
+        
+       // $vars['rows'] = $rows;
+        $vars['gallery_id'] = $options['gallery_id'];
+        
+        $display_module = get_module_ini('gallery_display_module');
+        if ($display_module) {            
+            include_module($display_module);
+            $module = moduleLoader::modulePathToClassName($display_module);           
+            return $module::displayThumbs($vars);
+            //return;
+        }
+        return;
+        // DISPLAY FOR RANDOM BG-image
+        // XXXXXX
         $num_rows = $this->getNumImagesGallery();
         if (empty($this->fileId)){
             $query = "SELECT * FROM `gallery_file` ORDER BY RAND() LIMIT 1";
@@ -258,6 +266,7 @@ class galleryImage extends db{
             $show = $this->selectOne('gallery_file', 'id', $this->fileId);
         }
 
+        $str = '';
         $str.="<div id=\"gallery_pager\">";
         $str.="<table><tr>\n";
         foreach ($rows as $key => $val) {
@@ -272,66 +281,7 @@ class galleryImage extends db{
         return $str;
     }
     // }}}
-    // {{{ method getFilesHTML return string with all files
-    /**
-     * method for getting files
-     *
-     * @param   array   array from a db query $rows
-     * @param   array    opt unused so far
-     * @return  string  html displaying files connect to article.
-     */
-    public function getThumbTableHTMLJquery($rows, $opt = null){
-        $str = '';
-        $num_rows = $this->getNumImagesGallery();
-       
-        $str.="<div>";
-        $str.="<table><tr>\n";
-        $i = 0;
-        foreach ($rows as $key => $val) {
-            $image_url = "/files/gallery/$this->id/$val[file_name]";
-            $thumb_url = "/files/gallery/$this->id/thumb-$val[file_name]";
-            
-            $str.="<td><a rel=\"example_group\" href=\"$image_url\" ><img src=\"$thumb_url\" /></a>";
-            if (session::isAdmin()){
-                    //$str.= '<td>';
-                    $str.= '<form action="/gallery/delete/' . $this->id . '/' . $val['id'];
-                    $str.= '" method="post" name="test" enctype="1" >';
-                    $str.= '<input type="submit" name="submit" value="';
-                    $str.= lang::translate('Delete') . '" />';
-                    $str.= '</form>';
-                    //$str.= '</td>';
-            }
-            $str.="</td>\n";
-            $i++;
-            $t = $i % 4;
-            if (!$t){
-                $str.="</tr><tr>\n";
-                $i = 0;
-            }
-
-
-        }
-        $str.="</tr></table>\n";
-        if (session::isAdmin()){
-            $str.= '<table>';
-            $str.= '<tr><td>';
-            $str.= '<form action="/gallery/view/' . $this->id;
-            $str.= '" method="post" name="test" enctype="multipart/form-data" >';
-            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
-            $str.= "</td><td>\n";
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('Upload image') . '" />';
-            $str.= '</form>';
-            $str.= '</td>';
-            $str.="</tr></table>\n";
-        }
-        //return $str;
-        //$str.= $this->getAdminCells();
-        
-        $str.="</div>\n";
-        return $str;
-    }
-    // }}}
+    
     // {{{ getAdminCells() 
     /**
      * method for returning string containing admin forms for deleting images 

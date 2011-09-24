@@ -5,12 +5,12 @@
  *
  * @package    gallery
  */
-if (!session::checkAccessControl('allow_edit_gallery')){
+if (!session::checkAccessControl('gallery_allow_edit')){
     return;
 }
 
 template::setTitle(lang::translate('Delete image'));
-$fileObj = new galleryImage();
+$fileObj = new gallery();
 if (isset($_POST['submit'])){
     if (!isset($fileObj->errors)){
         $res = $fileObj->deleteFile($fileObj->fileId);
@@ -26,5 +26,5 @@ if (!empty($fileObj->fileId)){
     view_image_form('delete');
 }
 
-$files = $fileObj->getAllFiles();
-print $fileObj->getFilesHTML($files);
+//$files = $fileObj->getAllFiles();
+//print $fileObj->getFilesHTML($files);

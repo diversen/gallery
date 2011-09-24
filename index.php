@@ -8,7 +8,7 @@
 include_model("gallery/admin");
 template::setTitle(lang::translate('List Galleries'));
 
-$gal = new gallery();
+$gal = new galleryAdmin();
 
     $gal->displayAllGallery();
     

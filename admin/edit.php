@@ -5,12 +5,12 @@
  *
  * @package content
  */
-if (!session::checkAccessControl('allow_edit_gallery')){
+if (!session::checkAccessControl('gallery_allow_edit')){
     return;
 }
 
 template::setTitle(lang::translate('Edit gallery'));
-$gallery = new gallery();
+$gallery = new galleryAdmin();
 if (!empty($_POST['submit'])){
     $gallery->validate();
     if (empty($gallery->errors)){

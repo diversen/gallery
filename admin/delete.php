@@ -1,7 +1,7 @@
 <?php
 
 template::setTitle(lang::translate('Delete Gallery'));
-$gallery = new gallery();
+$gallery = new galleryAdmin();
 if (!empty($_POST['submit'])){
     $res = $gallery->deleteGallery();
     if ($res){

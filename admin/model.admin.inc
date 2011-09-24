@@ -12,7 +12,7 @@ include_model ('gallery');
  *
  * @package     gallery
  */
-class gallery extends galleryImage {
+class galleryAdmin extends gallery {
 
     /**
      *
@@ -30,7 +30,7 @@ class gallery extends galleryImage {
      *
      * @var int holding category being worked on
      */
-    public $id;
+    public static $id;
 
     /**
      * checks input data
@@ -41,12 +41,6 @@ class gallery extends galleryImage {
     function __construct($sanitize = true){
         $this->uri = uri::getInstance();
         $this->id = (int)$this->uri->fragment(3);
-        if ($sanitize) {
-            $this->sanitize();
-        }
-        
-        
-
     }
 
     /**
@@ -69,8 +63,9 @@ class gallery extends galleryImage {
      * Santize submission
      */
     public function sanitize(){
-        if (empty($_POST['title'])) $_POST['title'] = '';
-        if (empty($_POST['description'])) $_POST['description'] = '';
+        //if (empty($_POST['title'])) $_POST['title'] = '';
+        //if (empty($_POST['description'])) $_POST['description'] = '';
+        
         $_POST = cos_htmlentities($_POST);
     }
 
@@ -92,11 +87,17 @@ class gallery extends galleryImage {
      *
      * @return array  containing the selected category
      */
-    public function getGallery(){
-        $category = (int)$this->id;
-        $row = $this->selectOne('gallery', 'id', $category);
+    public static function getGallery($id = null){
+        
+        if (!isset($id)) {
+            $id = (int)self::$id;
+        }
+        $db = new db();
+        $row = $db->selectOne('gallery', 'id', $id);
         return $row;
     }
+    
+    
 
     /**
      * method for creating a category
