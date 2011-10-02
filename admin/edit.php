@@ -1,10 +1,5 @@
 <?php
 
-/**
- * controller file for editing a category
- *
- * @package content
- */
 if (!session::checkAccessControl('gallery_allow_edit')){
     return;
 }

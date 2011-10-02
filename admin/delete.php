@@ -1,5 +1,9 @@
 <?php
 
+if (!session::checkAccessControl('gallery_allow_edit')){
+    return;
+}
+
 template::setTitle(lang::translate('Delete Gallery'));
 $gallery = new galleryAdmin();
 if (!empty($_POST['submit'])){
