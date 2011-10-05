@@ -18,7 +18,7 @@ if (isset($_POST['submit'])){
     if (!isset($galImg->errors)){
         $res = $galImg->insertFile('filename');
         if ($res){
-            session::setActionMessage(lang::translate('File added'));
+            session::setActionMessage(lang::translate('gallery_file_added'));
             header("Location: $_SERVER[REQUEST_URI]");
         }
     } else {
