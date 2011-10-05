@@ -13,11 +13,13 @@ foreach ($vars['rows'] as $key => $val) {
     
     $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
     if (session::isAdmin() && !isset($vars['no_admin'])){
-            $str.= '<form action="/gallery/delete/' . $vars['gallery_id'] . '/' . $val['id'];
-            $str.= '" method="post" name="test" enctype="multipart/form-data">';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('Delete') . '" />';
-            $str.= '</form>';
+        $str.= "<table><tr><td>\n";    
+        $str.= '<form name="gallery_delete_image" action="/gallery/delete/' . $vars['gallery_id'] . '/' . $val['id'];
+        $str.= '" method="post" enctype="multipart/form-data">';
+        $str.= '<input type="submit" name="submit" value="';
+        $str.= lang::translate('Delete') . '" />';
+        $str.= '</form>';
+        $str.= "</td></tr></table>\n";
     }
     $str.="</td>\n";
     $i++;
@@ -32,18 +34,23 @@ foreach ($vars['rows'] as $key => $val) {
 
 $str.="</tr></table>\n";
 if (session::isAdmin() && !isset($vars['no_admin'])){
-    $str.= '<form action="/gallery/view/' . $vars['gallery_id'];
-    $str.= '<table>';
-    $str.= '<tr><td>';
+    $str.= '<form enctype="multipart/form-data" method="post" action="/gallery/view/' . $vars['gallery_id'];
+    $str.= '" name="gallery_upload_image"  >';
+    //$str.= '<table>';
+    //$str.= '<tr><td>';
     
-    $str.= '" method="post" name="test" enctype="multipart/form-data" >';
+    
+    
+    
+    
     $str.= '<input type="file" size="5" name="filename" value="Upload" />';
-    $str.= "</td><td>\n";
+    //$str.= "</td><td>\n";
     $str.= '<input type="submit" name="submit" value="';
     $str.= lang::translate('Upload image') . '" />';
     
-    $str.= '</td>';
-    $str.= "</tr></table>\n";
+    
+    //$str.= '</td>';
+    //$str.= "</tr></table>\n";
     $str.= '</form>';
 }
 
