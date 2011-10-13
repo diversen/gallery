@@ -1,11 +1,6 @@
-; ini file for gallery
-; page specific template for gallery/view
-;page_template = view:bartels/gallery
-; how have access to administration function of the gallery
-gallery_allow_edit = admin
-; thumb size px
+gallery_admin_only = 1
+gallery_allow_edit = "admin"
 gallery_thumb_size = 50
-; image size px
-gallery_image_size = 1200
+gallery_image_size = 800
 gallery_use_jquery = 1
-
+gallery_display_module = "gallery/fancybox"

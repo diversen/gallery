@@ -8,8 +8,18 @@ $str.="<table><tr>\n";
 $i = 0;
 foreach ($vars['rows'] as $key => $val) {
 
-    $image_url = "/files/gallery/$val[gallery_id]/$val[file_name]";
-    $thumb_url = "/files/gallery/$val[gallery_id]/thumb-$val[file_name]";
+    $domain = get_domain();
+    
+    if ($domain == 'default') {
+        $base_path = "/files/gallery";
+    } else {
+        $base_path = "/files/$domain/gallery";
+    }
+    //$base_path = "/files/$domain/gallery";
+    
+    
+    $image_url = "$base_path/$val[gallery_id]/$val[file_name]";
+    $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
     
     $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
     if (session::isAdmin() && !isset($vars['no_admin'])){

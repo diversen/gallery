@@ -47,7 +47,15 @@ class gallery extends db{
         $uri = URI::getInstance();
         $this->id = $uri->fragment(2);
         $this->fileId = $uri->fragment(3);
-        $this->uploadDir = '/files/gallery/' . $this->id;
+        
+        $domain = get_domain ();
+        if ($domain == 'default') {
+            $this->uploadDir = "/files/gallery";
+        } else {
+            $this->uploadDir = "/files/$domain/gallery";
+        }
+        
+        $this->uploadDir = $this->uploadDir . '/' . $this->id;
         $this->path = '/gallery';
         $options = array('upload_dir' => $this->uploadDir);
         $this->uploadFile = new upload($options, $createDir);
