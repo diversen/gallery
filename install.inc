@@ -11,6 +11,7 @@ $_INSTALL['MAIN_MENU_ITEM'] = array (
     'module_name' => 'gallery',
     'parent' => 0,
     'weight' => 2,
+    'section' => 'content'
 );
 
 $admin_only = get_module_ini('gallery_admin_only');
