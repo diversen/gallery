@@ -66,7 +66,7 @@ class galleryAdmin extends gallery {
         //if (empty($_POST['title'])) $_POST['title'] = '';
         //if (empty($_POST['description'])) $_POST['description'] = '';
         
-        $_POST = cos_htmlentities($_POST);
+        $_POST = html::specialEncode($_POST);
     }
 
     /**
@@ -227,8 +227,6 @@ class galleryAdmin extends gallery {
 include_once "upload.php";
 include_once "mySqlForm.php";
 
-// }}}
-// {{{ function view_files_form( $method, $id, $values)
 /**
  * function for creating crud form for files
  *
@@ -236,19 +234,26 @@ include_once "mySqlForm.php";
  * @param int if delete or update set this to id
  */
 function view_gallery_form($method, $id = null, $values = array()){
-    $form = new mySqlForm('gallery', array('title', 'description'), $values);
-    $form->setLabels(array(
-        'title' => lang::translate('Title'),
-        'description' => lang::translate('Description'))
-    );
-    if (isset($id)){
-        $form->setMethod($method, $id);
-        $caption = lang::translate('Edit Gallery');
-    } else {
-        $form->setMethod($method);
-        $caption = lang::translate('Add Gallery');
+    
+    html::formStart('gallery_form');
+    
+    if (isset($id)) {
+        $gallery = galleryAdmin::getGallery($id);
+        html::init($gallery, 'submit');
     }
-    $form->createForm('', 'post',  'test', '',
-                       true,  $caption);
+
+    if (isset($id)) {
+        $legend = lang::translate('Edit Gallery');    
+    } else {
+        $legend = lang::translate('Add Gallery');
+        
+    }
+    
+    html::legend($legend);
+    html::label('title', lang::translate('gallery_form_title'));
+    html::text('title');
+    html::submit('submit', lang::translate('gallery_submit_title'));
+    echo html::getStr();
+    return;
+    
 }
-// }}}
