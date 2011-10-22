@@ -62,10 +62,7 @@ class galleryAdmin extends gallery {
     /**
      * Santize submission
      */
-    public function sanitize(){
-        //if (empty($_POST['title'])) $_POST['title'] = '';
-        //if (empty($_POST['description'])) $_POST['description'] = '';
-        
+    public function sanitize(){        
         $_POST = html::specialEncode($_POST);
     }
 
@@ -76,9 +73,11 @@ class galleryAdmin extends gallery {
      * @return  int always return 1
      */
     public function deleteGallery(){
-        $gallery = $this->getGallery();
+        //$gallery = $this->getGallery();
+        $gllery = self::getGallery();
         $gallery_id = $gallery['gallery_id'];
-        $res = $this->delete('gallery', 'id',  $this->id);
+        $db = new db();
+        $res = $db('gallery', 'id',  $this->id);
         return $res;
     }
 
@@ -155,40 +154,27 @@ class galleryAdmin extends gallery {
             $link = create_link ("/gallery/view/$val[id]", $val['title']);
             echo "<hr id=\"thick_hr\"/>\n";
             echo "<div id=\"headfont\">\n";
-            print $link;
+            echo $link;
             echo "</div>";
-            //print lang::translate('Name') . ": $val[title]" . "<br />";
-            //print "<hr id=\"thin_hr\"/>\n";
+
             echo "<div id=\"smallfont\">";
 
             if (session::isAdmin()){
                 print create_link ("/gallery/view/$val[id]", lang::translate('Edit this gallery')) . " \n";
                 print create_link ("/gallery/admin/edit/$val[id]", lang::translate('Edit gallery name')) . " \n";
-            } else {
-                //print create_link ("/gallery/view/$val[id]", lang::translate('View this gallery')) . " \n";
-            }
-            print "</div>\n";
+            } 
+            echo "</div>\n";
         }
     }
 
 
     public function displayAllGalleryJquery(){
-
-
-/*        <a rel="example_group" href="./example/7_b.jpg" title="Lorem ipsum dolor sit amet"><img alt="" src="./example/7_s.jpg" /></a>
-		<a rel="example_group" href="./example/8_b.jpg" title=""><img alt="" src="./example/8_s.jpg" /></a>
-		<a rel="example_group" href="./example/9_b.jpg" title=""><img alt="" src="./example/9_s.jpg" /></a>*/
-                
+        
         $galleries = $this->getAllGallery();
-        //$random_url = $this->getRandomImageURL('gak');
         foreach ($galleries as $key => $val){
-            
-            //$val['title'] = $val['title'];
-
-            $link = create_link ("/gallery/view/$val[id]", $val['title']);
+            $link = html::createLink("/gallery/view/$val[id]", $val['title']);
             $info = $this->getAllFileInfo($val['id']);
-            
-            
+                    
             $i = 0;
             foreach ($info as $k => $v){
                 
