@@ -24,8 +24,13 @@ foreach ($vars['rows'] as $key => $val) {
     $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
     if (session::isAdmin() && !isset($vars['no_admin'])){
         $str.= "<table><tr><td>\n";    
-        $str.= '<form name="gallery_delete_image" action="/gallery/delete/' . $vars['gallery_id'] . '/' . $val['id'];
-        $str.= '" method="post" enctype="multipart/form-data">';
+        //$str.= '<form name="gallery_delete_image" action="/gallery/delete/' . $vars['gallery_id'] . '/' . $val['id'];
+        //$str.= '" method="post" enctype="multipart/form-data">';   
+        
+        $str.= '<form name="gallery_delete_image" action="" ';
+        $str.= '" method="post" enctype="multipart/form-data">';  
+        $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
+        $str.= '<input type="hidden" name="gallery_id" value="' . $vars['gallery_id'] . '" />';
         $str.= '<input type="submit" name="submit" value="';
         $str.= lang::translate('Delete') . '" />';
         $str.= '</form>';
@@ -44,11 +49,14 @@ foreach ($vars['rows'] as $key => $val) {
 
 $str.="</tr></table>\n";
 if (session::isAdmin() && !isset($vars['no_admin'])){
-    $str.= '<form enctype="multipart/form-data" method="post" action="/gallery/view/' . $vars['gallery_id'];
-    $str.= '" name="gallery_upload_image"  >';
+    //$str.= '<form enctype="multipart/form-data" method="post" action="/gallery/view/' . $vars['gallery_id'];
+    //$str.= '" name="gallery_upload_image">';
+    $str.= '<form enctype="multipart/form-data" method="post" action="" />';
+    //$str.= '<input type="hidden" name="gallery_id" value="' . $vars['gallery_id'] . '" />';
+    //$str.= '" name="gallery_upload_image">';
     //$str.= '<table>';
     //$str.= '<tr><td>';
-    
+    //$str.= "<form enctype=\"multipart/form-data\" name=\"gallery_delete_image\" action=\"\" />\n";
     
     
     

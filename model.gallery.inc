@@ -43,10 +43,13 @@ class gallery extends db{
      *
      * constructor sets init vars
      */
-    function __construct($createDir = true){
+    function __construct($gallery_frag = 2, $file_frag = 3){
+        
+        $createDir = true;
+        
         $uri = URI::getInstance();
-        $this->id = $uri->fragment(2);
-        $this->fileId = $uri->fragment(3);
+        $this->id = $uri->fragment($gallery_frag);
+        $this->fileId = $uri->fragment($file_frag);
         
         $domain = get_domain ();
         if ($domain == 'default') {
@@ -104,6 +107,7 @@ class gallery extends db{
      * @param   int   id of file
      */
     public function deleteFile($id){
+        // TODO: transaction.
         $row = $this->selectOne('gallery_file', 'id', $id);
         $res = $this->delete('gallery_file', 'id', $id);
         if (!$res) {
@@ -400,9 +404,48 @@ class gallery extends db{
         return $res;
     }
     // }}}
+    /**
+     * view file for gallery
+     *
+     * @package    gallery
+     */
+    public static function viewGallery ($gallery_frag = 2, $file_frag = 3 ) {
+        $galImg = new gallery($gallery_frag, $file_frag);
 
+        template::setTitle(lang::translate('View gallery'));
+        if (isset($_POST['submit'])){
+
+            if (!session::checkAccessControl('gallery_allow_edit')){
+                return;
+            }
+            
+            if (isset($_POST['file_id'])) {
+                $galImg->deleteFile($_POST['file_id']);
+                session::setActionMessage(lang::translate('gallery_file_deleted'));
+                header("Location: $_SERVER[REQUEST_URI]");
+                exit;
+            }
+            
+            $galImg->validateInsert();
+            if (!isset($galImg->errors)){
+                $res = $galImg->insertFile('filename');
+                if ($res){
+                    session::setActionMessage(lang::translate('gallery_file_added'));
+                    header("Location: $_SERVER[REQUEST_URI]");
+                }
+            } else {
+                view_form_errors($galImg->errors);
+            }
+        }
+
+        $options = array ('gallery_id' => $galImg->id);
+        $files = $galImg->getAllFiles();
+        $info = $galImg->getAllFileInfo($galImg->id);
+        echo $galImg->getThumbTableHTML($info, $options);
+    }
 }
 // }}}
+
 // {{{ function view_image_form($method, $id = null, $values = array())
 /**
  * function for creating crud form for files

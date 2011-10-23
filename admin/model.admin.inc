@@ -86,11 +86,12 @@ class galleryAdmin extends gallery {
      *
      * @return array  containing the selected category
      */
-    public static function getGallery($id = null){
+    public static function getGallery($id){
         
+        /*
         if (!isset($id)) {
             $id = (int)self::$id;
-        }
+        }*/
         $db = new db();
         $row = $db->selectOne('gallery', 'id', $id);
         return $row;
