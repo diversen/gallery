@@ -53,7 +53,7 @@ class gallery extends db{
         
         $domain = get_domain ();
         if ($domain == 'default') {
-            $this->uploadDir = "/files/gallery";
+            $this->uploadDir = "/files/default/gallery";
         } else {
             $this->uploadDir = "/files/$domain/gallery";
         }

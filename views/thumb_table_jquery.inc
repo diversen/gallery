@@ -11,7 +11,7 @@ foreach ($vars['rows'] as $key => $val) {
     $domain = get_domain();
     
     if ($domain == 'default') {
-        $base_path = "/files/gallery";
+        $base_path = "/files/default/gallery";
     } else {
         $base_path = "/files/$domain/gallery";
     }
