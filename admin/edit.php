@@ -17,10 +17,10 @@ if (!empty($_POST['submit'])){
         }
         view_confirm(lang::translate());
     } else {
-        view_form_errors($gallery->errors);
-        view_gallery_form('update', $gallery->id);
+        view_form_errors(gallery::$errors);
+        view_gallery_form('update', gallery::$galleryId);
     }
 } else {
     //$row = $category->getGallery();
-    view_gallery_form('update', $gallery->id);
+    view_gallery_form('update', gallery::$galleryId);
 }

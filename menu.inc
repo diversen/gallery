@@ -23,6 +23,7 @@ if ($con != 'view'){
     );
 }
 
+/*
 if (get_module_ini('gallery_use_jquery')){
     $_MODULE_MENU = array (
             array(
@@ -35,4 +36,4 @@ if (get_module_ini('gallery_use_jquery')){
             'auth' => 'admin'),
 
     );
-}
+}*/

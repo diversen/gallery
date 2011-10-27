@@ -39,3 +39,16 @@ $_COS_LANG_MODULE['Upload image'] = 'Upload Billed';
 
 $_COS_LANG_MODULE['File seems to already exist. Only unique filenames allowed'] =
     'File eksisterer. Kun unikke filnavne er tilladte.';
+$_COS_LANG_MODULE['Edit gallery'] = 'Edit gallery';
+$_COS_LANG_MODULE['gallery_edit_files'] = 'Ret billeder';
+$_COS_LANG_MODULE['gallery_edit_name'] = 'Ret galleri';
+$_COS_LANG_MODULE['gallery_form_title'] = 'Titel';
+$_COS_LANG_MODULE['gallery_submit_title'] = 'gallery_submit_title';
+$_COS_LANG_MODULE['Delete Gallery'] = 'Delete Gallery';
+$_COS_LANG_MODULE['has been deleted'] = 'has been deleted';
+$_COS_LANG_MODULE['File specified is to big'] = 'File specified is to big';
+$_COS_LANG_MODULE['Delete'] = 'Delete';
+$_COS_LANG_MODULE['gallery_file_deleted'] = 'Fil tilføjet';
+$_COS_LANG_MODULE['gallery_file_added'] = 'Til tilføjet';
+$_COS_LANG_MODULE['Delete image'] = 'Delete image';
+$_COS_LANG_MODULE['File deleted'] = 'File deleted';

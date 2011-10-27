@@ -10,80 +10,75 @@
  * @ignore
  */
 include_once "upload.php";
-include_once "mySqlForm.php";
 
-include_template_inc('fancybox');
-fancybox_include();
 
 /**
- * class content files is used for keeping track of file changes
- * in db. Uses object fileUpload
+ * Class for creating galleries
  *
  * @package gallery
  */
-class gallery extends db{
-    // {{{ vars uploadFile (object) errors (array) status (array) id (int) fileId (int) uploadDir (string) path (string)
-    /** @var    object   holding an uploadFile object */
-    public $uploadFile;
-    /** @var    array   array holding errors */
-    public $errors = null;
-    /** @var    array   array holding   status messages */
-    public $status = null;
-    /** @var    int     gallery id */
-    public static $id;
-    /** @var    int     holding file id */
-    public $fileId;
-    /** @var    string  holding sever path to upload dir e.g: /files/content */
-    public $uploadDir;
-    /** @var    string  holding path to path where script will be run */
-    public $path;
-    // }}}
-    // {{{ function __construct()
+class gallery {
+
+    /**
+     * var holding errors
+     * @var array $errors
+     */
+    public static $errors = null;
+    
+    /**
+     * var for holding gallery id 
+     * @var int $galleryId
+     */
+    public static $galleryId;
+    
+    /**
+     * when the is af file id we use $filId to hold it
+     * @var int $fileId 
+     */
+    public static $fileId;
+    
     /**
      *
-     * constructor sets init vars
+     * @var string $uploadDir holding the dir where files are uploaded to
+     */
+    public static $uploadDir;
+    
+    /**
+     * 
+     * @var array   $options holding speciel options 
+     */
+    public static $options = null;
+
+    /**
+     * constructor. Sets gallery id and file id from url fragements. 
+     * also sets uploaddir based om gallery fragement
+     * @param type $gallery_frag
+     * @param type $file_frag 
      */
     function __construct($gallery_frag = 2, $file_frag = 3){
-        
-        $createDir = true;
-        
+
         $uri = URI::getInstance();
-        $this->id = $uri->fragment($gallery_frag);
-        $this->fileId = $uri->fragment($file_frag);
+        self::$galleryId = $uri->fragment($gallery_frag);
+        self::$fileId = $uri->fragment($file_frag);
         
         $domain = get_domain ();
-        if ($domain == 'default') {
-            $this->uploadDir = "/files/default/gallery";
-        } else {
-            $this->uploadDir = "/files/$domain/gallery";
-        }
-        
-        $this->uploadDir = $this->uploadDir . '/' . $this->id;
-        $this->path = '/gallery';
-        $options = array('upload_dir' => $this->uploadDir);
-        $this->uploadFile = new upload($options, $createDir);
-        if (isset($this->uploadFile->errors)){
-            $this->errors = $this->uploadFile->errors;
-        }
-        
+        if (!$domain) $domain = 'default';
+        self::$uploadDir = _COS_PATH . "/htdocs/files/$domain/gallery/" . self::$galleryId;
+        $options = array('upload_dir' => self::$uploadDir);
+        self::$options = $options;      
     }
-    // }}}
-    // {{{ function validate insert
-    /**
-     * method for validating a post before insert
-     */
-    public function validateInsert(){
+
+    public function validateImageUpload(){
+        /*
         if (empty($_FILES['filename']['name'])){
             $this->errors[] = lang::translate('No file specified');
             return;
-        }
-        $type = substr($_FILES['filename']['type'], 0,5);
-        if ($type != 'image'){
-            $this->errors[] = lang::translate('Does not seem to be a image type of file');
-            return;
-        }
+        }*/
+        
+        // se settings/logo
 
         // Example
+        /*
         $error_message = file_upload_error_message($_FILES['filename']['error']);
         if ($_FILES['filename']['error'] != 0) {
             $this->errors[] = file_upload_error_message($error_message);
@@ -92,41 +87,41 @@ class gallery extends db{
         if ($_FILES['filename']['size'] > return_bytes(ini_get('post_max_size'))){
             $this->errors[] = lang::translate('File specified is to big') . ' ' .
                               lang::transate('Maximum size is: ') . ini_get('post_max_size');
-        }
-        $res = $this->uploadFile->moveFile('filename');
-        if (!$res){
-            $this->errors[] = lang::translate('File seems to already exist. Only unique filenames allowed');
-        }
+        }*/
+        
+        
+        
+        
+        
+        //if (!$res){
+        //    $this->errors[] = lang::translate('File seems to already exist. Only unique filenames allowed');
+        // }
 
     }
-    // }}}
-    // {{{ function deleteFile($id) $id = fileId
+
     /**
      * method for delting a file
      *
-     * @param   int   id of file
+     * @param   int   galleryId of file
      */
     public function deleteFile($id){
-        // TODO: transaction.
-        $row = $this->selectOne('gallery_file', 'id', $id);
-        $res = $this->delete('gallery_file', 'id', $id);
-        if (!$res) {
-            $this->errors[] = lang::translate ("could not delete file from id");
-        }
-        $filename = _COS_PATH . '/htdocs' . $this->uploadDir . '/' . $row['file_name'];
-        $res = $this->uploadFile->unlinkFile($filename);
-        if (!$res) {
-            $this->errors[] = lang::translate("Could not delete file from file system");
-        }
-        $filename = _COS_PATH . '/htdocs' . $this->uploadDir . '/thumb-' . $row['file_name'];
-        $res = $this->uploadFile->unlinkFile($filename);
-        if (!$res) {
-            $this->errors[] = lang::translate("Could not delete thumb from file system");
-        }
-        return true;
+        
+        $upload = new upload(self::$options, true); 
+        
+        db::$dbh->beginTransaction();
+        $db = new db();
+        
+        $row = $db->selectOne('gallery_file', 'id', $id);
+        $filename = self::$uploadDir . '/' . $row['file_name'];
+        $res = $upload->unlinkFile($filename);
+
+        $filename = self::$uploadDir . '/thumb-' . $row['file_name'];
+        $res = $upload->unlinkFile($filename);
+        
+        $res = $db->delete('gallery_file', 'id', $id);
+        return db::$dbh->commit();
     }
-    // }}}
-    // {{{ method insertFile() inserts a file in db and put file on file system
+
     /**
      * method for inserting a file
      *
@@ -134,20 +129,32 @@ class gallery extends db{
      */
     public function insertFile(){
         
-        $values = db::prepareToPost();
-        $values['gallery_id'] = $this->id;
-        $values['file_name'] = $_FILES['filename']['name'];
+        $upload = new upload(self::$options); 
+        $res = $upload->moveFile('filename');
+        if (!$res) {
+            gallery::$errors = upload::$errors;
+            return false;
+        }
         
-        $filename = _COS_PATH . '/htdocs' . $this->uploadDir . '/' . $values['file_name'];
+        
+        $values = db::prepareToPost();
+        $values['gallery_id'] = self::$galleryId;
+        $values['file_name'] = $_FILES['filename']['name'];
+              
+        $filename = self::$uploadDir . '/' . $values['file_name'];
 
-        // scale thumb
-        $thumb = _COS_PATH . '/htdocs' . $this->uploadDir . '/thumb-' . $values['file_name'];
-        $this->scaleImage($filename, $thumb, get_module_ini('gallery_thumb_size'));
-        // scales uploaded image down
-        $normal = _COS_PATH . '/htdocs' . $this->uploadDir . '/' . $values['file_name'];
-        $this->scaleImage($filename, $normal, get_module_ini('gallery_image_size'));
-
-        $res = $this->insert('gallery_file', $values);
+        $thumb = self::$uploadDir . '/thumb-' . $values['file_name'];
+        $res = $this->scaleImage($filename, $thumb, get_module_ini('gallery_thumb_size'));
+        
+        if (!$res) return false;
+        
+        $normal = self::$uploadDir . '/' . $values['file_name'];
+        $res = $this->scaleImage($filename, $normal, get_module_ini('gallery_image_size'));
+        
+        if (!$res) return false;
+        
+        $db = new db();
+        $res = $db->insert('gallery_file', $values);
         return $res;
 
     }
@@ -159,45 +166,32 @@ class gallery extends db{
      * @param  string    the filename of the thumb
      * @param  int       the length of the image   
      */
-    private function scaleImage ($image, $thumb, $length){
-        require_once 'Image/Transform.php';
-
-        //create transform driver object
-        $it = Image_Transform::factory('GD');
-        if (PEAR::isError($it)) {
-            die($it->getMessage());
+    public static function scaleImage ($image, $thumb, $x){
+        include_once "imagescale.php";
+        
+        $scale = new imagescale();
+        $res = $scale->byX($image, $thumb, $x);
+        
+        if (!$res) {
+            self::$errors = imagescale::$errors;
+            return false;
         }
 
-        //load the original file
-        $ret = $it->load($image);
-        if (PEAR::isError($ret)) {
-            die($ret->getMessage());
-        }
-
-        //scale it to 150px
-        $ret = $it->scaleByLength($length);
-        if (PEAR::isError($ret)) {
-            die($ret->getMessage());
-        }
-
-        //save it into a different file
-        $ret = $it->save($thumb);
-        if (PEAR::isError($ret)) {
-            die($ret->getMessage());
-        }
+        return true;
     }
     // }}}
     // {{{ method getAllFiles() get all files as rows from db table file
     /**
-     * method for getting all files connected to a parent id
+     * method for getting all files connected to a parent galleryId
      *
      * @return      array   rows of a select query
      */
-    public function getAllFiles($id = null){
-        if (!$id) { 
-            $id = $this->id;
+    public function getAllFiles($gallery_id = null){
+        if (!$gallery_id) { 
+            $gallery_id = self::$galleryId;
         }
-        $rows = $this->select('gallery_file', 'gallery_id', $id);
+        $db = new db();
+        $rows = $db->select('gallery_file', 'gallery_id', $gallery_id);
         return $rows;
     }
 
@@ -206,8 +200,9 @@ class gallery extends db{
      *
      * @return      array   rows of a select query
      */
-    public function getAllFileInfo($gallery_id ){
-        $rows = $this->select('gallery_file', 'gallery_id', $gallery_id);
+    public function getAllFileInfo($gallery_id) { 
+        $db = new db();
+        $rows = $db->select('gallery_file', 'gallery_id', $gallery_id);
         return $rows;
     }
     
@@ -227,8 +222,8 @@ class gallery extends db{
             $file.= '/' . $val['file_name'];
             $str.= "<a href=\"$file\">$val[file_name]<a>";
             if (session::isAdmin()){
-                $str.="&nbsp;<a href=\"$this->path/delete/$this->id/$val[id]\">" . lang::translate('Delete') . "</a>";
-                //$str.="&nbsp;<a href=\"$this->path/update/$this->id/$val[id]\">Update</a>";
+                $str.="&nbsp;<a href=\"$this->path/delete/$this->galleryId/$val[galleryId]\">" . lang::translate('Delete') . "</a>";
+                //$str.="&nbsp;<a href=\"$this->path/update/$this->galleryId/$val[galleryId]\">Update</a>";
             }
             $str.= "<br />";
         }
@@ -240,7 +235,7 @@ class gallery extends db{
      * method for getting files
      * 
      * @param   array   array from a db query $rows
-     * @param   array   array ('no_admin' => 1, 'gallery_id => 1);
+     * @param   array   array ('no_admin' => 1, 'gallery_galleryId => 1);
      * 
      * @return  string  html displaying files connect to article.
      */
@@ -283,7 +278,7 @@ class gallery extends db{
         $str.="<table><tr>\n";
         foreach ($rows as $key => $val) {
             $thumb_src = $this->uploadDir . "/thumb-" . $val['file_name'];          
-            $path = "/gallery/view/$this->id/$val[id]";
+            $path = "/gallery/view/$this->galleryId/$val[id]";
             $str.= "<td><a href=\"$path\">";
             $str.= $this->getImageTag($thumb_src) . "</a></td>\n";
         }
@@ -305,7 +300,7 @@ class gallery extends db{
         $str = '';
         if (session::isAdmin() && !empty($this->fileId)){
             $str.= '<td>';
-            $str.= '<form action="/gallery/delete/' . $this->id . '/' . $this->fileId;
+            $str.= '<form action="/gallery/delete/' . $this->galleryId . '/' . $this->fileId;
             $str.= '" method="post" name="test" enctype="1" >';
             $str.= '<input type="submit" name="submit" value="';
             $str.= lang::translate('Delete') . '" />';
@@ -315,7 +310,7 @@ class gallery extends db{
         if (session::isAdmin()){
 
             $str.= '<td>';
-            $str.= '<form action="/gallery/view/' . $this->id;
+            $str.= '<form action="/gallery/view/' . $this->galleryId;
             $str.= '" method="post" name="test" enctype="multipart/form-data" >';
             $str.= '<input type="file" size="5" name="filename" value="Upload" />';
             $str.= "</td><td>\n";
@@ -335,7 +330,7 @@ class gallery extends db{
     public function getRandomImageURL($thumb = false){
         $uri= URI::getInstance();
         $module = $uri->fragment(0);
-        $gallery_id = $uri->fragment(2);
+        $gallery_galleryId = $uri->fragment(2);
 
         $search = array('gallery_id' => $gallery_id);
         $num_rows = $this->getNumRows('gallery_file', $search);
@@ -343,7 +338,7 @@ class gallery extends db{
         if (!$num_rows){
             $query = "SELECT * FROM `gallery_file` ORDER BY RAND() LIMIT 1 ";
         } else {
-            $query = "SELECT * FROM `gallery_file` WHERE gallery_id = ";
+            $query = "SELECT * FROM `gallery_file` WHERE gallery_galleryId = ";
             $query.= self::$dbh->quote($gallery_id) . ' ';
             $query.= " ORDER BY RAND() LIMIT 1";
         }
@@ -382,12 +377,12 @@ class gallery extends db{
      * @return   int    number of images in a gallery
      */
     private function getNumImagesGallery(){
-        $where = array('gallery_id' => $this->id);
+        $where = array('gallery_id' => $this->galleryId);
         $num_rows = $this->getNumRows('gallery_file', $where);
         return $num_rows;
     }
     // }}}
-    // {{{ method updateFile($values, $id) updating q file table in db with new file info.
+    // {{{ method updateFile($values, $galleryId) updating q file table in db with new file info.
 
     /**
      * method for updating a file in db table
@@ -395,22 +390,14 @@ class gallery extends db{
      * @return  boolean  true on success and false on failure
      */
     public function updateFile ($values, $id){
-        try {
-            db::prepareToPost();
-            $res = $this->update('gallery_file', $values, $id);
-        } catch (PDOException $e) {
-            $this->fatalError($e->getMessage());
-        }
+        
+        db::prepareToPost();
+        $res = $this->update('gallery_file', $values, $id);
         return $res;
     }
-    // }}}
-    /**
-     * view file for gallery
-     *
-     * @package    gallery
-     */
+
     public static function viewGallery ($gallery_frag = 2, $file_frag = 3 ) {
-        $galImg = new gallery($gallery_frag, $file_frag);
+        $gal = new gallery($gallery_frag, $file_frag);
 
         template::setTitle(lang::translate('View gallery'));
         if (isset($_POST['submit'])){
@@ -420,54 +407,31 @@ class gallery extends db{
             }
             
             if (isset($_POST['file_id'])) {
-                $galImg->deleteFile($_POST['file_id']);
+                $gal->deleteFile($_POST['file_id']);
                 session::setActionMessage(lang::translate('gallery_file_deleted'));
                 header("Location: $_SERVER[REQUEST_URI]");
                 exit;
             }
             
-            $galImg->validateInsert();
-            if (!isset($galImg->errors)){
-                $res = $galImg->insertFile('filename');
+            $gal->validateImageUpload();
+            if (!isset(self::$errors)){
+                $res = $gal->insertFile('filename');
                 if ($res){
                     session::setActionMessage(lang::translate('gallery_file_added'));
                     header("Location: $_SERVER[REQUEST_URI]");
+                    exit;
+                } else {
+                    view_form_errors(self::$errors);
                 }
             } else {
-                view_form_errors($galImg->errors);
+                view_form_errors(self::$errors);
             }
         }
 
-        $options = array ('gallery_id' => $galImg->id);
-        $files = $galImg->getAllFiles();
-        $info = $galImg->getAllFileInfo($galImg->id);
-        echo $galImg->getThumbTableHTML($info, $options);
+        $options = array ('gallery_id' => self::$galleryId);
+        $files = $gal->getAllFiles();
+        $info = $gal->getAllFileInfo(self::$galleryId);
+        echo $gal->getThumbTableHTML($info, $options);
     }
-}
-// }}}
-
-// {{{ function view_image_form($method, $id = null, $values = array())
-/**
- * function for creating crud form for files
- *
- * @param string create, delete or update
- * @param int if delete or update set this to id
- */
-function view_image_form($method, $id = null, $values = array()){
-
-    $my = new mySqlForm('gallery_file', array('title', 'file'), $values);
-    $my->setLabels(array(
-        'title' => lang::translate('Title'),
-        'file' => lang::translate('File to upload'))
-    );
-    if (isset($id)){
-        $my->setMethod($method, $id);
-        $caption = lang::translate('Edit File');
-    } else {
-        $my->setMethod($method);
-        $caption = lang::translate('Add File');
-    }
-    $my->createForm('', 'post',  'test', '',
-                       true,  $caption);
 }
 // }}}

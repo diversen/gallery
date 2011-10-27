@@ -1,5 +1,8 @@
 <?php
 
+include_template_inc('fancybox');
+fancybox_include();
+
 class galleryFancybox {
 
     /**
