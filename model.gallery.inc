@@ -260,34 +260,45 @@ class gallery {
             //return;
         }
         return;
-        // DISPLAY FOR RANDOM BG-image
+
+    }
+    // }}}
+    public static function getBGImage () {
+                // DISPLAY FOR RANDOM BG-image
         // XXXXXX
-        $num_rows = $this->getNumImagesGallery();
-        if (empty($this->fileId)){
+        $uri = uri::getInstance();
+        echo $image_id = $uri->fragment(3);
+        echo $gallery_id = $uri->fragment(2);
+        $db = new db();
+        //$gallery = new gallery();
+        
+        //$num_rows = self::ge
+        if (!$image_id){
             $query = "SELECT * FROM `gallery_file` ORDER BY RAND() LIMIT 1";
-            $show = $this->selectQuery($query);
+            $show = $db->selectQuery($query);
             if (!empty($show)){
                 $show = $show[0];
             }
         } else {
-            $show = $this->selectOne('gallery_file', 'id', $this->fileId);
+            $show = $db->selectOne('gallery_file', 'id', $image_id);
         }
 
+        $rows = self::getAllFiles(self::$galleryId);
         $str = '';
         $str.="<div id=\"gallery_pager\">";
         $str.="<table><tr>\n";
+        $domain = get_domain();
         foreach ($rows as $key => $val) {
-            $thumb_src = $this->uploadDir . "/thumb-" . $val['file_name'];          
-            $path = "/gallery/view/$this->galleryId/$val[id]";
+            $thumb_src = "/files/$domain/gallery/thumb-" . $val['file_name'];          
+            $path = "/gallery/view/" . self::$galleryId . "/$val[id]";
             $str.= "<td><a href=\"$path\">";
-            $str.= $this->getImageTag($thumb_src) . "</a></td>\n";
+            $str.= self::getImageTag($thumb_src) . "</a></td>\n";
         }
-        $str.= $this->getAdminCells();
+        $str.= self::getAdminCells();
         $str.="</tr></table>\n";
         $str.="</div>\n";
         return $str;
     }
-    // }}}
     
     // {{{ getAdminCells() 
     /**
@@ -327,30 +338,33 @@ class gallery {
      * method for getting a random image url
      *
      */
-    public function getRandomImageURL($thumb = false){
+    public static function getRandomImageURL($thumb = false){
         $uri= URI::getInstance();
         $module = $uri->fragment(0);
-        $gallery_galleryId = $uri->fragment(2);
+        $gallery_id = $uri->fragment(2);
 
+        $db = new db();
         $search = array('gallery_id' => $gallery_id);
-        $num_rows = $this->getNumRows('gallery_file', $search);
+        $num_rows = $db->getNumRows('gallery_file', $search);
 
         if (!$num_rows){
             $query = "SELECT * FROM `gallery_file` ORDER BY RAND() LIMIT 1 ";
         } else {
-            $query = "SELECT * FROM `gallery_file` WHERE gallery_galleryId = ";
-            $query.= self::$dbh->quote($gallery_id) . ' ';
+            $query = "SELECT * FROM `gallery_file` WHERE gallery_id = ";
+            $query.=  db::$dbh->quote($gallery_id) . ' ';
             $query.= " ORDER BY RAND() LIMIT 1";
         }
         
-        $show = $this->selectQuery($query);
+        $show = $db->selectQuery($query);
+
         if (!empty($show)){
             $show = $show[0];
-            $image_url = "/files/gallery/" .
+            $domain = get_domain();
+            $image_url = "/files/$domain/gallery/" .
                          $show['gallery_id'] . '/' .
                          $show['file_name'];
             if ($thumb){
-                $image_url = "/files/gallery/" .
+                $image_url = "/files/$domain/gallery/" .
                          $show['gallery_id'] . '/thumb-' .
                          $show['file_name'];
             }
@@ -377,8 +391,9 @@ class gallery {
      * @return   int    number of images in a gallery
      */
     private function getNumImagesGallery(){
+        $db = new db();
         $where = array('gallery_id' => $this->galleryId);
-        $num_rows = $this->getNumRows('gallery_file', $where);
+        $num_rows = $db->getNumRows('gallery_file', $where);
         return $num_rows;
     }
     // }}}
@@ -432,6 +447,7 @@ class gallery {
         $files = $gal->getAllFiles();
         $info = $gal->getAllFileInfo(self::$galleryId);
         echo $gal->getThumbTableHTML($info, $options);
+        
     }
 }
 // }}}
