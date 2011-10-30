@@ -15,7 +15,7 @@ $_INSTALL['MAIN_MENU_ITEM'] = array (
 );
 
 $admin_only = get_module_ini('gallery_admin_only');
-if (isset($admin_only)) {
+if ($admin_only == 1) {
     $_INSTALL['MAIN_MENU_ITEM']['admin_only'] = 1;
 }
 

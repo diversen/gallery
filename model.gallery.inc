@@ -65,39 +65,15 @@ class gallery {
         if (!$domain) $domain = 'default';
         self::$uploadDir = _COS_PATH . "/htdocs/files/$domain/gallery/" . self::$galleryId;
         $options = array('upload_dir' => self::$uploadDir);
+        $options['allow_mime'] = array (
+            'image/gif', 
+            'image/jpeg', 
+            'image/pjpeg', 
+            'image/png'
+        );
         self::$options = $options;      
     }
 
-    public function validateImageUpload(){
-        /*
-        if (empty($_FILES['filename']['name'])){
-            $this->errors[] = lang::translate('No file specified');
-            return;
-        }*/
-        
-        // se settings/logo
-
-        // Example
-        /*
-        $error_message = file_upload_error_message($_FILES['filename']['error']);
-        if ($_FILES['filename']['error'] != 0) {
-            $this->errors[] = file_upload_error_message($error_message);
-        }
-
-        if ($_FILES['filename']['size'] > return_bytes(ini_get('post_max_size'))){
-            $this->errors[] = lang::translate('File specified is to big') . ' ' .
-                              lang::transate('Maximum size is: ') . ini_get('post_max_size');
-        }*/
-        
-        
-        
-        
-        
-        //if (!$res){
-        //    $this->errors[] = lang::translate('File seems to already exist. Only unique filenames allowed');
-        // }
-
-    }
 
     /**
      * method for delting a file
@@ -127,29 +103,34 @@ class gallery {
      *
      * @return  boolean true on success and false on failure
      */
-    public function insertFile(){
+    public static function insertFile(){
         
-        $upload = new upload(self::$options); 
-        $res = $upload->moveFile('filename');
+        //$upload = new upload(self::$options); 
+        upload::setOptions(self::$options);
+        $res = upload::moveFile('filename');
         if (!$res) {
-            gallery::$errors = upload::$errors;
+            self::$errors = upload::$errors;            
             return false;
         }
         
-        
-        $values = db::prepareToPost();
-        $values['gallery_id'] = self::$galleryId;
-        $values['file_name'] = $_FILES['filename']['name'];
-              
-        $filename = self::$uploadDir . '/' . $values['file_name'];
+        $savename = upload::$saveBasename;
 
-        $thumb = self::$uploadDir . '/thumb-' . $values['file_name'];
-        $res = $this->scaleImage($filename, $thumb, get_module_ini('gallery_thumb_size'));
+        // $values for db. 
+        $values = array();
+        $values['gallery_id'] = self::$galleryId;
+        $values['file_name'] = $savename;
+              
+        $filename = self::$uploadDir . '/' . $savename;
+
+        // scale a thumb
+        $thumb = self::$uploadDir . '/thumb-' . $savename;
+        $res = self::scaleImage($filename, $thumb, get_module_ini('gallery_thumb_size'));
         
         if (!$res) return false;
         
-        $normal = self::$uploadDir . '/' . $values['file_name'];
-        $res = $this->scaleImage($filename, $normal, get_module_ini('gallery_image_size'));
+        // scale large
+        $normal = self::$uploadDir . '/full-' . $savename;
+        $res = self::scaleImage($filename, $normal, get_module_ini('gallery_image_size'));
         
         if (!$res) return false;
         
@@ -428,7 +409,7 @@ class gallery {
                 exit;
             }
             
-            $gal->validateImageUpload();
+            //$gal->validateImageUpload();
             if (!isset(self::$errors)){
                 $res = $gal->insertFile('filename');
                 if ($res){
