@@ -16,9 +16,10 @@ foreach ($vars['rows'] as $key => $val) {
     if (session::isAdmin() && !isset($vars['no_admin'])){
         $str.= "<table><tr><td>\n"; 
         $str.= '<form name="gallery_delete_image" action="" ';
-        $str.= '" method="post" enctype="multipart/form-data">';  
+        $str.= '" method="post" enctype="multipart/form-data">'; 
+        $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
         $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-        $str.= '<input type="hidden" name="gallery_id" value="' . $vars['gallery_id'] . '" />';
+        $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
         $str.= '<input type="submit" name="submit" value="';
         $str.= lang::system('system_submit_delete') . '" />';
         $str.= '</form>';
