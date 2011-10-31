@@ -94,10 +94,24 @@ class gallery {
         $filename = self::$uploadDir . '/thumb-' . $row['file_name'];
         $res = $upload->unlinkFile($filename);
         
+        $filename = self::$uploadDir . '/full-' . $row['file_name'];
+        $res = $upload->unlinkFile($filename);
+        
         $res = $db->delete('gallery_file', 'id', $id);
         return db::$dbh->commit();
     }
-
+    
+    public static function setDefaultImage ($file_id) {
+        $db = new db();
+        $db->update(
+                'gallery_file', 
+                array('default' => 0), 
+                array('gallery_id' => self::$galleryId));
+    
+        $db->update('gallery_file', array('default' => 1), array('id' => $file_id));
+    }
+        
+ 
     /**
      * method for inserting a file
      *
@@ -224,14 +238,9 @@ class gallery {
         $str = '';
         //$num_rows = $this->getNumImagesGallery();
         $vars = array();
-        $vars['rows'] = $this->getAllFileInfo($options['gallery_id']);
-        
-        if (isset($options['no_admin'])) {
-            $vars['no_admin'] = 1;
-        }
-        
-       // $vars['rows'] = $rows;
-        $vars['gallery_id'] = $options['gallery_id'];
+        $vars['rows'] = $rows; //$this->getAllFileInfo($options['gallery_id']);
+        $vars['options'] = $options;
+        // $vars['gallery_id'] = $options['gallery_id'];
         
         $display_module = get_module_ini('gallery_display_module');
         if ($display_module) {            
@@ -319,7 +328,7 @@ class gallery {
         if (!$num_rows){
             $query = "SELECT * FROM `gallery_file` ORDER BY RAND() LIMIT 1 ";
         } else {
-            $query = "SELECT * FROM `gallery_file` WHERE gallery_galleryId = ";
+            $query = "SELECT * FROM `gallery_file` WHERE gallery_id = ";
             $query.= self::$dbh->quote($gallery_id) . ' ';
             $query.= " ORDER BY RAND() LIMIT 1";
         }
@@ -387,8 +396,15 @@ class gallery {
                 return;
             }
             
-            if (isset($_POST['file_id'])) {
+            if (isset($_POST['file_id']) && $_POST['method'] == 'delete') {
                 $gal->deleteFile($_POST['file_id']);
+                session::setActionMessage(lang::translate('gallery_file_deleted'));
+                header("Location: $_SERVER[REQUEST_URI]");
+                exit;
+            }
+            
+            if (isset($_POST['file_id']) && $_POST['method'] == 'default_image') {
+                $gal->setDefaultImage($_POST['file_id']);
                 session::setActionMessage(lang::translate('gallery_file_deleted'));
                 header("Location: $_SERVER[REQUEST_URI]");
                 exit;
@@ -409,10 +425,39 @@ class gallery {
             }
         }
 
-        $options = array ('gallery_id' => self::$galleryId);
+        
+        $row = $gal->getDefaultImage(self::$galleryId);
+
+        $options = array ('gallery_id' => self::$galleryId, 'default' => $row);
         $files = $gal->getAllFiles();
-        $info = $gal->getAllFileInfo(self::$galleryId);
-        echo $gal->getThumbTableHTML($info, $options);
+        $rows = $gal->getAllFileInfo(self::$galleryId);
+        echo $gal->getThumbTableHTML($rows, $options);
+    }
+    
+    public static function getDefaultImage ($gallery_id) {
+        $db = new db();
+        $row = $db->selectOne(
+                'gallery_file', 
+                null,
+                array('gallery_id' => $gallery_id, 'default' => 1));
+        
+        if (!empty($row)) {
+            return $row;
+        }
+        
+        // select random
+        $query = "SELECT * FROM `gallery_file` WHERE gallery_id = ";
+        $query.= db::$dbh->quote($gallery_id) . ' ';
+        $query.= " ORDER BY RAND() LIMIT 1";       
+        $row = $db->selectQuery($query);
+        
+        if (empty($row)) { 
+            return array();
+        } 
+        
+        return $row[0];
+        
+        
     }
 }
 // }}}
