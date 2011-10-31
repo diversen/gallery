@@ -94,6 +94,9 @@ class gallery {
         $filename = self::$uploadDir . '/thumb-' . $row['file_name'];
         $res = $upload->unlinkFile($filename);
         
+        $filename = self::$uploadDir . '/med-' . $row['file_name'];
+        $res = $upload->unlinkFile($filename);
+        
         $filename = self::$uploadDir . '/full-' . $row['file_name'];
         $res = $upload->unlinkFile($filename);
         
@@ -139,6 +142,11 @@ class gallery {
         // scale a thumb
         $thumb = self::$uploadDir . '/thumb-' . $savename;
         $res = self::scaleImage($filename, $thumb, get_module_ini('gallery_thumb_size'));
+        
+        if (!$res) return false;
+        
+        $med = self::$uploadDir . '/med-' . $savename;
+        $res = self::scaleImage($filename, $med, get_module_ini('gallery_med_size'));
         
         if (!$res) return false;
         
@@ -201,30 +209,7 @@ class gallery {
         return $rows;
     }
     
-    // {{{ method getFilesHTML return string with all files
-    /**
-     * method for getting files
-     * 
-     * @param   array    array from a db query $rows
-     * @param   array    opt unused so far
-     * @return  string   html displaying files connect to article.
-     */
-    /*
-    public function getFilesHTML($rows, $opt = null){
-        $str = '';
-        foreach ($rows as $key => $val) {
-            $file = $this->uploadDir;
-            $file.= '/' . $val['file_name'];
-            $str.= "<a href=\"$file\">$val[file_name]<a>";
-            if (session::isAdmin()){
-                $str.="&nbsp;<a href=\"$this->path/delete/$this->galleryId/$val[galleryId]\">" . lang::translate('Delete') . "</a>";
-                //$str.="&nbsp;<a href=\"$this->path/update/$this->galleryId/$val[galleryId]\">Update</a>";
-            }
-            $str.= "<br />";
-        }
-        return $str;
-    }*/
-    // }}}
+
     // {{{ method getFilesHTML return string with all files
     /**
      * method for getting files
@@ -380,10 +365,20 @@ class gallery {
      * @return  boolean  true on success and false on failure
      */
     public function updateFile ($values, $id){
-        
         db::prepareToPost();
         $res = $this->update('gallery_file', $values, $id);
         return $res;
+    }
+    
+    public static function getDefaultImageUrl($gallery_id, $type = 'full') {
+        $row = self::getDefaultImage($gallery_id);
+        if (empty($row)) {
+            return '';
+        }
+        
+        $domain = get_domain();
+        $link = "/files/$domain/gallery/$gallery_id/$type-$row[file_name]";
+        return $link;
     }
 
     public static function viewGallery ($gallery_frag = 2, $file_frag = 3 ) {
@@ -410,7 +405,6 @@ class gallery {
                 exit;
             }
             
-            //$gal->validateImageUpload();
             if (!isset(self::$errors)){
                 $res = $gal->insertFile('filename');
                 if ($res){
@@ -427,7 +421,6 @@ class gallery {
 
         
         $row = $gal->getDefaultImage(self::$galleryId);
-
         $options = array ('gallery_id' => self::$galleryId, 'default' => $row);
         $files = $gal->getAllFiles();
         $rows = $gal->getAllFileInfo(self::$galleryId);
@@ -455,9 +448,7 @@ class gallery {
             return array();
         } 
         
-        return $row[0];
-        
-        
+        return $row[0];               
     }
 }
 // }}}

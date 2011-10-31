@@ -1,7 +1,8 @@
 gallery_admin_only = 0
 gallery_allow_edit = "admin"
-gallery_thumb_size = 50
 gallery_image_size = 200
+gallery_thumb_size = 45
+gallery_med_size = 75
 gallery_use_jquery = 1
 gallery_display_module = "gallery/fancybox"
 gallery_admin_menu_item = 1
