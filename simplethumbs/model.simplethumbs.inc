@@ -12,12 +12,8 @@ class gallerySimplethumbs {
      * @param   array    opt unused so far
      * @return  string  html displaying files connect to article.
      */
-    public function displayThumbs($vars){
-        
-
-        
-        
-        
+    public static function displayGallery($vars){
+      
         $i = 0;
    
         $str = '';

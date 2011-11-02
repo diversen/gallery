@@ -9,8 +9,10 @@ foreach ($vars['rows'] as $key => $val) {
     $domain = get_domain();
     $base_path = "/files/$domain/gallery";
    
-    $image_url = "$base_path/$val[gallery_id]/$val[file_name]";
-    $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
+    $image_url = gallery::getDefaultImageUrl($val['gallery_id']);/*"$base_path/$val[gallery_id]/$val[file_name]";*/
+    
+    //$thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
+    $thumb_url = gallery::getDefaultImageUrl($val['gallery_id'], 'thumb');
     
     $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
     if (session::isAdmin() && !isset($vars['no_admin'])){

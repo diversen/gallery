@@ -151,8 +151,15 @@ class gallery {
         if (!$res) return false;
         
         // scale large
+        $normal = self::$uploadDir . '/small-' . $savename;
+        $res = self::scaleImage($filename, $normal, get_module_ini('gallery_small_size'));
+        
+        if (!$res) return false;
+        
+        // scale large
         $normal = self::$uploadDir . '/full-' . $savename;
         $res = self::scaleImage($filename, $normal, get_module_ini('gallery_image_size'));
+        
         
         if (!$res) return false;
         
@@ -231,7 +238,7 @@ class gallery {
         if ($display_module) {            
             include_module($display_module);
             $module = moduleLoader::modulePathToClassName($display_module);           
-            return $module::displayThumbs($vars);
+            return $module::displayGallery($vars);
             //return;
         }
         return;
