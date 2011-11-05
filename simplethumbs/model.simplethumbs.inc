@@ -1,9 +1,9 @@
 <?php
 
-include_template_inc('fancybox');
-fancybox_include();
+template::setInlineJs(get_module_path('gallery') . '/simplethumbs/simplethumbs.js');
+template::setInlineJs(get_module_path('gallery') . '/simplethumbs/command.js');
 
-class galleryFancybox {
+class gallerySimplethumbs {
 
     /**
      * method for getting files
@@ -11,8 +11,6 @@ class galleryFancybox {
      * @param   array   array from a db query $rows
      * @param   array    opt unused so far
      * @return  string  html displaying files connect to article.
-     * 
-     * 
      */
     public static function displayGallery($vars){
       
@@ -46,22 +44,31 @@ class galleryFancybox {
         }       
         return $str;
     }
-    public function getRows($vars){
-
-        $str = ''; 
-        $str.= "<div id=\"gallery_thumbs\">\n";
-        $str.="<table><tr>\n";
+    
+    public static function getUploadForm ($vars) {
+        $str = '';
+        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
+            $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
+            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
+            $str.= '<input type="submit" name="submit" value="';
+            $str.= lang::system('system_submit_upload') . '" />';
+            $str.= '</form>';
+        }
+        return $str;
+    }
+    
+    public static function getRows ($vars) {
         $i = 0;
+        $str = '';
+        $str.="<div id=\"thumbnails\">";    
+        $str.="<table><tr>\n";
+        foreach ($vars['rows'] as $key => $val) {           
+            $src = "/files/default/gallery/$val[gallery_id]/full-$val[file_name]";
+            $thumb_src = "/files/default/gallery/$val[gallery_id]/thumb-$val[file_name]";
+            $thumb_img = html::createImage($thumb_src);
+            $link = html::createLink($src, $thumb_img);
 
-        foreach ($vars['rows'] as $key => $val) {
-
-            $domain = get_domain();
-            $base_path = "/files/$domain/gallery";
-
-            $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";
-            $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
-
-            $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
+            $str.="<td>$link";
             if (session::isAdmin() && !isset($vars['options']['no_admin'])){
                 $str.= "<table>"; 
                 $str.= "<tr><td>\n"; 
@@ -86,6 +93,9 @@ class galleryFancybox {
                 $str.= "</td></tr>";
                 $str.= "</table>\n";
             }
+            
+            
+            
             $str.="</td>\n";
             $i++;
             $t = $i % 4;
@@ -94,30 +104,16 @@ class galleryFancybox {
                 $i = 0;
             }
         }
-
         $str.="</tr></table>\n";
-
-
         $str.="</div>\n";
-        return $str;        
+        return $str;
     }
     
     public static function getDefaultImage ($row) {
         $str = "<div id=\"imageview\">\n"; 
-        $str.= "<img src=\"/files/default/gallery/$row[gallery_id]/med-$row[file_name]\" alt=\"example\" />"; 
+        $str.= "<img src=\"/files/default/gallery/$row[gallery_id]/full-$row[file_name]\" alt=\"example\" />"; 
         $str.= "</div>";
         return $str;
     }
     
-    public static function getUploadForm ($vars) {
-        $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-            $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
-            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::system('system_submit_upload') . '" />';
-            $str.= '</form>';
-        }
-        return $str;
-    }
 }

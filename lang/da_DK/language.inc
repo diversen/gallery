@@ -52,3 +52,4 @@ $_COS_LANG_MODULE['gallery_file_deleted'] = 'Fil Slettet';
 $_COS_LANG_MODULE['gallery_file_added'] = 'Til tilføjet';
 $_COS_LANG_MODULE['Delete image'] = 'Delete image';
 $_COS_LANG_MODULE['File deleted'] = 'File deleted';
+$_COS_LANG_MODULE['gallery_default_image'] = 'Primært';

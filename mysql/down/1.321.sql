@@ -1,0 +1,1 @@
+ALTER TABLE `gallery_file` DROP COLUMN `default`;

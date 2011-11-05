@@ -39,3 +39,13 @@ $_COS_LANG_MODULE['Gallery created'] = 'Gallery created';
 $_COS_LANG_MODULE['Upload image'] = 'Upload image';
 $_COS_LANG_MODULE['File seems to already exist. Only unique filenames allowed'] =
     'File seems to already exist. Only unique filenames allowed';
+$_COS_LANG_MODULE['Edit gallery'] = 'Edit gallery';
+$_COS_LANG_MODULE['gallery_edit_files'] = 'gallery_edit_files';
+$_COS_LANG_MODULE['gallery_edit_name'] = 'gallery_edit_name';
+$_COS_LANG_MODULE['Delete Gallery'] = 'Delete Gallery';
+$_COS_LANG_MODULE['has been deleted'] = 'has been deleted';
+$_COS_LANG_MODULE['Delete'] = 'Delete';
+$_COS_LANG_MODULE['gallery_file_deleted'] = 'Fil Deleted';
+$_COS_LANG_MODULE['gallery_file_added'] = 'File Added';
+$_COS_LANG_MODULE['Delete image'] = 'Delete image';
+$_COS_LANG_MODULE['File deleted'] = 'File deleted';
