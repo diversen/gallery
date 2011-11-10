@@ -81,7 +81,7 @@ class galleryFancybox {
                 $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
                 $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
                 $str.= '<input type="submit" name="submit" value="';
-                $str.= lang::system('gallery_default_image') . '" />';
+                $str.= lang::translate('gallery_default_image') . '" />';
                 $str.= '</form>';              
                 $str.= "</td></tr>";
                 $str.= "</table>\n";

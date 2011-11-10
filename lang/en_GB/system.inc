@@ -7,3 +7,4 @@
  * @package simple
  */
 $_COS_LANG_MODULE['Gallery'] = 'Gallery';
+
