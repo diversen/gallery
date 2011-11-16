@@ -476,5 +476,36 @@ class gallery {
         return $row[0];               
 
     }
+    
+    /**
+     * method for getting a random image url based on $_SESSION
+     * if user is not in session a new random image will be
+     * given every time. 
+     * can be used for getting e.g. a background image. 
+     * @return string $image_url a random image url 
+     */
+    public static function getShiftingImageURL () {
+
+        if (session::isInSession()){
+            
+            if (isset($_SESSION['gallery_count'])){
+                $_SESSION['gallery_count']++;
+            } else {
+                $_SESSION['gallery_count'] = 0;
+            }
+            
+            if ($_SESSION['gallery_count'] >= 7){
+                $_SESSION['gallery_count'] = 0;
+                $_SESSION['gallery_image'] = gallery::getRandomImageURL();
+            } else {
+                $_SESSION['gallery_image'] = gallery::getRandomImageURL();
+            }
+
+        } else {
+            $_SESSION['gallery_count'] = 0;
+            $_SESSION['gallery_image'] = gallery::getRandomImageURL();
+        }
+        return $_SESSION['gallery_image'];
+    }
 }
 // }}}
