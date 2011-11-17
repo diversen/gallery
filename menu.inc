@@ -8,8 +8,7 @@
 $_MODULE_MENU = array (
     array(
         'title' => lang::translate('List Galleries'),
-        'url' => '/gallery/index',
-        'auth' => 'admin'),
+        'url' => '/gallery/index'),
     array(
         'title' => lang::translate('Add Gallery'),
         'url' => '/gallery/admin/index',

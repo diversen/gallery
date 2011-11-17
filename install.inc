@@ -20,6 +20,6 @@ if (get_module_ini('gallery_menu_item')) {
         'admin_only' => get_module_ini('gallery_admin_only'),
     );
 }
-$_INSTALL['VERSION'] = 1.321;
+$_INSTALL['VERSION'] = 1.323;
 $_INSTALL['PUBLIC_CLONE_URL'] = 'git://github.com/diversen/gallery.git';
 $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';

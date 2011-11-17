@@ -41,7 +41,7 @@ $_COS_LANG_MODULE['File seems to already exist. Only unique filenames allowed'] 
     'File seems to already exist. Only unique filenames allowed';
 $_COS_LANG_MODULE['Edit gallery'] = 'Edit gallery';
 $_COS_LANG_MODULE['gallery_edit_files'] = 'Edit Files';
-$_COS_LANG_MODULE['gallery_edit_name'] = 'Edit Name';
+$_COS_LANG_MODULE['gallery_edit_name'] = 'Edit Gallery';
 $_COS_LANG_MODULE['Delete Gallery'] = 'Delete Gallery';
 $_COS_LANG_MODULE['has been deleted'] = 'has been deleted';
 $_COS_LANG_MODULE['Delete'] = 'Delete';
@@ -49,5 +49,8 @@ $_COS_LANG_MODULE['gallery_file_deleted'] = 'Fil Deleted';
 $_COS_LANG_MODULE['gallery_file_added'] = 'File Added';
 $_COS_LANG_MODULE['Delete image'] = 'Delete image';
 $_COS_LANG_MODULE['File deleted'] = 'File deleted';
-$_COS_LANG_MODULE['gallery_default_image'] = 'Primært';
+$_COS_LANG_MODULE['gallery_default_image'] = 'Main Image';
 
+
+$_COS_LANG_MODULE['gallery_form_label_path'] = 'Set A Path';
+$_COS_LANG_MODULE['gallery_file_is_default'] = 'File is gallery default';

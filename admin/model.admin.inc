@@ -70,6 +70,7 @@ class galleryAdmin extends gallery {
     public static function getGallery($id){
         $db = new db();
         $row = $db->selectOne('gallery', 'id', self::$galleryId);
+        $row = html::entitiesEncode($row);
         return $row;
     }
     
@@ -94,7 +95,11 @@ class galleryAdmin extends gallery {
      */
     public static function updateGallery (){
         $db = new db();
-        $values = array('title'=> $_POST['title']);
+        //$values = array('title'=> $_POST['title']);
+        
+        $values = db::prepareToPost();
+        $values = html::entitiesDecode($values);
+        
         $res = $db->update('gallery', $values, self::$galleryId);
         return $res;
 
@@ -113,25 +118,11 @@ class galleryAdmin extends gallery {
 
     }
 
-    public function displayAllGallery(){
-        $galleries = $this->getAllGallery();
-        foreach ($galleries as $key => $val){
-            $val['title'] = $val['title'];
-            $link = html::createLink("/gallery/view/$val[id]", $val['title']);
-            echo "<hr id=\"thick_hr\"/>\n";
-            echo "<div id=\"headfont\">\n";
-            echo $link;
-            echo "</div>";
-            
-            echo "<div id=\"smallfont\">";
-            if (session::isAdmin()){
-                echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
-                echo MENU_SUB_SEPARATOR_SEC;
-                echo create_link ("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
-            } 
-            echo "</div>\n";
-            
-        }
+    public function displayAllGallery($from = 0, $limit = 10){
+        $display_module = get_module_ini('gallery_display_module');         
+        include_module($display_module);
+        $module = moduleLoader::modulePathToClassName($display_module);           
+        $module::displayAll($from, $limit);
     }
 }
 
@@ -145,8 +136,13 @@ function view_gallery_form($method, $id = null, $values = array()){
     
     html::formStart('gallery_form');
     
+    if (isset($_POST['submit'])) {
+        $_POST['submit'] = html::entitiesEncode($values);
+    }
+     
     if (isset($id)) {
         $gallery = galleryAdmin::getGallery($id);
+        
         html::init($gallery, 'submit');
     }
 
@@ -160,6 +156,10 @@ function view_gallery_form($method, $id = null, $values = array()){
     html::legend($legend);
     html::label('title', lang::system('system_form_label_title'));
     html::text('title');
+    html::label('description', lang::system('system_form_label_abstract'));
+    html::textareaSmall('description');
+    html::label('file_path', lang::translate('gallery_form_label_path'));
+    html::text('file_path');
     html::submit('submit', lang::system('system_submit_add'));
     echo html::getStr();
     return;

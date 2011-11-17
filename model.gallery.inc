@@ -423,7 +423,7 @@ class gallery {
             
             if (isset($_POST['file_id']) && $_POST['method'] == 'default_image') {
                 $gal->setDefaultImage($_POST['file_id']);
-                session::setActionMessage(lang::translate('gallery_file_deleted'));
+                session::setActionMessage(lang::translate('gallery_file_is_default'));
                 header("Location: $_SERVER[REQUEST_URI]");
                 exit;
             }
@@ -480,25 +480,27 @@ class gallery {
     /**
      * method for getting a random image url based on $_SESSION
      * if user is not in session a new random image will be
-     * given every time. 
+     * given every time. Else the a new image will be given every
+     * $shift_num time
+     * 
      * can be used for getting e.g. a background image. 
+     * @param  int $shift_num when to shift the image after shift_num views. 
      * @return string $image_url a random image url 
      */
-    public static function getShiftingImageURL () {
+    public static function getShiftingImageURL ($shift_num = 7) {
 
         if (session::isInSession()){
-            
             if (isset($_SESSION['gallery_count'])){
-                $_SESSION['gallery_count']++;
+                (int)$_SESSION['gallery_count']++;
             } else {
                 $_SESSION['gallery_count'] = 0;
             }
             
-            if ($_SESSION['gallery_count'] >= 7){
+            if ($_SESSION['gallery_count'] >= $shift_num){
                 $_SESSION['gallery_count'] = 0;
                 $_SESSION['gallery_image'] = gallery::getRandomImageURL();
             } else {
-                $_SESSION['gallery_image'] = gallery::getRandomImageURL();
+                //$_SESSION['gallery_image'] = gallery::getRandomImageURL();
             }
 
         } else {

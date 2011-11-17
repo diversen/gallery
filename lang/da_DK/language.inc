@@ -53,3 +53,6 @@ $_COS_LANG_MODULE['gallery_file_added'] = 'Til tilføjet';
 $_COS_LANG_MODULE['Delete image'] = 'Delete image';
 $_COS_LANG_MODULE['File deleted'] = 'File deleted';
 $_COS_LANG_MODULE['gallery_default_image'] = 'Primært';
+
+$_COS_LANG_MODULE['gallery_form_label_path'] = 'Intast en fysisk sti. Fx /billeder/by/natur';
+$_COS_LANG_MODULE['gallery_file_is_default'] = 'Billedet er primært i gallery';
