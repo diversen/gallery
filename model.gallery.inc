@@ -500,7 +500,7 @@ class gallery {
                 $_SESSION['gallery_count'] = 0;
                 $_SESSION['gallery_image'] = gallery::getRandomImageURL();
             } else {
-                //$_SESSION['gallery_image'] = gallery::getRandomImageURL();
+                $_SESSION['gallery_image'] = gallery::getRandomImageURL();
             }
 
         } else {
