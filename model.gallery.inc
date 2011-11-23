@@ -494,13 +494,14 @@ class gallery {
                 (int)$_SESSION['gallery_count']++;
             } else {
                 $_SESSION['gallery_count'] = 0;
+                $_SESSION['gallery_image'] = gallery::getRandomImageURL();
             }
             
             if ($_SESSION['gallery_count'] >= $shift_num){
                 $_SESSION['gallery_count'] = 0;
                 $_SESSION['gallery_image'] = gallery::getRandomImageURL();
             } else {
-                $_SESSION['gallery_image'] = gallery::getRandomImageURL();
+               // $_SESSION['gallery_image'] = gallery::getRandomImageURL();
             }
 
         } else {
