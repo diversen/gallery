@@ -25,18 +25,6 @@ class galleryFancybox {
             // no images
             $str.= self::getUploadForm($vars);
             return $str;
-        } else if ($num_rows == 1) {
-            // one image
-            if (get_module_ini('gallery_use_default_image')) {
-                $str.= self::getDefaultImage($vars['options']['default']);
-            }
-            if (session::isAdmin() && !isset($vars['options']['no_admin'])) {
-                $str.= self::getRows($vars);
-            }
-            
-            $str.= self::getUploadForm($vars);
-            return $str;
-            
         } else {
             // more than one image
 
