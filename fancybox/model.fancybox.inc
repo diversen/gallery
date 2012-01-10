@@ -155,7 +155,7 @@ class galleryFancybox {
             if (session::isAdmin()){
                 echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
                 echo MENU_SUB_SEPARATOR;
-                echo create_link ("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
+                echo html::createLink("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
             } 
             echo "</div>\n";           
         }
