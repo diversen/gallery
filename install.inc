@@ -15,7 +15,6 @@ if (get_module_ini('gallery_menu_item')) {
         'module_name' => 'gallery',
         'parent' => 0,
         'weight' => 2,
-        'section' => get_module_ini('gallery_section'),
         'auth' => get_module_ini('gallery_menu_item_auth'),
         'admin_only' => get_module_ini('gallery_admin_only'),
     );
