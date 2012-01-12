@@ -1,7 +1,7 @@
 <?php
 
-template::setInlineJs(get_module_path('gallery') . '/simplethumbs/simplethumbs.js');
-template::setInlineJs(get_module_path('gallery') . '/simplethumbs/command.js');
+template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/simplethumbs.js');
+template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/command.js');
 
 class gallerySimplethumbs {
 

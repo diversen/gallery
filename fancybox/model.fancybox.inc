@@ -28,7 +28,7 @@ class galleryFancybox {
         } else {
             // more than one image
 
-            if (get_module_ini('gallery_use_default_image')) {
+            if (config::getModuleIni('gallery_use_default_image')) {
                 $str.= self::getDefaultImage($vars['options']['default']);
             }
 
@@ -46,7 +46,7 @@ class galleryFancybox {
         $i = 0;
         foreach ($vars['rows'] as $key => $val) {
 
-            $domain = get_domain();
+            $domain = config::getDomain();
             $base_path = "/files/$domain/gallery";
 
             $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";

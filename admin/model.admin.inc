@@ -119,7 +119,7 @@ class galleryAdmin extends gallery {
     }
 
     public function displayAllGallery($from = 0, $limit = 10){
-        $display_module = get_module_ini('gallery_display_module');         
+        $display_module = config::getModuleIni('gallery_display_module');         
         include_module($display_module);
         $module = moduleLoader::modulePathToClassName($display_module);           
         $module::displayAll($from, $limit);
