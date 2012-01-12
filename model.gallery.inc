@@ -61,7 +61,7 @@ class gallery {
         self::$galleryId = $uri->fragment($gallery_frag);
         self::$fileId = $uri->fragment($file_frag);
         
-        $domain = get_domain ();
+        $domain = config::getDomain ();
         if (!$domain) $domain = 'default';
         self::$uploadDir = _COS_PATH . "/htdocs/files/$domain/gallery/" . self::$galleryId;
         $options = array('upload_dir' => self::$uploadDir);
@@ -141,24 +141,24 @@ class gallery {
 
         // scale a thumb
         $thumb = self::$uploadDir . '/thumb-' . $savename;
-        $res = self::scaleImage($filename, $thumb, get_module_ini('gallery_thumb_size'));
+        $res = self::scaleImage($filename, $thumb, config::getModuleIni('gallery_thumb_size'));
         
         if (!$res) return false;
         
         $med = self::$uploadDir . '/med-' . $savename;
-        $res = self::scaleImage($filename, $med, get_module_ini('gallery_med_size'));
+        $res = self::scaleImage($filename, $med, config::getModuleIni('gallery_med_size'));
         
         if (!$res) return false;
         
         // scale large
         $normal = self::$uploadDir . '/small-' . $savename;
-        $res = self::scaleImage($filename, $normal, get_module_ini('gallery_small_size'));
+        $res = self::scaleImage($filename, $normal, config::getModuleIni('gallery_small_size'));
         
         if (!$res) return false;
         
         // scale large
         $normal = self::$uploadDir . '/full-' . $savename;
-        $res = self::scaleImage($filename, $normal, get_module_ini('gallery_image_size'));
+        $res = self::scaleImage($filename, $normal, config::getModuleIni('gallery_image_size'));
         
         
         if (!$res) return false;
@@ -234,7 +234,7 @@ class gallery {
         $vars['options'] = $options;
         // $vars['gallery_id'] = $options['gallery_id'];
         
-        $display_module = get_module_ini('gallery_display_module');
+        $display_module = config::getModuleIni('gallery_display_module');
         if ($display_module) {            
             include_module($display_module);
             $module = moduleLoader::modulePathToClassName($display_module);           
@@ -269,7 +269,7 @@ class gallery {
         $str = '';
         $str.="<div id=\"gallery_pager\">";
         $str.="<table><tr>\n";
-        $domain = get_domain();
+        $domain = config::getDomain();
         foreach ($rows as $key => $val) {
             $thumb_src = "/files/$domain/gallery/thumb-" . $val['file_name'];          
             $path = "/gallery/view/" . self::$galleryId . "/$val[id]";
@@ -342,7 +342,7 @@ class gallery {
 
         if (!empty($show)){
             $show = $show[0];
-            $domain = get_domain();
+            $domain = config::getDomain();
             $image_url = "/files/$domain/gallery/" .
                          $show['gallery_id'] . '/' .
                          $show['file_name'];
@@ -399,7 +399,7 @@ class gallery {
             return '';
         }
         
-        $domain = get_domain();
+        $domain = config::getDomain();
         $link = "/files/$domain/gallery/$gallery_id/$type-$row[file_name]";
         return $link;
     }

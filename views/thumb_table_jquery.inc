@@ -6,7 +6,7 @@ $str.="<table><tr>\n";
 $i = 0;
 foreach ($vars['rows'] as $key => $val) {
 
-    $domain = get_domain();
+    $domain = config::getDomain();
     $base_path = "/files/$domain/gallery";
    
     $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";
