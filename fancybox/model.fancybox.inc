@@ -1,6 +1,6 @@
 <?php
 
-include_template_inc('fancybox');
+moduleLoader::includeTemplateCommon('fancybox');
 fancybox_include();
 
 class galleryFancybox {
