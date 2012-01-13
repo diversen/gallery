@@ -236,7 +236,7 @@ class gallery {
         
         $display_module = config::getModuleIni('gallery_display_module');
         if ($display_module) {            
-            include_module($display_module);
+            moduleLoader::includeModule($display_module);
             $module = moduleLoader::modulePathToClassName($display_module);           
             return $module::displayGallery($vars);
             //return;
