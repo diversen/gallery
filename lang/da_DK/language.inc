@@ -56,3 +56,11 @@ $_COS_LANG_MODULE['gallery_default_image'] = 'Primært';
 
 $_COS_LANG_MODULE['gallery_form_label_path'] = 'Intast en fysisk sti. Fx /billeder/by/natur';
 $_COS_LANG_MODULE['gallery_file_is_default'] = 'Billedet er primært i gallery';
+
+$_COS_LANG_MODULE['gallery_delete_has_files'] = 'Kan ikke slette galleri da der stadig er filer i det. Slet disse først.';
+$_COS_LANG_MODULE['gallery_delete_legend'] = 'Slet galleri';
+
+
+$_COS_LANG_MODULE['gallery_gallery_has_been_deleted'] = 'Galleri er blevet slettet';
+
+$_COS_LANG_MODULE['gallery_delete_gallery'] = 'Slet galleri';

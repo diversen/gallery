@@ -94,6 +94,9 @@ class gallery {
         $filename = self::$uploadDir . '/thumb-' . $row['file_name'];
         $res = $upload->unlinkFile($filename);
         
+        $filename = self::$uploadDir . '/small-' . $row['file_name'];
+        $res = $upload->unlinkFile($filename);
+        
         $filename = self::$uploadDir . '/med-' . $row['file_name'];
         $res = $upload->unlinkFile($filename);
         

@@ -54,3 +54,8 @@ $_COS_LANG_MODULE['gallery_default_image'] = 'Main Image';
 
 $_COS_LANG_MODULE['gallery_form_label_path'] = 'Set A Path';
 $_COS_LANG_MODULE['gallery_file_is_default'] = 'File is gallery default';
+
+$_COS_LANG_MODULE['gallery_delete_has_files'] = 'Gallery has files. Delete all files before delting your gallery.';
+$_COS_LANG_MODULE['gallery_gallery_has_been_deleted'] = 'Gallery has been deleted';
+$_COS_LANG_MODULE['gallery_delete_legend'] = 'Delete gallery';
+$_COS_LANG_MODULE['gallery_delete_gallery'] = 'Delete gallery';

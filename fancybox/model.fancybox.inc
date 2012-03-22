@@ -156,6 +156,8 @@ class galleryFancybox {
                 echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
                 echo MENU_SUB_SEPARATOR;
                 echo html::createLink("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
+                echo MENU_SUB_SEPARATOR;
+                echo html::createLink("/gallery/admin/delete/$val[id]", lang::translate('gallery_delete_gallery')) . " \n";
             } 
             echo "</div>\n";           
         }

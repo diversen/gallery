@@ -8,3 +8,6 @@
  */
 $_COS_LANG_MODULE['Gallery'] = 'Galleri';
 
+
+
+

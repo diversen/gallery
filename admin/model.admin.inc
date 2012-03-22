@@ -54,11 +54,11 @@ class galleryAdmin extends gallery {
      * 
      * @return type 
      */
-    public static function deleteGallery(){
-        $gllery = self::getGallery();
-        $gallery_id = $gallery['gallery_id'];
+    public static function deleteGallery($id){
+        //$gallery = self::getGallery();
+        //$gallery_id = $gallery['gallery_id'];
         $db = new db();
-        $res = $db->delete('gallery', 'id',  self::$galleryId);
+        $res = $db->delete('gallery', 'id',  $id);
         return $res;
     }
 
@@ -67,7 +67,7 @@ class galleryAdmin extends gallery {
      *
      * @return array  containing the selected category
      */
-    public static function getGallery($id){
+    public static function getGallery(){
         $db = new db();
         $row = $db->selectOne('gallery', 'id', self::$galleryId);
         $row = html::entitiesEncode($row);
@@ -134,6 +134,21 @@ class galleryAdmin extends gallery {
  */
 function view_gallery_form($method, $id = null, $values = array()){
     
+    
+
+    
+ if ($method == 'delete') {
+        html::$autoLoadTrigger = 'submit';
+        //html::init($vars);
+        html::formStart('gallery_from_delete');
+        html::legend(lang::translate('gallery_delete_legend'));
+        html::submit('submit', lang::system('system_submit_delete'));
+        html::formEnd();
+        echo html::getStr();
+        return;
+        
+    }
+    
     html::formStart('gallery_form');
     
     if (isset($_POST['submit'])) {
@@ -158,8 +173,8 @@ function view_gallery_form($method, $id = null, $values = array()){
     html::text('title');
     html::label('description', lang::system('system_form_label_abstract'));
     html::textareaSmall('description');
-    html::label('file_path', lang::translate('gallery_form_label_path'));
-    html::text('file_path');
+    //html::label('file_path', lang::translate('gallery_form_label_path'));
+    //html::text('file_path');
     html::submit('submit', lang::system('system_submit_add'));
     echo html::getStr();
     return;
