@@ -19,7 +19,6 @@ class galleryFancybox {
         $i = 0;
    
         $str = '';
-        //print_r($vars);
         $num_rows = count($vars['rows']);
         if ($num_rows == 0) {
             // no images
@@ -27,7 +26,6 @@ class galleryFancybox {
             return $str;
         } else {
             // more than one image
-
             if (config::getModuleIni('gallery_use_default_image')) {
                 $str.= self::getDefaultImage($vars['options']['default']);
             }
@@ -53,32 +51,9 @@ class galleryFancybox {
             $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
 
             $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
+            
             $str.=self::getAdminOptions($val, $vars);
-            /*
-            if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-                $str.= "<table>"; 
-                $str.= "<tr><td>\n"; 
-                $str.= '<form name="gallery_delete_image" action="" ';
-                $str.= '" method="post" enctype="multipart/form-data">';
-                $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
-                $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-                $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-                $str.= '<input type="submit" name="submit" value="';
-                $str.= lang::system('system_submit_delete') . '" />';
-                $str.= '</form>';              
-                $str.= "</td></tr>";
-                $str.= "<tr><td>\n"; 
-                $str.= '<form name="gallery_delete_image" action="" ';
-                $str.= '" method="post" enctype="multipart/form-data">'; 
-                $str.= "<input type=\"hidden\" name=\"method\" value=\"default_image\" />\n";
-                $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-                $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-                $str.= '<input type="submit" name="submit" value="';
-                $str.= lang::translate('gallery_default_image') . '" />';
-                $str.= '</form>';              
-                $str.= "</td></tr>";
-                $str.= "</table>\n";
-            }*/
+            
             $str.="</td>\n";
             $i++;
             $t = $i % 4;
