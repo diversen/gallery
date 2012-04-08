@@ -10,4 +10,3 @@ template::setTitle(lang::translate('List Galleries'));
 
 $gal = new galleryAdmin();
 $gal->displayAllGallery();
-    

@@ -134,9 +134,6 @@ class galleryAdmin extends gallery {
  */
 function view_gallery_form($method, $id = null, $values = array()){
     
-    
-
-    
  if ($method == 'delete') {
         html::$autoLoadTrigger = 'submit';
         //html::init($vars);
@@ -173,10 +170,13 @@ function view_gallery_form($method, $id = null, $values = array()){
     html::text('title');
     html::label('description', lang::system('system_form_label_abstract'));
     html::textareaSmall('description');
-    //html::label('file_path', lang::translate('gallery_form_label_path'));
-    //html::text('file_path');
+    html::label('file_path', lang::translate('gallery_form_label_path'));
+    html::text('file_path');
     html::submit('submit', lang::system('system_submit_add'));
+    html::formEnd();
     echo html::getStr();
     return;
     
 }
+
+

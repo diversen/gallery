@@ -207,6 +207,60 @@ class gallery {
         $rows = $db->select('gallery_file', 'gallery_id', $gallery_id);
         return $rows;
     }
+    
+    public static function getReturnUrlFromId ($id){
+        //$row = self::getEntry($id);
+        $link_url = "/gallery/inline/view/$id";
+        //$link_url.= strings::rawurlencodeStripSpaces($row['title']);
+        return $link_url;
+    }
+    
+    public static function getRedirect ($id) {
+        return self::getReturnUrlFromId($id);
+    }
+    
+    public static function getLinkFromId ($id){
+        $url = self::getReturnUrlFromId($id);
+        $row = self::getSingleImage($id);
+        $link = html::createLink($url, $row['file_name']);
+        return $link;
+    }
+    
+    public function getSingleImage($id){
+
+        $db = new db();
+        $row = $db->selectOne('gallery_file', 'id', $id);
+        return $row;
+    }
+    
+    public function getImageUrl ($id, $size = '') {
+        static $row;
+        //if ($row) return $row;
+        if (!empty($size)) {
+            $size = "$size-";
+        }
+        
+        $row = $this->getSingleImage($id);
+        $domain = config::getDomain();
+        $row['src'] = "/files/$domain/gallery/$row[gallery_id]/" . $size . "$row[file_name]";
+        return $row;
+    }
+    
+    public function getImageSrc ($id, $size = '') {
+        $row = $this->getImageUrl($id, $size);
+        
+        $str = "<div id=\"imageview\">\n"; 
+        $str.= "<img src=\"$row[src]\" alt=\"$row[description]\" />"; 
+        $str.= "</div>";
+        return $str;
+    }
+    
+    /*
+    public function getImageUrl($id, $gallery_id, $type = 'full') {
+        $this->getSingleImage($id);
+        $path = "gallery/$gallery_id/$row[file_name]";
+        $file = config::getWebFilesPath($file);
+    }*/
 
     /**
      * method for getting all connected to a gallery
@@ -514,4 +568,33 @@ class gallery {
         return $_SESSION['gallery_image'];
     }
 }
-// }}}
+
+function view_gallery_inline_form ($values = null) {
+    
+    html::formStart('gallery_form');
+    html::init($values, 'submit');
+    $legend = lang::translate('gallery_set_image_details');
+    html::legend($legend);
+    html::label('file_name', lang::translate('gallery_file_name'));
+    html::text('file_name');
+    html::label('description', lang::system('system_form_label_abstract'));
+    html::textareaSmall('description');
+    html::submit('submit', lang::system('system_submit_add'));
+    html::formEnd();
+    
+    $str = <<<EOF
+<div><a href="#" class="form_show">Edit Details</a>
+<a href="#" class = "form_hide">Hide Details</a></div>
+<div id="form_hidden">
+EOF;
+    
+    $str.= html::getStr();
+    
+    $ex = <<<EOF
+</div>
+
+EOF;
+    $str.= $ex;
+    echo $str;
+    return;
+}
