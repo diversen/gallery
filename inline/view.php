@@ -15,39 +15,28 @@ if (empty($row)) {
     return;
 }
 
+// we got a row
+
+
 echo $gallery->getImageSrc($id, 'full');
 $row = $gallery->getImageUrl($id);
 echo $link = html::createLink($row['src'], lang::translate('gallery_view_full_size'));
 
-?>
-<style type="text/css">
-#form_hidden, .form_hide { display: none }
-</style>
-<script type="text/javascript">
-$(document).ready(function()
-{
-    
-    $(".form_show").click(function()
-    {
-        $("#form_hidden").show();
-        $(".form_show").hide();
-        $(".form_hide").show();
-        return false;
-    });
-    $(".form_hide").click(function()
-    {
-        $("#form_hidden").hide();
-        $(".form_show").show();
-        $(".form_hide").hide();
-        
-        return false;
-    });
-});
-</script>
-<?php
 
 if (session::isAdmin()) {
-    //print_r($row);
+    // edit
+    if (isset($_POST['gallery_details'])) {
+        $res = $gallery->updateImageDetails($id);
+        if ($res) {
+            $location = "/gallery/inline/view/$id";
+            $message = lang::translate('gallery_image_details_updated');
+            http::locationHeader($location, $message);
+        } else {
+            
+        }
+    }
+    
+    
     view_gallery_inline_form($row);
 }
 

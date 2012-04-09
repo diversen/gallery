@@ -243,6 +243,7 @@ class gallery {
         $row = $this->getSingleImage($id);
         $domain = config::getDomain();
         $row['src'] = "/files/$domain/gallery/$row[gallery_id]/" . $size . "$row[file_name]";
+        //print_r($row); die;
         return $row;
     }
     
@@ -534,6 +535,60 @@ class gallery {
 
     }
     
+    public function updateImageDetails ($id) {
+        $values = db::prepareToPostArray(array('file_name', 'description'));
+        $values = html::specialDecode($values);
+        $row = $this->getSingleImage($id);
+        
+        if ( $row['file_name'] != $values['file_name']) {
+            //$values['file_name'] = strings::sanitizeUrlRigid($values['file_name'], true, true);
+            $values['file_name'] = strings::utf8SlugString($values['file_name']);
+            if (empty($values['file_name'])){
+                $values['file_name'] = $row['file_name'];
+            } else {
+                $ext = file::getExtension($row['file_name']);
+                $values['file_name'].= "." . $ext;
+            }
+        }
+        
+        if ($row['file_name'] != $values['file_name']) {
+            $res = $this->renameImages($row, $values);
+            if (!$res) {
+                return false;
+            } 
+        }
+        $db = new db ();
+        return $db->update('gallery_file', $values, $id);
+    }
+    
+    public static function renameImages ($row, $values) {
+        $path = self::getGalleryPath($row);
+        $newname = $oldname = null;
+        $sizes = array ('thumb', 'med', 'full', 'small', '') ;
+        foreach ($sizes as $size) {
+            if (empty($size)) {
+                $oldname = $path . "/" . rawurldecode($row[file_name]);
+                $newname = $path . "/" . rawurldecode($values[file_name]);
+                cos_error_log($oldname);
+                cos_error_log($newname);
+                
+            } else {
+                $oldname = $path . "/$size-" . rawurldecode($row[file_name]);
+                $newname = $path . "/$size-" . rawurldecode($values[file_name]);
+                cos_error_log($newname);
+            }
+            $res = rename($oldname, $newname);
+            
+            if (!$res) cos_error_log ('Error: Could not renmae image in gallery::renameImages');
+        }
+        return true;
+    }
+    
+    public static function getGalleryPath ($row) {
+        $domain = config::getDomain();
+        return _COS_PATH . "/htdocs/files/$domain/gallery/$row[gallery_id]";
+    }
+    
     /**
      * method for getting a random image url based on $_SESSION
      * if user is not in session a new random image will be
@@ -569,17 +624,47 @@ class gallery {
     }
 }
 
-function view_gallery_inline_form ($values = null) {
+function view_gallery_inline_form ($values = null) { ?>
+<style type="text/css">
+#form_hidden, .form_hide { display: none }
+</style>
+<script type="text/javascript">
+$(document).ready(function()
+{
     
+    $(".form_show").click(function()
+    {
+        $("#form_hidden").show();
+        $(".form_show").hide();
+        $(".form_hide").show();
+        return false;
+    });
+    $(".form_hide").click(function()
+    {
+        $("#form_hidden").hide();
+        $(".form_show").show();
+        $(".form_hide").hide();
+        
+        return false;
+    });
+});
+</script>
+<?php
+
+    
+    $values = html::specialEncode($values);
+    $values['file_name'] = file::getFilename($values['file_name']);
+    $values['file_name'] = rawurldecode($values['file_name']);
     html::formStart('gallery_form');
     html::init($values, 'submit');
     $legend = lang::translate('gallery_set_image_details');
     html::legend($legend);
+    html::hidden('gallery_details', 1);
     html::label('file_name', lang::translate('gallery_file_name'));
     html::text('file_name');
     html::label('description', lang::system('system_form_label_abstract'));
     html::textareaSmall('description');
-    html::submit('submit', lang::system('system_submit_add'));
+    html::submit('submit', lang::system('system_submit_update'));
     html::formEnd();
     
     $str = <<<EOF
@@ -589,7 +674,6 @@ function view_gallery_inline_form ($values = null) {
 EOF;
     
     $str.= html::getStr();
-    
     $ex = <<<EOF
 </div>
 
