@@ -13,6 +13,14 @@ $_MODULE_MENU = array (
         'title' => lang::translate('Add Gallery'),
         'url' => '/gallery/admin/index',
         'auth' => 'admin'),
+
         
 );
 
+if (config::getModuleIni('gallery_allow_zip')) {
+    $_MODULE_MENU[] =
+        array(
+            'title' => lang::translate('gallery_menu_upload_zip'),
+            'url' => '/gallery/upload/index',
+            'auth' => 'admin');
+}

@@ -1,0 +1,1 @@
+ALTER TABLE `gallery` ADD   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;

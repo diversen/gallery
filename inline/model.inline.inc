@@ -34,7 +34,8 @@ class galleryinline {
         return $str;
     }
     public function getRows($vars){
-
+        
+        $vars = html::specialEncode($vars);
         $str = ''; 
         $str.= "<div id=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
@@ -47,8 +48,9 @@ class galleryinline {
             $image_url = "/gallery/inline/view/$val[id]";
             
             $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
-
-            $str.="<td><a href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
+            
+            $img_tag = html::createImage($thumb_url, array ('alt' => $val['description']));
+            $str.="<td><a href=\"$image_url\">$img_tag</a>";
             
             $str.=self::getAdminOptions($val, $vars);
             
@@ -62,8 +64,6 @@ class galleryinline {
         }
 
         $str.="</tr></table>\n";
-
-
         $str.="</div>\n";
         return $str;        
     }
@@ -74,7 +74,7 @@ class galleryinline {
             $str.= "<table>"; 
             $str.= "<tr><td>\n"; 
             $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= '" method="post" enctype="multipart/form-data">';
+            $str.= " method=\"post\" enctype=\"multipart/form-data\">";
             $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
             $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
             $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
@@ -84,7 +84,7 @@ class galleryinline {
             $str.= "</td></tr>";
             $str.= "<tr><td>\n"; 
             $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= '" method="post" enctype="multipart/form-data">'; 
+            $str.= ' method="post" enctype="multipart/form-data">'; 
             $str.= "<input type=\"hidden\" name=\"method\" value=\"default_image\" />\n";
             $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
             $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
@@ -116,10 +116,21 @@ class galleryinline {
         return $str;
     }
     
+    
+    
     public static function displayAll () {
+        include_once "pearPager.php";
+  
         $gallery = new galleryAdmin();
-        $galleries = $gallery->getAllGallery();
-        foreach ($galleries as $key => $val){
+        $db = new db();
+        $num_rows = $db->getNumRows('gallery');
+
+        $per_page = 2;
+        
+        $pager = new pearPager($num_rows, $per_page);
+        $rows = $db->selectAll('gallery', null, null, $pager->from, $per_page, 'updated');       
+       
+        foreach ($rows as $key => $val){
             $val['title'] = $val['title'];
             $link = html::createLink("/gallery/view/$val[id]", $val['title']);
             headline_message($link);
@@ -132,7 +143,20 @@ class galleryinline {
                 echo MENU_SUB_SEPARATOR;
                 echo html::createLink("/gallery/admin/delete/$val[id]", lang::translate('gallery_delete_gallery')) . " \n";
             } 
-            echo "</div>\n";           
+            echo "</div>\n"; 
+            $event_params = array(
+                'action' => 'view',
+                'reference' => 'gallery',
+                'parent_id' => $val['id']);
+            
+            event::triggerEvent(
+                config::getModuleIni('gallery_events'), 
+                $event_params
+            );
+ 
+            
         }
+        echo "<br />\n";
+        $pager->pearPage();
     }
 }

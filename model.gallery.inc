@@ -10,6 +10,7 @@
  * @ignore
  */
 include_once "upload.php";
+include_model('gallery/admin');
 
 
 /**
@@ -222,7 +223,7 @@ class gallery {
     public static function getLinkFromId ($id){
         $url = self::getReturnUrlFromId($id);
         $row = self::getSingleImage($id);
-        $link = html::createLink($url, $row['file_name']);
+        $link = html::createLink($url, rawurldecode($row['file_name']));
         return $link;
     }
     
@@ -286,18 +287,15 @@ class gallery {
      */
     public function getThumbTableHTML($rows, $options = array()){
         $str = '';
-        //$num_rows = $this->getNumImagesGallery();
         $vars = array();
-        $vars['rows'] = $rows; //$this->getAllFileInfo($options['gallery_id']);
+        $vars['rows'] = $rows; 
         $vars['options'] = $options;
-        // $vars['gallery_id'] = $options['gallery_id'];
         
         $display_module = config::getModuleIni('gallery_display_module');
         if ($display_module) {            
             moduleLoader::includeModule($display_module);
             $module = moduleLoader::modulePathToClassName($display_module);           
             return $module::displayGallery($vars);
-            //return;
         }
         return;
 
@@ -464,10 +462,19 @@ class gallery {
 
     public static function viewGallery ($gallery_frag = 2, $file_frag = 3 ) {
         $gal = new gallery($gallery_frag, $file_frag);
-
-        template::setTitle(lang::translate('View gallery'));
+        
+        $gal_info = galleryAdmin::getGallery($gallery_frag);
+        if (empty($gal_info)) {
+            http::permMovedHeader('/gallery/index');
+        }
+        
+        $title = lang::translate('View gallery');
+        $title.= MENU_SUB_SEPARATOR . $gal_info['title'];
+        
+        template::setTitle($title);
+        template::setMeta(array ('description' => $gal_info['description']));
+        
         if (isset($_POST['submit'])){
-
             if (!session::checkAccessControl('gallery_allow_edit')){
                 return;
             }
@@ -505,7 +512,6 @@ class gallery {
         $options = array ('gallery_id' => self::$galleryId, 'default' => $row);
         $files = $gal->getAllFiles();
 
-
         $rows = $gal->getAllFileInfo(self::$galleryId);
         echo $gal->getThumbTableHTML($rows, $options);
     }
@@ -536,7 +542,7 @@ class gallery {
     }
     
     public function updateImageDetails ($id) {
-        $values = db::prepareToPostArray(array('file_name', 'description'));
+        $values = db::prepareToPostArray(array('file_name', 'title', 'description'));
         $values = html::specialDecode($values);
         $row = $this->getSingleImage($id);
         
@@ -564,11 +570,12 @@ class gallery {
     public static function renameImages ($row, $values) {
         $path = self::getGalleryPath($row);
         $newname = $oldname = null;
-        $sizes = array ('thumb', 'med', 'full', 'small', '') ;
+        $sizes = array ('', 'thumb', 'med', 'full', 'small') ;
         foreach ($sizes as $size) {
             if (empty($size)) {
                 $oldname = $path . "/" . rawurldecode($row[file_name]);
                 $newname = $path . "/" . rawurldecode($values[file_name]);
+                if (file_exists($newname)) return false;
                 cos_error_log($oldname);
                 cos_error_log($newname);
                 
@@ -578,8 +585,7 @@ class gallery {
                 cos_error_log($newname);
             }
             $res = rename($oldname, $newname);
-            
-            if (!$res) cos_error_log ('Error: Could not renmae image in gallery::renameImages');
+            if (!$res) cos_error_log ('Error: Could not rename image in gallery::renameImages');
         }
         return true;
     }
@@ -651,9 +657,8 @@ $(document).ready(function()
 </script>
 <?php
 
-    
     $values = html::specialEncode($values);
-    $values['file_name'] = file::getFilename($values['file_name']);
+    $values['file_name'] = file::getFilename($values['file_name'], array ('utf8' => true));
     $values['file_name'] = rawurldecode($values['file_name']);
     html::formStart('gallery_form');
     html::init($values, 'submit');
@@ -662,6 +667,8 @@ $(document).ready(function()
     html::hidden('gallery_details', 1);
     html::label('file_name', lang::translate('gallery_file_name'));
     html::text('file_name');
+    html::label('title', lang::system('system_form_label_title'));
+    html::text('title');
     html::label('description', lang::system('system_form_label_abstract'));
     html::textareaSmall('description');
     html::submit('submit', lang::system('system_submit_update'));

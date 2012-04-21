@@ -59,6 +59,15 @@ class galleryAdmin extends gallery {
         //$gallery_id = $gallery['gallery_id'];
         $db = new db();
         $res = $db->delete('gallery', 'id',  $id);
+        $event_params = array (
+                'action' => 'delete',
+                'reference' => 'gallery', 
+                'parent_id' => $id);
+            
+        event::triggerEvent(
+            config::getModuleIni('gallery_events'),
+            $event_params);
+        
         return $res;
     }
 
@@ -67,10 +76,11 @@ class galleryAdmin extends gallery {
      *
      * @return array  containing the selected category
      */
-    public static function getGallery(){
+    public static function getGallery($id = null){
+        if (!$id) $id = self::$galleryId;
         $db = new db();
         $row = $db->selectOne('gallery', 'id', self::$galleryId);
-        $row = html::entitiesEncode($row);
+        $row = html::specialEncode($row);
         return $row;
     }
     
@@ -81,11 +91,29 @@ class galleryAdmin extends gallery {
      *
      * @return int insert id
      */
-    public static function createGallery (){
-        $values = array('title'=> $_POST['title']);
+    public static function createGallery ($values = null){
+        if (!$values) {
+            $values = array('title'=> $_POST['title'], 'description' => $_POST['description']);
+        }
         $db = new db(); 
         $res = $db->insert('gallery', $values);
-        return $res;
+        
+        $last_insert_id = $db->lastInsertId(); 
+        
+        // create params for events that may be triggered
+        $event_params = array (
+            'action' => 'insert',
+            'reference' => 'gallery', 
+            'parent_id' => $last_insert_id);
+            
+        // trigger events
+        event::triggerEvent(
+            config::getModuleIni('gallery_events'),
+            $event_params
+        );
+        
+        return $last_insert_id;
+        //return $res;
     }
 
     /**
@@ -93,16 +121,28 @@ class galleryAdmin extends gallery {
      *
      * @return int affected rows
      */
-    public static function updateGallery (){
+    public static function updateGallery ($id = null){
+        
+        if (!$id) $id = self::$galleryId;
         $db = new db();
-        //$values = array('title'=> $_POST['title']);
         
         $values = db::prepareToPost();
-        $values = html::entitiesDecode($values);
+        $values = html::specialDecode($values);
         
-        $res = $db->update('gallery', $values, self::$galleryId);
+        $event_params = array (
+            'action' => 'update',
+            'reference' => 'gallery', 
+            'parent_id' => $id);
+            
+        event::triggerEvent(
+            config::getModuleIni('gallery_events'),
+            $event_params
+        );
+        
+        unset($values['tags']);
+        
+        $res = $db->update('gallery', $values, $id);
         return $res;
-
     }
 
 
@@ -111,12 +151,14 @@ class galleryAdmin extends gallery {
      *
      * @return array array categories
      */
-    public static function getAllGallery (){
+    public static function getAllGallery ($from = null, $limit = null){
         $db = new db();
-        $rows = $db->selectAll('gallery');
+        $rows = $db->selectAll('gallery', null, null, $from, $limit, 'updated');
         return $rows;
 
     }
+    
+
 
     public function displayAllGallery($from = 0, $limit = 10){
         $display_module = config::getModuleIni('gallery_display_module');         
@@ -149,7 +191,7 @@ function view_gallery_form($method, $id = null, $values = array()){
     html::formStart('gallery_form');
     
     if (isset($_POST['submit'])) {
-        $_POST['submit'] = html::entitiesEncode($values);
+        $_POST['submit'] = html::specialEncode($values);
     }
      
     if (isset($id)) {
@@ -172,6 +214,28 @@ function view_gallery_form($method, $id = null, $values = array()){
     html::textareaSmall('description');
     html::label('file_path', lang::translate('gallery_form_label_path'));
     html::text('file_path');
+    
+    // trigger form events
+    if (isset($id)) {
+        event::triggerEvent(
+            config::getModuleIni('gallery_events'), 
+            array(
+                'action' => 'form',
+                'reference' => 'gallery',
+                'parent_id' => $id
+            )
+        );
+    } else {
+    
+        event::triggerEvent(
+            config::getModuleIni('gallery_events'), 
+            array(
+                'action' => 'form',
+                'reference' => 'gallery'
+            )
+        );
+    }
+    
     html::submit('submit', lang::system('system_submit_add'));
     html::formEnd();
     echo html::getStr();
