@@ -507,7 +507,7 @@ class gallery {
             }
         }
 
-        
+        headline_message($gal_info['title']);
         $row = $gal->getDefaultImage(self::$galleryId);
         $options = array ('gallery_id' => self::$galleryId, 'default' => $row);
         $files = $gal->getAllFiles();

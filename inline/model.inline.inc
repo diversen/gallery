@@ -40,6 +40,7 @@ class galleryinline {
         $str.= "<div id=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
         $i = 0;
+        $per_row = config::getModuleIni('gallery_image_row_size');
         foreach ($vars['rows'] as $key => $val) {
             $domain = config::getDomain();
             $base_path = "/files/$domain/gallery";
@@ -56,7 +57,7 @@ class galleryinline {
             
             $str.="</td>\n";
             $i++;
-            $t = $i % 4;
+            $t = $i % $per_row;
             if (!$t){
                 $str.="</tr><tr>\n";
                 $i = 0;
@@ -77,6 +78,7 @@ class galleryinline {
         $str.= "<div id=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
         $i = 0;
+        $per_row = config::getModuleIni('gallery_image_row_size');
         foreach ($vars as $key => $val) {
             $domain = config::getDomain();
             $base_path = "/files/$domain/gallery";
@@ -93,7 +95,7 @@ class galleryinline {
             
             $str.="</td>\n";
             $i++;
-            if ($i == 4) break;
+            if ($i == $per_row) break;
         //    $t = $i % 4;
         //    if (!$t){
         //        $str.="</tr><tr>\n";
@@ -159,13 +161,8 @@ class galleryinline {
     public static function displaySingleRow ($id) {
         $gal = new gallery;
         $rows = $gal->getAllFileInfo($id);
-       // print_r($rows);
-        //$i = 5;
         $str = self::getSingleRow($rows);
         return $str;
-        foreach ($rows as $key => $val) {
-            print_r($val);
-        }
     }
     
     
@@ -176,30 +173,22 @@ class galleryinline {
         $db = new db();
         $num_rows = $db->getNumRows('gallery');
 
-        $per_page = 2;
+        $per_page = 10;
         
         $pager = new pearPager($num_rows, $per_page);
         $rows = $db->selectAll('gallery', null, null, $pager->from, $per_page, 'updated');       
        
+        $rows = html::specialEncode($rows);
+        
         foreach ($rows as $key => $val){
             $val['title'] = $val['title'];
             $link = html::createLink("/gallery/view/$val[id]", $val['title']);
             headline_message($link);
 
-            //$gal = new gallery;
-            //$rows = $gal->getAllFileInfo($val['id']);
             echo self::displaySingleRow($val['id']);
-            //echo $gal->getThumbTableHTML($rows, $options);
+            echo $val['description'] . "<br />\n";
+
             
-            //echo "<div id=\"smallfont\">";
-            if (session::isAdmin()){
-                echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
-                echo MENU_SUB_SEPARATOR;
-                echo html::createLink("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
-                echo MENU_SUB_SEPARATOR;
-                echo html::createLink("/gallery/admin/delete/$val[id]", lang::translate('gallery_delete_gallery')) . " \n";
-            } 
-            //echo "</div>\n"; 
             $event_params = array(
                 'action' => 'view',
                 'reference' => 'gallery',
@@ -209,6 +198,19 @@ class galleryinline {
                 config::getModuleIni('gallery_events'), 
                 $event_params
             );
+            
+            
+            
+            if (session::isAdmin()){
+                echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
+                echo MENU_SUB_SEPARATOR;
+                echo html::createLink("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
+                echo MENU_SUB_SEPARATOR;
+                echo html::createLink("/gallery/admin/delete/$val[id]", lang::translate('gallery_delete_gallery')) . " \n";
+            }
+            
+            echo "<hr />\n";
+
  
             
         }
