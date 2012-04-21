@@ -465,14 +465,16 @@ class gallery {
         
         $gal_info = galleryAdmin::getGallery($gallery_frag);
         if (empty($gal_info)) {
-            http::permMovedHeader('/gallery/index');
+            //http::permMovedHeader('/gallery/index');
         }
         
-        $title = lang::translate('View gallery');
-        $title.= MENU_SUB_SEPARATOR . $gal_info['title'];
+        if (!empty($gal_info['title'])) {
+            $title = lang::translate('View gallery');
+            $title.= MENU_SUB_SEPARATOR . $gal_info['title'];
         
-        template::setTitle($title);
-        template::setMeta(array ('description' => $gal_info['description']));
+            template::setTitle($title);
+            template::setMeta(array ('description' => $gal_info['description']));
+        }
         
         if (isset($_POST['submit'])){
             if (!session::checkAccessControl('gallery_allow_edit')){
@@ -507,7 +509,9 @@ class gallery {
             }
         }
 
-        headline_message($gal_info['title']);
+        if (!empty($gal_info['title'])) {
+            headline_message($gal_info['title']);
+        }
         $row = $gal->getDefaultImage(self::$galleryId);
         $options = array ('gallery_id' => self::$galleryId, 'default' => $row);
         $files = $gal->getAllFiles();
