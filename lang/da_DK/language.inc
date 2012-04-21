@@ -64,3 +64,18 @@ $_COS_LANG_MODULE['gallery_delete_legend'] = 'Slet galleri';
 $_COS_LANG_MODULE['gallery_gallery_has_been_deleted'] = 'Galleri er blevet slettet';
 
 $_COS_LANG_MODULE['gallery_delete_gallery'] = 'Slet galleri';
+
+$_COS_LANG_MODULE['gallery_upload_zip_legend'] = 'Upload zip fil';
+$_COS_LANG_MODULE['gallery_label_zip_add_chars'] = 'Omdøb filer efter følgende titel';
+$_COS_LANG_MODULE['gallery_error_zip_mv'] = 'Kunne ikke flytte filer';
+$_COS_LANG_MODULE['gallery_error_zip_chmod'] = 'Kunne ikke ændre rettigheder';
+$_COS_LANG_MODULE['galler_error_unzip'] = 'Kunne ikke unzippe';
+$_COS_LANG_MODULE['gallery_zip_could_not_rename_file'] = 'Kunne ikke ændre fil navne';
+$_COS_LANG_MODULE['gallery_zip_error_scale'] = 'Skalerings fejl';
+$_COS_LANG_MODULE['gallery_zip_mv_error'] = 'Kunne ikke flytte filer';
+$_COS_LANG_MODULE['gallery_zip_commit_error'] = 'Kunne ikke commite til database';
+$_COS_LANG_MODULE['gallery_zip_archive_uploaded'] = 'Kunne ikke uploade zip arkiv';
+$_COS_LANG_MODULE['gallery_set_image_details'] = 'Ændr billedets detaljer';
+$_COS_LANG_MODULE['gallery_file_name'] = 'Ændr fil navn';
+$_COS_LANG_MODULE['gallery_view_full_size'] = 'Vis orignal';
+$_COS_LANG_MODULE['gallery_image_details_updated'] = 'Detaljer opdateret!';
