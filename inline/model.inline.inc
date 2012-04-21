@@ -33,7 +33,7 @@ class galleryinline {
         }       
         return $str;
     }
-    public function getRows($vars){
+    public function getRows($vars, $options = null){
         
         $vars = html::specialEncode($vars);
         $str = ''; 
@@ -62,6 +62,46 @@ class galleryinline {
                 $i = 0;
             }
         }
+        
+
+
+        $str.="</tr></table>\n";
+        $str.="</div>\n";
+        return $str;        
+    }
+    
+    public static function getSingleRow($vars, $options = null){
+        
+        $vars = html::specialEncode($vars);
+        $str = ''; 
+        $str.= "<div id=\"gallery_thumbs\">\n";
+        $str.= "<table><tr>\n";
+        $i = 0;
+        foreach ($vars as $key => $val) {
+            $domain = config::getDomain();
+            $base_path = "/files/$domain/gallery";
+
+            $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";
+            $image_url = "/gallery/inline/view/$val[id]";
+            
+            $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
+            
+            $img_tag = html::createImage($thumb_url, array ('alt' => $val['description']));
+            $str.="<td><a href=\"$image_url\">$img_tag</a>";
+            
+            //$str.=self::getAdminOptions($val, $vars);
+            
+            $str.="</td>\n";
+            $i++;
+            if ($i == 4) break;
+        //    $t = $i % 4;
+        //    if (!$t){
+        //        $str.="</tr><tr>\n";
+        //        $i = 0;
+          //  }
+        }
+        
+
 
         $str.="</tr></table>\n";
         $str.="</div>\n";
@@ -116,6 +156,17 @@ class galleryinline {
         return $str;
     }
     
+    public static function displaySingleRow ($id) {
+        $gal = new gallery;
+        $rows = $gal->getAllFileInfo($id);
+       // print_r($rows);
+        //$i = 5;
+        $str = self::getSingleRow($rows);
+        return $str;
+        foreach ($rows as $key => $val) {
+            print_r($val);
+        }
+    }
     
     
     public static function displayAll () {
@@ -135,7 +186,12 @@ class galleryinline {
             $link = html::createLink("/gallery/view/$val[id]", $val['title']);
             headline_message($link);
 
-            echo "<div id=\"smallfont\">";
+            //$gal = new gallery;
+            //$rows = $gal->getAllFileInfo($val['id']);
+            echo self::displaySingleRow($val['id']);
+            //echo $gal->getThumbTableHTML($rows, $options);
+            
+            //echo "<div id=\"smallfont\">";
             if (session::isAdmin()){
                 echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
                 echo MENU_SUB_SEPARATOR;
@@ -143,7 +199,7 @@ class galleryinline {
                 echo MENU_SUB_SEPARATOR;
                 echo html::createLink("/gallery/admin/delete/$val[id]", lang::translate('gallery_delete_gallery')) . " \n";
             } 
-            echo "</div>\n"; 
+            //echo "</div>\n"; 
             $event_params = array(
                 'action' => 'view',
                 'reference' => 'gallery',
