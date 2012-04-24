@@ -11,6 +11,7 @@ if (!$id) {
     return;
 }
 $row = $gallery->getSingleImage($id);
+//print_r($row); die;
 
 if (empty($row)) {
     http::permMovedHeader('/gallery/index');
@@ -32,6 +33,10 @@ if (!empty($row['description'])) {
     template::setMeta(array('description' => htmlspecialchars($row['description'])));
 }
 
+$row = galleryAdmin::getGallery($row['gallery_id']);
+//print_r($row);
+galleryAdmin::displayTitle($row);
+
 echo $gallery->getImageSrc($id, 'full');
 $row = $gallery->getImageUrl($id);
 echo $link = html::createLink($row['src'], lang::translate('gallery_view_full_size'));
@@ -46,7 +51,7 @@ if (session::isAdmin()) {
             $message = lang::translate('gallery_image_details_updated');
             http::locationHeader($location, $message);
         } else {
-            
+            view_form_errors(gallery::$errors);
         }
     }
     

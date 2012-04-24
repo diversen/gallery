@@ -74,6 +74,8 @@ class gallery {
         );
         self::$options = $options;      
     }
+    
+    
 
 
     /**
@@ -223,6 +225,7 @@ class gallery {
     public static function getLinkFromId ($id){
         $url = self::getReturnUrlFromId($id);
         $row = self::getSingleImage($id);
+        if (empty($row)) return lang::system('comment_reference_does_not_exists');
         $link = html::createLink($url, rawurldecode($row['file_name']));
         return $link;
     }
@@ -509,6 +512,7 @@ class gallery {
             }
         }
 
+        
         if (!empty($gal_info['title'])) {
             headline_message($gal_info['title']);
         }
@@ -550,25 +554,30 @@ class gallery {
         $values = html::specialDecode($values);
         $row = $this->getSingleImage($id);
         
-        if ( $row['file_name'] != $values['file_name']) {
-            //$values['file_name'] = strings::sanitizeUrlRigid($values['file_name'], true, true);
-            $values['file_name'] = strings::utf8SlugString($values['file_name']);
+        $db = new db();
+        $db->begin();
+        if ( file::getFilename($row['file_name']) != $values['file_name']) {
+            // rename file names
+            $values['file_name'] = strings::sanitizeUrlRigid($values['file_name']);
+            $values['file_name'] = str_replace(' ', '-', $values['file_name']);
             if (empty($values['file_name'])){
                 $values['file_name'] = $row['file_name'];
             } else {
                 $ext = file::getExtension($row['file_name']);
                 $values['file_name'].= "." . $ext;
+                $res = $this->renameImages($row, $values);
+                if (!$res) {
+                    self::$errors[] = lang::translate('gallery_could_not_rename_file_exists');
+                    $db->rollback();
+                    return false;
+                } 
             }
+        } else {
+            $values['file_name'] = $row['file_name'];
         }
         
-        if ($row['file_name'] != $values['file_name']) {
-            $res = $this->renameImages($row, $values);
-            if (!$res) {
-                return false;
-            } 
-        }
-        $db = new db ();
-        return $db->update('gallery_file', $values, $id);
+        $db->update('gallery_file', $values, $id);
+        return $db->commit();
     }
     
     public static function renameImages ($row, $values) {
@@ -577,8 +586,8 @@ class gallery {
         $sizes = array ('', 'thumb', 'med', 'full', 'small') ;
         foreach ($sizes as $size) {
             if (empty($size)) {
-                $oldname = $path . "/" . rawurldecode($row[file_name]);
-                $newname = $path . "/" . rawurldecode($values[file_name]);
+                $oldname = $path . "/" . rawurldecode($row['file_name']);
+                $newname = $path . "/" . rawurldecode($values['file_name']);
                 if (file_exists($newname)) return false;
                 cos_error_log($oldname);
                 cos_error_log($newname);

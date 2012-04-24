@@ -135,8 +135,8 @@ class galleryinline {
             $str.= '</form>';              
             $str.= "</td></tr>";
             $str.= "</table>\n";
-            }    
-            return $str;
+        }    
+        return $str;
     }
     
     public static function getDefaultImage ($row) {
@@ -181,10 +181,8 @@ class galleryinline {
         $rows = html::specialEncode($rows);
         
         foreach ($rows as $key => $val){
-            $val['title'] = $val['title'];
-            $link = html::createLink("/gallery/view/$val[id]", $val['title']);
-            headline_message($link);
 
+            galleryAdmin::displayTitle($val);
             echo self::displaySingleRow($val['id']);
             echo $val['description'] . "<br />\n";
 
@@ -197,17 +195,9 @@ class galleryinline {
             event::triggerEvent(
                 config::getModuleIni('gallery_events'), 
                 $event_params
-            );
+            );    
             
-            
-            
-            if (session::isAdmin()){
-                echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
-                echo MENU_SUB_SEPARATOR;
-                echo html::createLink("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
-                echo MENU_SUB_SEPARATOR;
-                echo html::createLink("/gallery/admin/delete/$val[id]", lang::translate('gallery_delete_gallery')) . " \n";
-            }
+            echo galleryAdmin::adminOptions($val['id']);
             
             echo "<hr />\n";
 

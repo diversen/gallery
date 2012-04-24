@@ -49,6 +49,18 @@ class galleryAdmin extends gallery {
     public static function sanitize(){        
         $_POST = html::specialEncode($_POST);
     }
+    
+    public static function adminOptions ($id) {
+        $str = '';
+        if (session::isAdmin()){
+            $str = html::createLink ("/gallery/view/$id", lang::translate('gallery_edit_files')) . " \n";
+            $str.= MENU_SUB_SEPARATOR;
+            $str.= html::createLink("/gallery/admin/edit/$id", lang::translate('gallery_edit_name')) . " \n";
+            $str.= MENU_SUB_SEPARATOR;
+            $str.= html::createLink("/gallery/admin/delete/$id", lang::translate('gallery_delete_gallery')) . " \n";
+        }
+        return $str;
+    }
 
     /**
      * 
@@ -79,9 +91,16 @@ class galleryAdmin extends gallery {
     public static function getGallery($id = null){
         if (!$id) $id = self::$galleryId;
         $db = new db();
-        $row = $db->selectOne('gallery', 'id', self::$galleryId);
+        $row = $db->selectOne('gallery', 'id', $id);
         $row = html::specialEncode($row);
         return $row;
+    }
+    
+    public static function displayTitle ($val) {
+        //$val = self::getGallery($id);
+        //$val['title'] = $val['title'];
+        $link = html::createLink("/gallery/view/$val[id]", $val['title']);
+        headline_message($link);
     }
     
     
@@ -212,8 +231,6 @@ function view_gallery_form($method, $id = null, $values = array()){
     html::text('title');
     html::label('description', lang::system('system_form_label_abstract'));
     html::textareaSmall('description');
-    html::label('file_path', lang::translate('gallery_form_label_path'));
-    html::text('file_path');
     
     // trigger form events
     if (isset($id)) {

@@ -77,5 +77,5 @@ $_COS_LANG_MODULE['gallery_zip_commit_error'] = 'Kunne ikke commite til database
 $_COS_LANG_MODULE['gallery_zip_archive_uploaded'] = 'Kunne ikke uploade zip arkiv';
 $_COS_LANG_MODULE['gallery_set_image_details'] = 'Ændr billedets detaljer';
 $_COS_LANG_MODULE['gallery_file_name'] = 'Ændr fil navn';
-$_COS_LANG_MODULE['gallery_view_full_size'] = 'Vis orignal';
+$_COS_LANG_MODULE['gallery_view_full_size'] = 'Fuld størrelse';
 $_COS_LANG_MODULE['gallery_image_details_updated'] = 'Detaljer opdateret!';
