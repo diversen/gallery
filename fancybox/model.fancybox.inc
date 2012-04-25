@@ -36,12 +36,14 @@ class galleryFancybox {
         }       
         return $str;
     }
-    public function getRows($vars){
+    public function getRows($vars, $options = null){
 
         $str = ''; 
         $str.= "<div id=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
         $i = 0;
+        
+        $per_row = config::getModuleIni('gallery_image_row_size');
         foreach ($vars['rows'] as $key => $val) {
 
             $domain = config::getDomain();
@@ -50,54 +52,24 @@ class galleryFancybox {
             $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";
             $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
 
-            $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";
-            
-            $str.=self::getAdminOptions($val, $vars);
+            $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";    
+            $str.=galleryAdmin::getAdminOptions($val, $vars);
             
             $str.="</td>\n";
             $i++;
-            $t = $i % 4;
+            $t = $i % $per_row;
             if (!$t){
                 $str.="</tr><tr>\n";
                 $i = 0;
             }
         }
-
+        
         $str.="</tr></table>\n";
-
-
         $str.="</div>\n";
-        return $str;        
+        return $str;      
     }
     
-    public static function getAdminOptions ($val, $vars) {
-        $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-            $str.= "<table>"; 
-            $str.= "<tr><td>\n"; 
-            $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= '" method="post" enctype="multipart/form-data">';
-            $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
-            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::system('system_submit_delete') . '" />';
-            $str.= '</form>';              
-            $str.= "</td></tr>";
-            $str.= "<tr><td>\n"; 
-            $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= '" method="post" enctype="multipart/form-data">'; 
-            $str.= "<input type=\"hidden\" name=\"method\" value=\"default_image\" />\n";
-            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('gallery_default_image') . '" />';
-            $str.= '</form>';              
-            $str.= "</td></tr>";
-            $str.= "</table>\n";
-            }    
-            return $str;
-    }
+
     
     public static function getDefaultImage ($row) {
         $str = "<div id=\"imageview\">\n"; 
@@ -107,34 +79,29 @@ class galleryFancybox {
     }
     
     public static function getUploadForm ($vars) {
-        $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-            $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
-            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::system('system_submit_upload') . '" />';
-            $str.= '</form>';
-        }
-        return $str;
+        return galleryAdmin::uploadForm($vars);
     }
     
     public static function displayAll () {
         $gallery = new galleryAdmin();
         $galleries = $gallery->getAllGallery();
         foreach ($galleries as $key => $val){
-            $val['title'] = $val['title'];
-            $link = html::createLink("/gallery/view/$val[id]", $val['title']);
-            headline_message($link);
+            galleryAdmin::displayTitle($val);
+            //echo self::displaySingleRow($val['id']);
+            echo $val['description'] . "<br />\n";
 
-            echo "<div id=\"smallfont\">";
-            if (session::isAdmin()){
-                echo html::createLink ("/gallery/view/$val[id]", lang::translate('gallery_edit_files')) . " \n";
-                echo MENU_SUB_SEPARATOR;
-                echo html::createLink("/gallery/admin/edit/$val[id]", lang::translate('gallery_edit_name')) . " \n";
-                echo MENU_SUB_SEPARATOR;
-                echo html::createLink("/gallery/admin/delete/$val[id]", lang::translate('gallery_delete_gallery')) . " \n";
-            } 
-            echo "</div>\n";           
+            $event_params = array(
+                'action' => 'view',
+                'reference' => 'gallery',
+                'parent_id' => $val['id']);
+            
+            event::triggerEvent(
+                config::getModuleIni('gallery_events'), 
+                $event_params
+            );    
+            
+            echo galleryAdmin::adminOptions($val['id']);
+            echo "<hr />\n";             
         }
     }
 }

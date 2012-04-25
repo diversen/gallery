@@ -61,6 +61,51 @@ class galleryAdmin extends gallery {
         }
         return $str;
     }
+    
+    public static function getRows ($vars, $options) {
+        
+    }
+    
+    public static function uploadForm ($vars){
+        $str = '';
+        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
+            $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
+            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
+            $str.= '<input type="submit" name="submit" value="';
+            $str.= lang::system('system_submit_upload') . '" />';
+            $str.= '</form>';
+        }
+        return $str;
+    } 
+    
+    public static function getAdminOptions ($val, $vars) {
+        $str = '';
+        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
+            $str.= "<table>"; 
+            $str.= "<tr><td>\n"; 
+            $str.= '<form name="gallery_delete_image" action="" ';
+            $str.= " method=\"post\" enctype=\"multipart/form-data\">";
+            $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
+            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
+            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
+            $str.= '<input type="submit" name="submit" value="';
+            $str.= lang::system('system_submit_delete') . '" />';
+            $str.= '</form>';              
+            $str.= "</td></tr>";
+            $str.= "<tr><td>\n"; 
+            $str.= '<form name="gallery_delete_image" action="" ';
+            $str.= ' method="post" enctype="multipart/form-data">'; 
+            $str.= "<input type=\"hidden\" name=\"method\" value=\"default_image\" />\n";
+            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
+            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
+            $str.= '<input type="submit" name="submit" value="';
+            $str.= lang::translate('gallery_default_image') . '" />';
+            $str.= '</form>';              
+            $str.= "</td></tr>";
+            $str.= "</table>\n";
+        }    
+        return $str;
+    }
 
     /**
      * 
@@ -97,8 +142,6 @@ class galleryAdmin extends gallery {
     }
     
     public static function displayTitle ($val) {
-        //$val = self::getGallery($id);
-        //$val['title'] = $val['title'];
         $link = html::createLink("/gallery/view/$val[id]", $val['title']);
         headline_message($link);
     }

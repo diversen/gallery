@@ -288,9 +288,32 @@ class gallery {
      * 
      * @return  string  html displaying files connect to article.
      */
-    public function getThumbTableHTML($rows, $options = array()){
+    public function viewGallery ($gallery_frag = 2, $file_frag = 3 ) {
+        
         $str = '';
         $vars = array();
+        
+        $gal = new gallery($gallery_frag, $file_frag);  
+        
+        $id = self::$galleryId;
+        $gal_info = galleryAdmin::getGallery($id);
+        
+        $gal->postActions($gallery_frag, $file_frag);
+               
+        if (!empty($gal_info['title'])) {
+            $title = lang::translate('View gallery');
+            $title.= MENU_SUB_SEPARATOR . $gal_info['title'];        
+            template::setTitle($title);
+            template::setMeta(array ('description' => $gal_info['description']));
+            headline_message($gal_info['title']);
+            echo "<br />\n";
+        }
+        
+        $row = $gal->getDefaultImage($id);
+        $options = array ('gallery_id' => $id, 'default' => $row);
+        $files = $gal->getAllFiles();
+
+        $rows = $gal->getAllFileInfo($id);
         $vars['rows'] = $rows; 
         $vars['options'] = $options;
         
@@ -298,10 +321,9 @@ class gallery {
         if ($display_module) {            
             moduleLoader::includeModule($display_module);
             $module = moduleLoader::modulePathToClassName($display_module);           
-            return $module::displayGallery($vars);
+            echo $module::displayGallery($vars);
         }
         return;
-
     }
     // }}}
     public static function getBGImage () {
@@ -462,22 +484,10 @@ class gallery {
         $link = "/files/$domain/gallery/$gallery_id/$type-$row[file_name]";
         return $link;
     }
-
-    public static function viewGallery ($gallery_frag = 2, $file_frag = 3 ) {
+    
+    public function postActions ($gallery_frag = 2, $file_frag = 3 ) {
         $gal = new gallery($gallery_frag, $file_frag);
-        
         $gal_info = galleryAdmin::getGallery($gallery_frag);
-        if (empty($gal_info)) {
-            //http::permMovedHeader('/gallery/index');
-        }
-        
-        if (!empty($gal_info['title'])) {
-            $title = lang::translate('View gallery');
-            $title.= MENU_SUB_SEPARATOR . $gal_info['title'];
-        
-            template::setTitle($title);
-            template::setMeta(array ('description' => $gal_info['description']));
-        }
         
         if (isset($_POST['submit'])){
             if (!session::checkAccessControl('gallery_allow_edit')){
@@ -511,18 +521,10 @@ class gallery {
                 view_form_errors(self::$errors);
             }
         }
-
-        
-        if (!empty($gal_info['title'])) {
-            headline_message($gal_info['title']);
-        }
-        $row = $gal->getDefaultImage(self::$galleryId);
-        $options = array ('gallery_id' => self::$galleryId, 'default' => $row);
-        $files = $gal->getAllFiles();
-
-        $rows = $gal->getAllFileInfo(self::$galleryId);
-        echo $gal->getThumbTableHTML($rows, $options);
     }
+    
+
+    
     
     public static function getDefaultImage ($gallery_id) {
         $db = new db();

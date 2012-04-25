@@ -34,8 +34,9 @@ if (!empty($row['description'])) {
 }
 
 $row = galleryAdmin::getGallery($row['gallery_id']);
-//print_r($row);
+
 galleryAdmin::displayTitle($row);
+echo "<br />\n";
 
 echo $gallery->getImageSrc($id, 'full');
 $row = $gallery->getImageUrl($id);
@@ -43,7 +44,6 @@ echo $link = html::createLink($row['src'], lang::translate('gallery_view_full_si
 
 
 if (session::isAdmin()) {
-    // edit
     if (isset($_POST['gallery_details'])) {
         $res = $gallery->updateImageDetails($id);
         if ($res) {

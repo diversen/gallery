@@ -37,7 +37,6 @@ class gallerySimplethumbs {
             // more than one image
 
             $str.= self::getDefaultImage($vars['options']['default']);
-
             $str.= self::getRows($vars);
             $str.= self::getUploadForm($vars);
             return $str;
@@ -46,15 +45,7 @@ class gallerySimplethumbs {
     }
     
     public static function getUploadForm ($vars) {
-        $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-            $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
-            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::system('system_submit_upload') . '" />';
-            $str.= '</form>';
-        }
-        return $str;
+        return galleryAdmin::uploadForm($vars);
     }
     
     public static function getRows ($vars) {
@@ -62,6 +53,8 @@ class gallerySimplethumbs {
         $str = '';
         $str.="<div id=\"thumbnails\">";    
         $str.="<table><tr>\n";
+        
+        $per_row = config::getModuleIni('gallery_image_row_size');
         foreach ($vars['rows'] as $key => $val) {           
             $src = "/files/default/gallery/$val[gallery_id]/full-$val[file_name]";
             $thumb_src = "/files/default/gallery/$val[gallery_id]/thumb-$val[file_name]";
@@ -69,36 +62,11 @@ class gallerySimplethumbs {
             $link = html::createLink($src, $thumb_img);
 
             $str.="<td>$link";
-            if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-                $str.= "<table>"; 
-                $str.= "<tr><td>\n"; 
-                $str.= '<form name="gallery_delete_image" action="" ';
-                $str.= '" method="post" enctype="multipart/form-data">';
-                $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
-                $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-                $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-                $str.= '<input type="submit" name="submit" value="';
-                $str.= lang::system('system_submit_delete') . '" />';
-                $str.= '</form>';              
-                $str.= "</td></tr>";
-                $str.= "<tr><td>\n"; 
-                $str.= '<form name="gallery_delete_image" action="" ';
-                $str.= '" method="post" enctype="multipart/form-data">'; 
-                $str.= "<input type=\"hidden\" name=\"method\" value=\"default_image\" />\n";
-                $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-                $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-                $str.= '<input type="submit" name="submit" value="';
-                $str.= lang::translate('gallery_default_image') . '" />';
-                $str.= '</form>';              
-                $str.= "</td></tr>";
-                $str.= "</table>\n";
-            }
-            
-            
+            $str.=galleryAdmin::getAdminOptions($val, $vars);
             
             $str.="</td>\n";
             $i++;
-            $t = $i % 4;
+            $t = $i % $per_row;
             if (!$t){
                 $str.="</tr><tr>\n";
                 $i = 0;
@@ -114,6 +82,29 @@ class gallerySimplethumbs {
         $str.= "<img src=\"/files/default/gallery/$row[gallery_id]/full-$row[file_name]\" alt=\"example\" />"; 
         $str.= "</div>";
         return $str;
+    }
+    
+    public static function displayAll () {
+        $gallery = new galleryAdmin();
+        $galleries = $gallery->getAllGallery();
+        foreach ($galleries as $key => $val){
+            galleryAdmin::displayTitle($val);
+            //echo self::displaySingleRow($val['id']);
+            echo $val['description'] . "<br />\n";
+
+            $event_params = array(
+                'action' => 'view',
+                'reference' => 'gallery',
+                'parent_id' => $val['id']);
+            
+            event::triggerEvent(
+                config::getModuleIni('gallery_events'), 
+                $event_params
+            );    
+            
+            echo galleryAdmin::adminOptions($val['id']);
+            echo "<hr />\n";             
+        }
     }
     
 }

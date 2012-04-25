@@ -33,8 +33,8 @@ class galleryinline {
         }       
         return $str;
     }
+    
     public function getRows($vars, $options = null){
-        
         $vars = html::specialEncode($vars);
         $str = ''; 
         $str.= "<div id=\"gallery_thumbs\">\n";
@@ -53,7 +53,8 @@ class galleryinline {
             $img_tag = html::createImage($thumb_url, array ('alt' => $val['description']));
             $str.="<td><a href=\"$image_url\">$img_tag</a>";
             
-            $str.=self::getAdminOptions($val, $vars);
+            //$str.=self::getAdminOptions($val, $vars);
+            $str.=galleryAdmin::getAdminOptions($val, $vars);
             
             $str.="</td>\n";
             $i++;
@@ -64,11 +65,10 @@ class galleryinline {
             }
         }
         
-
-
         $str.="</tr></table>\n";
         $str.="</div>\n";
-        return $str;        
+        return $str;  
+         
     }
     
     public static function getSingleRow($vars, $options = null){
@@ -79,7 +79,9 @@ class galleryinline {
         $str.= "<table><tr>\n";
         $i = 0;
         $per_row = config::getModuleIni('gallery_image_row_size');
+        
         foreach ($vars as $key => $val) {
+            
             $domain = config::getDomain();
             $base_path = "/files/$domain/gallery";
 
@@ -91,52 +93,21 @@ class galleryinline {
             $img_tag = html::createImage($thumb_url, array ('alt' => $val['description']));
             $str.="<td><a href=\"$image_url\">$img_tag</a>";
             
-            //$str.=self::getAdminOptions($val, $vars);
-            
             $str.="</td>\n";
             $i++;
-            if ($i == $per_row) break;
-        //    $t = $i % 4;
-        //    if (!$t){
-        //        $str.="</tr><tr>\n";
-        //        $i = 0;
-          //  }
+            if ($i == $per_row) { 
+                break;
+            }
+
         }
         
-
-
         $str.="</tr></table>\n";
         $str.="</div>\n";
         return $str;        
     }
     
     public static function getAdminOptions ($val, $vars) {
-        $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-            $str.= "<table>"; 
-            $str.= "<tr><td>\n"; 
-            $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= " method=\"post\" enctype=\"multipart/form-data\">";
-            $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
-            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::system('system_submit_delete') . '" />';
-            $str.= '</form>';              
-            $str.= "</td></tr>";
-            $str.= "<tr><td>\n"; 
-            $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= ' method="post" enctype="multipart/form-data">'; 
-            $str.= "<input type=\"hidden\" name=\"method\" value=\"default_image\" />\n";
-            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('gallery_default_image') . '" />';
-            $str.= '</form>';              
-            $str.= "</td></tr>";
-            $str.= "</table>\n";
-        }    
-        return $str;
+        return galleryAdmin::getAdminOptions ($val, $vars);
     }
     
     public static function getDefaultImage ($row) {
@@ -147,15 +118,8 @@ class galleryinline {
     }
     
     public static function getUploadForm ($vars) {
-        $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])){
-            $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
-            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::system('system_submit_upload') . '" />';
-            $str.= '</form>';
-        }
-        return $str;
+        return galleryAdmin::uploadForm ($vars);
+        
     }
     
     public static function displaySingleRow ($id) {
@@ -174,10 +138,8 @@ class galleryinline {
         $num_rows = $db->getNumRows('gallery');
 
         $per_page = 10;
-        
         $pager = new pearPager($num_rows, $per_page);
-        $rows = $db->selectAll('gallery', null, null, $pager->from, $per_page, 'updated');       
-       
+        $rows = $db->selectAll('gallery', null, null, $pager->from, $per_page, 'updated');              
         $rows = html::specialEncode($rows);
         
         foreach ($rows as $key => $val){
@@ -186,7 +148,6 @@ class galleryinline {
             echo self::displaySingleRow($val['id']);
             echo $val['description'] . "<br />\n";
 
-            
             $event_params = array(
                 'action' => 'view',
                 'reference' => 'gallery',
@@ -198,11 +159,7 @@ class galleryinline {
             );    
             
             echo galleryAdmin::adminOptions($val['id']);
-            
-            echo "<hr />\n";
-
- 
-            
+            echo "<hr />\n";           
         }
         echo "<br />\n";
         $pager->pearPage();
