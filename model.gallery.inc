@@ -291,7 +291,8 @@ class gallery {
      */
     public function viewGallery ($gallery_frag = 2, $file_frag = 3, $options = array () ) {
         
-        if (!isset($options['no_Gallery_redirect'])) {
+        // set a default redirct if there is no gallery for a URL
+        if (!isset($options['no_gallery_redirect'])) {
             $options['no_gallery_redirect'] = '/gallery/index';
         }
         
@@ -299,17 +300,16 @@ class gallery {
         $vars = array();
         
         $gal = new gallery($gallery_frag, $file_frag);  
-        
         $id = self::$galleryId;
         $gal_info = galleryAdmin::getGallery($id);
         
         if (empty($gal_info)) {
-            http::permMovedHeader($options['no_gallery_redirect']);
+            if (!isset($options['no_redirect'])) {
+                http::permMovedHeader($options['no_gallery_redirect']);
+            }
         }
-        
-        
+                
         $gal->postActions($gallery_frag, $file_frag);
-               
         if (!empty($gal_info['title'])) {
             $title = lang::translate('View gallery');
             $title.= MENU_SUB_SEPARATOR . $gal_info['title'];        
