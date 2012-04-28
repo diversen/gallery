@@ -74,8 +74,11 @@ $_COS_LANG_MODULE['gallery_zip_could_not_rename_file'] = 'Kunne ikke ændre fil 
 $_COS_LANG_MODULE['gallery_zip_error_scale'] = 'Skalerings fejl';
 $_COS_LANG_MODULE['gallery_zip_mv_error'] = 'Kunne ikke flytte filer';
 $_COS_LANG_MODULE['gallery_zip_commit_error'] = 'Kunne ikke commite til database';
-$_COS_LANG_MODULE['gallery_zip_archive_uploaded'] = 'Kunne ikke uploade zip arkiv';
+$_COS_LANG_MODULE['gallery_zip_archive_uploaded'] = 'Zip arkiv uploadet';
 $_COS_LANG_MODULE['gallery_set_image_details'] = 'Ændr billedets detaljer';
 $_COS_LANG_MODULE['gallery_file_name'] = 'Ændr fil navn';
-$_COS_LANG_MODULE['gallery_view_full_size'] = 'Fuld størrelse';
+$_COS_LANG_MODULE['gallery_view_full_size'] = 'Original billide';
 $_COS_LANG_MODULE['gallery_image_details_updated'] = 'Detaljer opdateret!';
+
+$_COS_LANG_MODULE['gallery_tags_list_entries_title'] = 'Galleri tag';
+$_COS_LANG_MODULE['gallery_could_not_rename_file_exists'] = 'Kunne ikke omdøbe fil. Fil med navn eksisterer';

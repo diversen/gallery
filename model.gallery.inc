@@ -76,7 +76,7 @@ class gallery {
     }
     
     
-
+    
 
     /**
      * method for delting a file
@@ -90,21 +90,25 @@ class gallery {
         db::$dbh->beginTransaction();
         $db = new db();
         
+        $domain = config::getDomain();
         $row = $db->selectOne('gallery_file', 'id', $id);
-        $filename = self::$uploadDir . '/' . $row['file_name'];
-        $res = $upload->unlinkFile($filename);
+        $path = $this->getGalleryPath($row);
+        $filename = $path . "/" . $row['file_name'];
+        
+        $res = unlink($filename);
+        if (!$res) die ('could not unlink');
 
-        $filename = self::$uploadDir . '/thumb-' . $row['file_name'];
-        $res = $upload->unlinkFile($filename);
+        $filename = $path . '/thumb-' . $row['file_name'];
+        $res = unlink($filename);
         
-        $filename = self::$uploadDir . '/small-' . $row['file_name'];
-        $res = $upload->unlinkFile($filename);
+        $filename = $path . '/small-' . $row['file_name'];
+        $res = unlink($filename);
         
-        $filename = self::$uploadDir . '/med-' . $row['file_name'];
-        $res = $upload->unlinkFile($filename);
+        $filename = $path . '/med-' . $row['file_name'];
+        $res = unlink($filename);
         
-        $filename = self::$uploadDir . '/full-' . $row['file_name'];
-        $res = $upload->unlinkFile($filename);
+        $filename = $path . '/full-' . $row['file_name'];
+        $res = unlink($filename);
         
         $res = $db->delete('gallery_file', 'id', $id);
         return db::$dbh->commit();
@@ -212,9 +216,7 @@ class gallery {
     }
     
     public static function getReturnUrlFromId ($id){
-        //$row = self::getEntry($id);
         $link_url = "/gallery/inline/view/$id";
-        //$link_url.= strings::rawurlencodeStripSpaces($row['title']);
         return $link_url;
     }
     
@@ -231,28 +233,27 @@ class gallery {
     }
     
     public function getSingleImage($id){
-
         $db = new db();
         $row = $db->selectOne('gallery_file', 'id', $id);
         return $row;
     }
     
-    public function getImageUrl ($id, $size = '') {
+    public function getRowAndSrc ($id, $size = '') {
         static $row;
-        //if ($row) return $row;
         if (!empty($size)) {
             $size = "$size-";
         }
         
         $row = $this->getSingleImage($id);
+        if (!$row) return false;
+        
         $domain = config::getDomain();
         $row['src'] = "/files/$domain/gallery/$row[gallery_id]/" . $size . "$row[file_name]";
-        //print_r($row); die;
         return $row;
     }
     
     public function getImageSrc ($id, $size = '') {
-        $row = $this->getImageUrl($id, $size);
+        $row = $this->getRowAndSrc($id, $size);
         
         $str = "<div id=\"imageview\">\n"; 
         $str.= "<img src=\"$row[src]\" alt=\"$row[description]\" />"; 
@@ -288,7 +289,11 @@ class gallery {
      * 
      * @return  string  html displaying files connect to article.
      */
-    public function viewGallery ($gallery_frag = 2, $file_frag = 3 ) {
+    public function viewGallery ($gallery_frag = 2, $file_frag = 3, $options = array () ) {
+        
+        if (!isset($options['no_Gallery_redirect'])) {
+            $options['no_gallery_redirect'] = '/gallery/index';
+        }
         
         $str = '';
         $vars = array();
@@ -297,6 +302,11 @@ class gallery {
         
         $id = self::$galleryId;
         $gal_info = galleryAdmin::getGallery($id);
+        
+        if (empty($gal_info)) {
+            http::permMovedHeader($options['no_gallery_redirect']);
+        }
+        
         
         $gal->postActions($gallery_frag, $file_frag);
                
@@ -333,9 +343,7 @@ class gallery {
         echo $image_id = $uri->fragment(3);
         echo $gallery_id = $uri->fragment(2);
         $db = new db();
-        //$gallery = new gallery();
-        
-        //$num_rows = self::ge
+
         if (!$image_id){
             $query = "SELECT * FROM `gallery_file` ORDER BY RAND() LIMIT 1";
             $show = $db->selectQuery($query);
@@ -362,8 +370,7 @@ class gallery {
         $str.="</div>\n";
         return $str;
     }
-    
-    // {{{ getAdminCells() 
+     
     /**
      * method for returning string containing admin forms for deleting images 
      * and uploading images.
@@ -395,8 +402,7 @@ class gallery {
         }
         return $str;
     }
-    // }}}
-    // {{{ getRandomImageURL()
+
     /**
      * method for getting a random image url
      *
@@ -448,8 +454,7 @@ class gallery {
         return $str;
     }
 
-    // }}}
-    // {{{ getNumImagesGallery()
+
     /**
      * method for getting number of images in a gallery
      * @return   int    number of images in a gallery
@@ -460,8 +465,6 @@ class gallery {
         $num_rows = $db->getNumRows('gallery_file', $where);
         return $num_rows;
     }
-    // }}}
-    // {{{ method updateFile($values, $galleryId) updating q file table in db with new file info.
 
     /**
      * method for updating a file in db table
@@ -486,8 +489,8 @@ class gallery {
     }
     
     public function postActions ($gallery_frag = 2, $file_frag = 3 ) {
-        $gal = new gallery($gallery_frag, $file_frag);
-        $gal_info = galleryAdmin::getGallery($gallery_frag);
+        //$gal = new gallery($gallery_frag, $file_frag);
+       // $gal_info = galleryAdmin::getGallery($gallery_frag);
         
         if (isset($_POST['submit'])){
             if (!session::checkAccessControl('gallery_allow_edit')){
@@ -495,21 +498,21 @@ class gallery {
             }
             
             if (isset($_POST['file_id']) && $_POST['method'] == 'delete') {
-                $gal->deleteFile($_POST['file_id']);
+                $this->deleteFile($_POST['file_id']);
                 session::setActionMessage(lang::translate('gallery_file_deleted'));
                 header("Location: $_SERVER[REQUEST_URI]");
                 exit;
             }
             
             if (isset($_POST['file_id']) && $_POST['method'] == 'default_image') {
-                $gal->setDefaultImage($_POST['file_id']);
+                $this->setDefaultImage($_POST['file_id']);
                 session::setActionMessage(lang::translate('gallery_file_is_default'));
                 header("Location: $_SERVER[REQUEST_URI]");
                 exit;
             }
             
             if (!isset(self::$errors)){
-                $res = $gal->insertFile('filename');
+                $res = $this->insertFile('filename');
                 if ($res){
                     session::setActionMessage(lang::translate('gallery_file_added'));
                     header("Location: $_SERVER[REQUEST_URI]");
@@ -647,31 +650,14 @@ class gallery {
 
 function view_gallery_inline_form ($values = null) { ?>
 <style type="text/css">
-#form_hidden, .form_hide { display: none }
+ .sliding_div { display: none }
 </style>
-<script type="text/javascript">
-$(document).ready(function()
-{
-    
-    $(".form_show").click(function()
-    {
-        $("#form_hidden").show();
-        $(".form_show").hide();
-        $(".form_hide").show();
-        return false;
-    });
-    $(".form_hide").click(function()
-    {
-        $("#form_hidden").hide();
-        $(".form_show").show();
-        $(".form_hide").hide();
-        
-        return false;
-    });
-});
-</script>
+
 <?php
 
+    $js_url = '/js/jquery.showhide.js';
+    template::setJs($js_url, null, array ('head' => true));
+    
     $values = html::specialEncode($values);
     $values['file_name'] = file::getFilename($values['file_name'], array ('utf8' => true));
     $values['file_name'] = rawurldecode($values['file_name']);
@@ -690,14 +676,18 @@ $(document).ready(function()
     html::formEnd();
     
     $str = <<<EOF
-<div><a href="#" class="form_show">Edit Details</a>
-<a href="#" class = "form_hide">Hide Details</a></div>
-<div id="form_hidden">
+<div><a href="#" class="show_hide">Show / Hide Edit Details</a></div>
+<div class="sliding_div">
 EOF;
     
     $str.= html::getStr();
     $ex = <<<EOF
 </div>
+    <script>
+        $('.show_hide').showhide({
+  'element' : '.sliding_div'
+});
+    </script> 
 
 EOF;
     $str.= $ex;

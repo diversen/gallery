@@ -135,6 +135,8 @@ class galleryAdmin extends gallery {
      */
     public static function getGallery($id = null){
         if (!$id) $id = self::$galleryId;
+        if (!$id) return array ();
+        
         $db = new db();
         $row = $db->selectOne('gallery', 'id', $id);
         $row = html::specialEncode($row);
@@ -155,8 +157,12 @@ class galleryAdmin extends gallery {
      */
     public static function createGallery ($values = null){
         if (!$values) {
-            $values = array('title'=> $_POST['title'], 'description' => $_POST['description']);
+            $values = array(
+                'title'=> $_POST['title'], 
+                'description' => $_POST['description'],
+                'user_id' => session::getUserId());
         }
+        $values = html::specialEncode($values);
         $db = new db(); 
         $res = $db->insert('gallery', $values);
         
@@ -189,6 +195,7 @@ class galleryAdmin extends gallery {
         $db = new db();
         
         $values = db::prepareToPost();
+        $values['user_id'] = session::getUserId();
         $values = html::specialDecode($values);
         
         $event_params = array (
