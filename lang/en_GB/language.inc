@@ -72,7 +72,8 @@ $_COS_LANG_MODULE['gallery_zip_commit_error'] = 'Could not commit to database';
 $_COS_LANG_MODULE['gallery_zip_archive_uploaded'] = 'Zip archive uploaded';
 $_COS_LANG_MODULE['gallery_set_image_details'] = 'Set image details';
 $_COS_LANG_MODULE['gallery_file_name'] = 'File name';
-$_COS_LANG_MODULE['gallery_view_full_size'] = 'Original image';
+$_COS_LANG_MODULE['gallery_view_full_size'] = 'Large image';
+$_COS_LANG_MODULE['gallery_view_original_size'] = 'Original image';
 $_COS_LANG_MODULE['gallery_image_details_updated'] = 'Image details has been updated';
 
 $_COS_LANG_MODULE['gallery_tags_list_entries_title'] = 'Gallery tag';

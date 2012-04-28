@@ -62,7 +62,7 @@ class galleryinline extends gallery {
         
         echo $this->getImageSrc($this->row['id'], 'full');
         $row = $this->getRowAndSrc($this->row['id']);
-        echo $link = html::createLink($this->row['src'], lang::translate('gallery_view_full_size'));
+        echo $link = html::createLink($this->row['src'], lang::translate('gallery_view_original_size'));
     
         $this->postActions();
         $rows = $this->getAllFileInfo($this->row['gallery_id']);
