@@ -66,9 +66,9 @@ class galleryinline extends gallery {
     
         $this->postActions();
         $rows = $this->getAllFileInfo($this->row['gallery_id']);
-        //$row = $this->getDefaultImage($id);
+
         $options = array ('gallery_id' => $this->row['gallery_id'], 'no_admin' => true);
-        //$rows = $gal->getAllFileInfo($id);
+
         $vars['rows'] = $rows; 
         $vars['options'] = $options;
         echo $str = self::getRows($vars, $options);
@@ -101,7 +101,9 @@ class galleryinline extends gallery {
 
         $subs = array ('comment');
         moduleLoader::includeModules($subs);
-        echo moduleLoader::subModuleGetPostContent($subs, $options);
+        $ary = moduleLoader::subModuleGetPostContent($subs, $options);
+        
+        echo implode("<hr />\n", $ary);
     }
     
     /**
@@ -259,33 +261,34 @@ class galleryinline extends gallery {
             galleryAdmin::displayTitle($val);
             $date_formatted = time::getDateString($val['updated']);
             echo user::getProfileSimple($val['user_id'], $date_formatted);
-            
             echo self::displaySingleRow($val['id']);
-            echo $val['description'] . "<br />\n";
+            
 
+            if (session::isAdmin()) {
+                array_unshift($ary, galleryAdmin::adminOptions($val['id']));
+            }
+            
             $event_params = array(
                 'action' => 'get',
                 'reference' => 'gallery',
                 'parent_id' => $val['id'],
                 'return' => 'array');
             
-            $ary = event::triggerEvent(
+            $events = event::triggerEvent(
                 config::getModuleIni('gallery_events'), 
                 $event_params
             );    
             
+            $ary = array_merge($ary, $events);
+            if (empty($val['description'])) {
+                $val['description'] = '...';
+            }
             
-            if (session::isAdmin()) {
-                $ary[] = galleryAdmin::adminOptions($val['id']);
-            }
-            if (!empty($ary)) {
-                echo "<hr />\n";
-            }
+            array_unshift($ary, $val['description']);
             echo implode("<hr />\n", $ary);
-            echo "<hr />\n";
-            
-         
+            echo "<hr />\n";         
         }
+        
         echo "<br />\n";
         $pager->pearPage();
     }
