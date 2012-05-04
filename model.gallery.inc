@@ -96,7 +96,7 @@ class gallery {
         $filename = $path . "/" . $row['file_name'];
         
         $res = unlink($filename);
-        if (!$res) die ('could not unlink');
+        //if (!$res) die ('could not unlink');
 
         $filename = $path . '/thumb-' . $row['file_name'];
         $res = unlink($filename);
