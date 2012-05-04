@@ -202,9 +202,10 @@ EOF;
         return $str;
     }
     
-    public function getRows($vars, $options = null){
+    public static function getRows($vars, $options = null){
 
         $vars = html::specialEncode($vars);
+        
         $str = ''; 
         $str.= "<div id=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
@@ -241,8 +242,7 @@ EOF;
         
         $str.="</tr></table>\n";
         $str.="</div>\n";
-        return $str;  
-         
+        return $str;           
     }
     
     public static function getSingleRow($vars, $options = null){
@@ -307,9 +307,9 @@ EOF;
     }
     
     
-    public static function displayAll () {
+    public function displayAll () {
         include_once "pearPager.php";
-  
+        
         $gallery = new galleryAdmin();
         $db = new db();
         $num_rows = $db->getNumRows('gallery');
@@ -325,9 +325,19 @@ EOF;
             galleryAdmin::displayTitle($val);
             $date_formatted = time::getDateString($val['updated']);
             echo user::getProfileSimple($val['user_id'], $date_formatted);
-            echo self::displaySingleRow($val['id']);
-            
+            if (config::getModuleIni('gallery_preview_display_all')) {
+                echo "flaf";
+                $rows = $this->getAllFileInfo($val['id']);
+                $options = array ('gallery_id' => $val['id'], 'no_admin' => true);
 
+                $vars['rows'] = $rows; 
+                $vars['options'] = $options;
+                echo $str = self::getRows($vars, $options);
+            } else {
+                die;
+                echo self::displaySingleRow($val['id']);
+            }
+            
             if (session::isAdmin()) {
                 array_unshift($ary, galleryAdmin::adminOptions($val['id']));
             }
