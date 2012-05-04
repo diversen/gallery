@@ -1,0 +1,5 @@
+<?php
+
+$config = array (
+    'gallery_image_anchors' => null
+);
