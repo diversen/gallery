@@ -1,8 +1,12 @@
 <?php
 
+include_once "coslib/gps.php";
 include_module('gallery');
 config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
+$js_url = '/js/jquery.showhide.js';
+template::setJs($js_url, null, array ('head' => true));
+
 
 class galleryinline extends gallery {
     
@@ -50,6 +54,24 @@ class galleryinline extends gallery {
         }
     }
     
+        public function getGmap ($ll, $spn, $z) {
+            $width = config::getModuleIni('gallery_image_size');
+        $gmap = <<<EOF
+<div class ="google_map">
+<iframe 
+width="$width" 
+height="350" 
+frameborder="0" 
+scrolling="no" 
+marginheight="0" 
+marginwidth="0" 
+src="http://maps.google.com/?ie=UTF8&amp;hq=&amp;hnear=Termestrup,+Denmark&amp;t=h&amp;ll=$ll,$spn&amp;spn=0.016643,0.036478&amp;z=14&amp;output=embed"></iframe>
+</div>
+EOF;
+    
+        return $gmap;
+    }
+    
     public function displayImage () {
         
         $gal_info = galleryAdmin::getGallery($this->row['gallery_id']);
@@ -61,12 +83,54 @@ class galleryinline extends gallery {
         echo "<br />";
         
         echo $this->getImageSrc($this->row['id'], 'full');
-        $row = $this->getRowAndSrc($this->row['id']);
-        echo $link = html::createLink($this->row['src'], lang::translate('gallery_view_original_size'));
-    
+
+        $elements = array ();
+        $elements_content = array ();
+        $exif = $this->getExifData($this->row['src']);
+        
+        if ($exif) {    
+            $elements_content [] = $table = $this->getExifHTML($exif);
+            $view_exif = lang::translate('gallery_view_exif');
+
+            $elements[] = $exif_str = <<<EOF
+<a name = "exif"></a>
+<a href="#exif" class="show_exif">$view_exif</a>
+    <script>
+        $('.show_exif').showhide({
+  'element' : '.gallery_exif',
+  'hide_elements' : '.google_map'
+});
+    </script> 
+EOF;
+        
+            //$elements[] = $exif_str;
+        }
+        $gps_map = null;
+        if ($exif && isset($exif['GPS'])) {
+            $gps = getGPS($exif['GPS'], true);
+            $elements_content[] = $gps_map = $this->getGmap($gps['latitude'], $gps['longitude'], 12);
+            $lang_gps = lang::translate('gallery_view_gps');
+            $elements[] = $gps_str = <<<EOF
+<a name = "google_map"></a>
+<a href="#google_map" class="show_gps">$lang_gps</a>
+    <script>
+        $('.show_gps').showhide({
+  'element' : '.google_map',
+  'hide_elements' : '.gallery_exif'
+});
+        
+    </script> 
+EOF;
+            
+        }
+
+        $elements[] = $link = html::createLink($this->row['src'], lang::translate('gallery_view_original_size'));
+        
+        echo implode(MENU_SUB_SEPARATOR, $elements);
+        echo implode("\n", $elements_content);
+        
         $this->postActions();
         $rows = $this->getAllFileInfo($this->row['gallery_id']);
-
         $options = array ('gallery_id' => $this->row['gallery_id'], 'no_admin' => true);
 
         $vars['rows'] = $rows; 
@@ -292,4 +356,6 @@ class galleryinline extends gallery {
         echo "<br />\n";
         $pager->pearPage();
     }
+    
+
 }

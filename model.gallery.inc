@@ -335,9 +335,46 @@ class gallery {
         }
         return;
     }
-    // }}}
+    
+    
+    public function getExifData ($web_src) {
+        $file = _COS_PATH . "/htdocs" . $web_src;
+        $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
+        //print_r($exif);
+        foreach ($exif as $key => $val) {
+            if (!in_array($key, array ('IFD0', 'EXIF', 'GPS'))) {
+                unset($exif[$key]);
+            }
+        }
+        if (empty($exif)) return null;
+        return $exif;
+    }
+    
+    public function getExifHTML ($exif) {
+        
+        $str = "<div class =\"gallery_exif\">\n";
+        $str.= "<table>\n";
+        //print_r($exif);
+        foreach ($exif as $key => $val) {
+            if (!in_array($key, array ('IFD0', 'EXIF'))) continue;
+            
+            $str.= "<tr><th colspan=2>$key</td></tr>\n";
+            foreach ($val as $k => $v) {
+                if ($k == 'MakerNote') continue;
+                $str.= "<tr>\n";
+                $str.= "<th>$k</th>\n";
+                $str.= "<td>$v</td>\n";
+                $str.= "</tr>\n";
+            }
+        }
+        $str.= "</table>\n";
+        $str.= "</div>\n";
+        return $str;
+        
+    }
+    
     public static function getBGImage () {
-                // DISPLAY FOR RANDOM BG-image
+        // DISPLAY FOR RANDOM BG-image
         // XXXXXX
         $uri = uri::getInstance();
         echo $image_id = $uri->fragment(3);
@@ -650,13 +687,12 @@ class gallery {
 
 function view_gallery_inline_form ($values = null) { ?>
 <style type="text/css">
- .sliding_div { display: none }
+ .sliding_div, .google_map, .gallery_exif { display: none }
 </style>
 
 <?php
 
-    $js_url = '/js/jquery.showhide.js';
-    template::setJs($js_url, null, array ('head' => true));
+    
     
     $values = html::specialEncode($values);
     $values['file_name'] = file::getFilename($values['file_name'], array ('utf8' => true));
@@ -675,8 +711,9 @@ function view_gallery_inline_form ($values = null) { ?>
     html::submit('submit', lang::system('system_submit_update'));
     html::formEnd();
     
+    $edit_details = lang::translate('gallery_edit_details');
     $str = <<<EOF
-<div><a href="#" class="show_hide">Show / Hide Edit Details</a></div>
+<div><a href="#" class="show_hide">$edit_details</a></div>
 <div class="sliding_div">
 EOF;
     

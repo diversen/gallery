@@ -78,3 +78,8 @@ $_COS_LANG_MODULE['gallery_image_details_updated'] = 'Image details has been upd
 
 $_COS_LANG_MODULE['gallery_tags_list_entries_title'] = 'Gallery tag';
 $_COS_LANG_MODULE['gallery_could_not_rename_file_exists'] = 'Could not rename file. File name already exists';
+
+$_COS_LANG_MODULE['gallery_edit_details'] = 'gallery_edit_details';
+$_COS_LANG_MODULE['gallery_view_exif'] = 'Image details (exif)';
+
+$_COS_LANG_MODULE['gallery_view_gps'] = 'GPS';

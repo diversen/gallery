@@ -83,3 +83,8 @@ $_COS_LANG_MODULE['gallery_image_details_updated'] = 'Detaljer opdateret!';
 
 $_COS_LANG_MODULE['gallery_tags_list_entries_title'] = 'Galleri tag';
 $_COS_LANG_MODULE['gallery_could_not_rename_file_exists'] = 'Kunne ikke omdøbe fil. Fil med navn eksisterer';
+
+$_COS_LANG_MODULE['gallery_edit_details'] = 'Ret billiede';
+$_COS_LANG_MODULE['gallery_view_exif'] = 'Vis detaljer';
+
+$_COS_LANG_MODULE['gallery_view_gps'] = 'Vis kort';

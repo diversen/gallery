@@ -2,6 +2,7 @@
 
 template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/simplethumbs.js');
 template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/command.js');
+template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 
 class gallerySimplethumbs {
 

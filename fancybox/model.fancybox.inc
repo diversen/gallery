@@ -2,6 +2,7 @@
 
 moduleLoader::includeTemplateCommon('fancybox');
 fancybox_include();
+template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 
 class galleryFancybox {
 
@@ -89,7 +90,7 @@ class galleryFancybox {
             galleryAdmin::displayTitle($val);
             //echo self::displaySingleRow($val['id']);
             echo $val['description'] . "<br />\n";
-
+            /*
             $event_params = array(
                 'action' => 'view',
                 'reference' => 'gallery',
@@ -98,7 +99,7 @@ class galleryFancybox {
             event::triggerEvent(
                 config::getModuleIni('gallery_events'), 
                 $event_params
-            );    
+            );*/    
             
             echo galleryAdmin::adminOptions($val['id']);
             echo "<hr />\n";             
