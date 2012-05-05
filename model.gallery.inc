@@ -341,12 +341,13 @@ class gallery {
         $file = _COS_PATH . "/htdocs" . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
         //print_r($exif);
+        if (empty($exif)) return null;
         foreach ($exif as $key => $val) {
             if (!in_array($key, array ('IFD0', 'EXIF', 'GPS'))) {
                 unset($exif[$key]);
             }
         }
-        if (empty($exif)) return null;
+        
         return $exif;
     }
     
@@ -358,11 +359,11 @@ class gallery {
         foreach ($exif as $key => $val) {
             if (!in_array($key, array ('IFD0', 'EXIF'))) continue;
             
-            $str.= "<tr><th colspan=2>$key</td></tr>\n";
+            $str.= "<tr><th colspan=2>$key</th></tr>\n";
             foreach ($val as $k => $v) {
                 if ($k == 'MakerNote') continue;
                 $str.= "<tr>\n";
-                $str.= "<th>$k</th>\n";
+                $str.= "<td>$k</td>\n";
                 $str.= "<td>$v</td>\n";
                 $str.= "</tr>\n";
             }
@@ -685,15 +686,8 @@ class gallery {
     }
 }
 
-function view_gallery_inline_form ($values = null) { ?>
-<style type="text/css">
- .sliding_div, .google_map, .gallery_exif { display: none }
-</style>
+function get_gallery_inline_form ($values = null) {
 
-<?php
-
-    
-    
     $values = html::specialEncode($values);
     $values['file_name'] = file::getFilename($values['file_name'], array ('utf8' => true));
     $values['file_name'] = rawurldecode($values['file_name']);
@@ -711,23 +705,9 @@ function view_gallery_inline_form ($values = null) { ?>
     html::submit('submit', lang::system('system_submit_update'));
     html::formEnd();
     
-    $edit_details = lang::translate('gallery_edit_details');
-    $str = <<<EOF
-<div><a href="#" class="show_hide">$edit_details</a></div>
-<div class="sliding_div">
-EOF;
     
-    $str.= html::getStr();
-    $ex = <<<EOF
-</div>
-    <script>
-        $('.show_hide').showhide({
-  'element' : '.sliding_div'
-});
-    </script> 
 
-EOF;
-    $str.= $ex;
-    echo $str;
-    return;
+    $str = html::getStr();
+    $str = "<div class =\"edit_details\" >\n$str</div>\n";
+    return $str;
 }
