@@ -249,6 +249,7 @@ class gallery {
         
         $domain = config::getDomain();
         $row['src'] = "/files/$domain/gallery/$row[gallery_id]/" . $size . "$row[file_name]";
+        $row['width'] = config::getModuleIni('gallery_image_size');
         return $row;
     }
     
@@ -256,7 +257,11 @@ class gallery {
         $row = $this->getRowAndSrc($id, $size);
         
         $str = "<div id=\"imageview\">\n"; 
-        $str.= "<img src=\"$row[src]\" alt=\"$row[description]\" />"; 
+        $str.= "<img src=\"$row[src]\" alt=\"$row[description]\"";
+        if (isset($row['width'])) {
+            $str.= " width=\"$row[width]\" ";
+        }
+        $str.= "/>"; 
         $str.= "</div>";
         return $str;
     }
@@ -340,6 +345,7 @@ class gallery {
     public function getExifData ($web_src) {
         $file = _COS_PATH . "/htdocs" . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
+        if ($exif === false) return null;
         //print_r($exif);
         if (empty($exif)) return null;
         foreach ($exif as $key => $val) {

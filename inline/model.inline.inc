@@ -2,7 +2,7 @@
 
 include_once "coslib/gps.php";
 include_module('gallery');
-config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
+//config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 $js_url = '/js/jquery.showhide.js';
 template::setJs($js_url, null, array ('head' => true));
@@ -110,7 +110,7 @@ EOF;
         
         echo "<br />";
         
-        echo $this->getImageSrc($this->row['id'], 'full');
+        echo $this->getImageSrc($this->row['id'], 'full', array ('width' => true));
 
         $elements = array ();
         
