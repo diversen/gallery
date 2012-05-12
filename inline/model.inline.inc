@@ -326,7 +326,6 @@ EOF;
             $date_formatted = time::getDateString($val['updated']);
             echo user::getProfileSimple($val['user_id'], $date_formatted);
             if (config::getModuleIni('gallery_preview_display_all')) {
-                echo "flaf";
                 $rows = $this->getAllFileInfo($val['id']);
                 $options = array ('gallery_id' => $val['id'], 'no_admin' => true);
 
