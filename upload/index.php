@@ -19,6 +19,16 @@ class galleryUpload {
         html::text('image_add');
         html::label('description', lang::system('system_form_label_abstract'));
         html::textareaSmall('description');
+        
+        event::triggerEvent(
+    config::getModuleIni('content_article_events'), 
+    array(
+        'action' => 'form',
+        'reference' => 'gallery',
+        /*'parent_id' => $vars['id']*/)
+);
+        
+        
         html::fileWithLabel('file', get_module_ini('gallery_zip_max'));
         html::submit('submit', lang::system('system_submit_update'));
         html::formEnd();
@@ -86,18 +96,20 @@ class galleryUpload {
 
             $info = pathinfo($zip);            
             $dir = $info['dirname'] . "/"  . $info['filename'];
-            $files = file::getFileList($dir);
-            //print_r($files);
+            $files = scandir($dir);
+            unset($files[0], $files[1]);
+            //print_r($files); die;
             if (!empty($_POST['image_add'])) {
                 // rename files
                 
                 $i = 0;
-                foreach ($files as $file) {
+                foreach ($files as $key => $file) {
                     $info = pathinfo($file);
                     $oldname = "$dir/$file";
                     $image_add = strings::sanitizeUrlRigid($_POST['image_add']); 
                     $image_add = str_replace(' ', '-', $image_add);
-                    $newname = "$dir/" . $image_add . "-" . "$i.$info[extension]";
+                    $files[$key] = $name = $image_add . "-" . "$i.$info[extension]";
+                    $newname = "$dir/" . $name;
                     $res = rename($oldname, $newname);
                     if (!$res) {
                         $this->errors[] = lang::translate('gallery_zip_could_not_rename_file');
@@ -107,7 +119,8 @@ class galleryUpload {
                 }
             }
             
-            $files = file::getFileList($dir);
+            //$files = scandir($dir);
+            //unset($files[0], $files[1]);
 
             foreach ($files as $file) {
                 $sizes = array (

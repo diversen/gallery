@@ -114,6 +114,11 @@ class galleryAdmin extends gallery {
     public static function deleteGallery($id){
         //$gallery = self::getGallery();
         //$gallery_id = $gallery['gallery_id'];
+        $domain = config::getDomain();
+        $path = _COS_PATH . "/htdocs/files/$domain/gallery/$id";
+        
+        rrmdir($path);
+        
         $db = new db();
         $res = $db->delete('gallery', 'id',  $id);
         $event_params = array (

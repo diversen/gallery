@@ -2,7 +2,7 @@
 
 include_once "coslib/gps.php";
 include_module('gallery');
-config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
+//config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 $js_url = '/js/jquery.showhide.js';
 template::setJs($js_url, null, array ('head' => true));
@@ -72,19 +72,50 @@ EOF;
         return $gmap;
     }
     
-    public function displayImage () {
+    
+    
+    public function displayImage () { ?>
+<style type="text/css">
+ .edit_details, .google_map, .gallery_exif { display: none }
+</style><?
+        include_once "coslib/pageSets.php";
         
         $gal_info = galleryAdmin::getGallery($this->row['gallery_id']);
-        $title = "<a name=\"image\"></a>\n";
-        $title.= html::createLink("/gallery/view/$gal_info[id]", $gal_info['title']);
-        $title.= MENU_SUB_SEPARATOR_SEC . $this->row['title'];
-        headline_message($title);
-        $this->displayInlineForm();
+        $rows = $this->getAllFileInfo($this->row['gallery_id']);
+       
+        // create a simple set for pagination
+        $ary = array ();
+        foreach ($rows as $val) {
+            $url = "/gallery/inline/view/$val[id]";
+            $ary[] = $url;
+        }
+        
+        $page_opt = array ();
+        if (config::getModuleIni('gallery_image_anchors')) {
+            $page_opt['attach'] = '#image';
+            
+        }
+        
+        //$page_opt['current_title'] = $this->row['title'] ;
+        $pager = new pageSets($page_opt);
+        $pager_str = $pager->getPrevNext ($ary, $page_opt);
+        
+        
+        echo "<a name=\"image\"></a>\n";
+
+        //$title = $this->row['title']; 
+        headline_message($this->row['title']);
+        headline_message($pager_str);
+        //$pager->pearPageSO();
+        
         echo "<br />";
         
-        echo $this->getImageSrc($this->row['id'], 'full');
+        echo $this->getImageSrc($this->row['id'], 'full', array ('width' => true));
 
         $elements = array ();
+        
+        
+        
         $elements_content = array ();
         $exif = $this->getExifData($this->row['src']);
         
@@ -98,7 +129,7 @@ EOF;
     <script>
         $('.show_exif').showhide({
   'element' : '.gallery_exif',
-  'hide_elements' : '.google_map'
+  'hide_elements' : '.google_map, .edit_details'
 });
     </script> 
 EOF;
@@ -116,12 +147,29 @@ EOF;
     <script>
         $('.show_gps').showhide({
   'element' : '.google_map',
-  'hide_elements' : '.gallery_exif'
+  'hide_elements' : '.gallery_exif, .edit_details'
 });
         
     </script> 
 EOF;
             
+        }
+        
+        if (session::isAdmin()) {
+            $edit_details = lang::translate('gallery_edit_details');
+
+            $elements[] = <<<EOF
+<a name = "edit_details"></a>
+<a href="#edit_details" class="edit_image">$edit_details</a>
+    <script>
+        $('.edit_image').showhide({
+  'element' : '.edit_details',
+  'hide_elements' : '.gallery_exif, .google_map'
+});
+    </script> 
+
+EOF;
+            $elements_content[] = $this->displayInlineForm();
         }
 
         $elements[] = $link = html::createLink($this->row['src'], lang::translate('gallery_view_original_size'));
@@ -130,7 +178,7 @@ EOF;
         echo implode("\n", $elements_content);
         
         $this->postActions();
-        $rows = $this->getAllFileInfo($this->row['gallery_id']);
+        
         $options = array ('gallery_id' => $this->row['gallery_id'], 'no_admin' => true);
 
         $vars['rows'] = $rows; 
@@ -151,7 +199,7 @@ EOF;
                     view_form_errors(gallery::$errors);
                 }
             }
-            view_gallery_inline_form($this->row);
+            return get_gallery_inline_form($this->row);
         }
     }
     
@@ -322,7 +370,7 @@ EOF;
         foreach ($rows as $key => $val){
             $ary = array ();
             
-            galleryAdmin::displayTitle($val);
+            self::displayTitle($val);
             $date_formatted = time::getDateString($val['updated']);
             echo user::getProfileSimple($val['user_id'], $date_formatted);
             if (config::getModuleIni('gallery_preview_display_all')) {
@@ -333,7 +381,6 @@ EOF;
                 $vars['options'] = $options;
                 echo $str = self::getRows($vars, $options);
             } else {
-                die;
                 echo self::displaySingleRow($val['id']);
             }
             
@@ -364,6 +411,11 @@ EOF;
         
         echo "<br />\n";
         $pager->pearPage();
+    }
+    
+    public static function displayTitle ($val) {
+        //$link = html::createLink("/gallery/view/$val[id]", $val['title']);
+        headline_message($val['title']);
     }
     
 

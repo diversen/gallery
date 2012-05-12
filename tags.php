@@ -42,13 +42,23 @@ $q->order('updated', 'DESC');
 
 $rows = $q->fetch();
 //print_r($rows); die;
-
+$gallery = new gallery();
 foreach ($rows as $key => $val){
     $val['title'] = $val['title'];
     $link = html::createLink("/gallery/view/$val[id]", $val['title']);
     headline_message($link);
+    $date_formatted = time::getDateString($val['updated']);
+    echo user::getProfileSimple($val['user_id'], $date_formatted);
+    if (config::getModuleIni('gallery_preview_display_all')) {
+        $rows = $gallery->getAllFileInfo($val['id']);
+        $options = array ('gallery_id' => $val['id'], 'no_admin' => true);
 
-    echo galleryInline::displaySingleRow($val['id']);
+        $vars['rows'] = $rows; 
+        $vars['options'] = $options;
+        echo $str = galleryInline::getRows($vars, $options);
+    } else {
+        echo self::displaySingleRow($val['id']);
+    }
     echo $val['description'] . "<br />\n";
             
     echo galleryAdmin::adminOptions($val['id']);
