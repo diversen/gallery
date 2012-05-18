@@ -255,7 +255,7 @@ EOF;
         $vars = html::specialEncode($vars);
         
         $str = ''; 
-        $str.= "<div id=\"gallery_thumbs\">\n";
+        $str.= "<div class=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
         $i = 0;
         $per_row = config::getModuleIni('gallery_image_row_size');
@@ -288,16 +288,27 @@ EOF;
             }
         }
         
+        $extra = $per_row - ($i % $per_row);
+        $str.= self::getExtraTd($extra);
         $str.="</tr></table>\n";
         $str.="</div>\n";
         return $str;           
+    }
+    
+    public static function getExtraTd ($num) {
+        $str = '';
+        while($num) {
+            $str.= "<td>&nbsp;</td>\n";
+            $num--;
+        }
+        return $str;
     }
     
     public static function getSingleRow($vars, $options = null){
         
         $vars = html::specialEncode($vars);
         $str = ''; 
-        $str.= "<div id=\"gallery_thumbs\">\n";
+        $str.= "<div class=\"gallery_thumbs\">\n";
         $str.= "<table width =\"600px\"><tr>\n";
         $i = 0;
         
