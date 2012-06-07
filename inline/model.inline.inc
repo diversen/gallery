@@ -100,22 +100,15 @@ EOF;
         $pager = new pageSets($page_opt);
         $pager_str = $pager->getPrevNext ($ary, $page_opt);
         
-        
         echo "<a name=\"image\"></a>\n";
-
-        //$title = $this->row['title']; 
+ 
         headline_message($this->row['title']);
         headline_message($pager_str);
-        //$pager->pearPageSO();
         
         echo "<br />";
-        
         echo $this->getImageSrc($this->row['id'], 'full', array ('width' => true));
 
-        $elements = array ();
-        
-        
-        
+        $elements = array ();       
         $elements_content = array ();
         $exif = $this->getExifData($this->row['src']);
         
@@ -174,10 +167,11 @@ EOF;
 
         $elements[] = $link = html::createLink($this->row['src'], lang::translate('gallery_view_original_size'));
         
+        $this->postActions();
         echo implode(MENU_SUB_SEPARATOR, $elements);
         echo implode("\n", $elements_content);
         
-        $this->postActions();
+        
         
         $options = array ('gallery_id' => $this->row['gallery_id'], 'no_admin' => true);
 
@@ -187,6 +181,11 @@ EOF;
         //return $str;
     }
     
+    /**
+     * displays inline form. 
+     * Errors displayed in postActions if any
+     * @return type 
+     */
     public function displayInlineForm () {
         if (session::isAdmin()) {
             if (isset($_POST['gallery_details'])) {
@@ -195,9 +194,7 @@ EOF;
                     $location = "/gallery/inline/view/" . $this->id;
                     $message = lang::translate('gallery_image_details_updated');
                     http::locationHeader($location, $message);
-                } else {
-                    view_form_errors(gallery::$errors);
-                }
+                } 
             }
             return get_gallery_inline_form($this->row);
         }
@@ -428,6 +425,4 @@ EOF;
         //$link = html::createLink("/gallery/view/$val[id]", $val['title']);
         headline_message($val['title']);
     }
-    
-
 }

@@ -178,8 +178,7 @@ class gallery {
         return $res;
 
     }
-    // }}}
-    // {{{ scaleImage ($image, $thumb, $length)
+
     /**
      * 
      * @param  string    the image file to scale
@@ -199,8 +198,7 @@ class gallery {
 
         return true;
     }
-    // }}}
-    // {{{ method getAllFiles() get all files as rows from db table file
+
     /**
      * method for getting all files connected to a parent galleryId
      *
@@ -563,9 +561,11 @@ class gallery {
                     exit;
                 } else {
                     view_form_errors(self::$errors);
+                    //die;
                 }
             } else {
                 view_form_errors(self::$errors);
+                //die;
             }
         }
     }
@@ -598,6 +598,11 @@ class gallery {
 
     }
     
+    /**
+     * method for updating a image's details, filename etc. 
+     * @param int $id image id
+     * @return boolean $res true on success else false 
+     */
     public function updateImageDetails ($id) {
         $values = db::prepareToPostArray(array('file_name', 'title', 'description'));
         $values = html::specialDecode($values);
@@ -694,7 +699,7 @@ class gallery {
 
 function get_gallery_inline_form ($values = null) {
 
-    $values = html::specialEncode($values);
+    //$values = html::specialEncode($values);
     $values['file_name'] = file::getFilename($values['file_name'], array ('utf8' => true));
     $values['file_name'] = rawurldecode($values['file_name']);
     html::formStart('gallery_form');
@@ -710,9 +715,6 @@ function get_gallery_inline_form ($values = null) {
     html::textareaSmall('description');
     html::submit('submit', lang::system('system_submit_update'));
     html::formEnd();
-    
-    
-
     $str = html::getStr();
     $str = "<div class =\"edit_details\" >\n$str</div>\n";
     return $str;
