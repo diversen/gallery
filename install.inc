@@ -28,10 +28,9 @@ if (config::getModuleIni('gallery_menu_item')) {
     $admin_only = config::getModuleIni('gallery_menu_item_admin_only');
     if ($admin_only) {
         $_INSTALL['MAIN_MENU_ITEM']['admin_only'] = $admin_only;
-    }
-    
-    
+    }    
 }
+
 $_INSTALL['VERSION'] = 1.41;
 $_INSTALL['PUBLIC_CLONE_URL'] = 'git://github.com/diversen/gallery.git';
 $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
