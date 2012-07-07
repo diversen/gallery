@@ -13,6 +13,7 @@ if (config::getModuleIni('gallery_menu_item')) {
         'module_name' => 'gallery',
         'parent' => 0,
         'weight' => 2,
+        'section' => 'content'
     );
     
     $section = config::getModuleIni('gallery_section');
