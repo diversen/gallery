@@ -24,7 +24,7 @@ class galleryFancybox {
         if ($num_rows == 0) {
             // no images
             $str.= self::getUploadForm($vars);
-            return $str;
+            //return $str;
         } else {
             // more than one image
             if (config::getModuleIni('gallery_use_default_image')) {
@@ -33,7 +33,7 @@ class galleryFancybox {
 
             $str.= self::getRows($vars);
             $str.= self::getUploadForm($vars);
-            return $str;
+            //return $str;
         }       
         return $str;
     }
