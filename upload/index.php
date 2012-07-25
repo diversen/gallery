@@ -154,6 +154,7 @@ class galleryUpload {
             
             $dest = _COS_PATH . "/htdocs/files/$domain/gallery/$id";
             exec("mv $dir/* $dest", $output, $res);
+            exec("rm -Rf $dir*");
             if ($res) {
                 $this->errors[] = lang::translate('gallery_zip_mv_error');
                 //die('could not mv file');
