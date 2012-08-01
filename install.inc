@@ -32,6 +32,6 @@ if (config::getModuleIni('gallery_menu_item')) {
     }    
 }
 
-$_INSTALL['VERSION'] = 1.41;
+$_INSTALL['VERSION'] = 1.70;
 $_INSTALL['PUBLIC_CLONE_URL'] = 'git://github.com/diversen/gallery.git';
 $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
