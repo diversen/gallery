@@ -112,15 +112,18 @@ class galleryAdmin extends gallery {
      * @return type 
      */
     public static function deleteGallery($id){
-        //$gallery = self::getGallery();
-        //$gallery_id = $gallery['gallery_id'];
+        
         $domain = config::getDomain();
+        if (!$domain) return false;
+        
         $path = _COS_PATH . "/htdocs/files/$domain/gallery/$id";
         
         rrmdir($path);
         
         $db = new db();
-        $res = $db->delete('gallery', 'id',  $id);
+        $db->begin();
+        $db->delete('gallery_file', 'gallery_id', $id);
+        $db->delete('gallery', 'id',  $id);
         $event_params = array (
                 'action' => 'delete',
                 'reference' => 'gallery', 
@@ -129,8 +132,8 @@ class galleryAdmin extends gallery {
         event::triggerEvent(
             config::getModuleIni('gallery_events'),
             $event_params);
-        
-        return $res;
+        $db->commit();
+        return true;
     }
 
     /**
