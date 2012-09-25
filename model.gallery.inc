@@ -299,7 +299,7 @@ class gallery {
             $options['no_gallery_redirect'] = '/gallery/index';
         }
         
-        $str = '';
+        //$str = '';
         $vars = array();
         
         $gal = new gallery($gallery_frag, $file_frag);  
@@ -323,8 +323,9 @@ class gallery {
         }
         
         $row = $gal->getDefaultImage($id);
-        $options = array ('gallery_id' => $id, 'default' => $row);
-        $files = $gal->getAllFiles();
+        $options['gallery_id'] = $id;
+        $options['default'] = $row; //array ('gallery_id' => $id, 'default' => $row);
+        //$files = $gal->getAllFiles();
 
         $rows = $gal->getAllFileInfo($id);
         $vars['rows'] = $rows; 

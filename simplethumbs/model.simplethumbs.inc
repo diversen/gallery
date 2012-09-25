@@ -15,7 +15,7 @@ class gallerySimplethumbs {
      */
     public static function displayGallery($vars){
       
-        $i = 0;
+        //$i = 0;
    
         $str = '';
         //print_r($vars);
