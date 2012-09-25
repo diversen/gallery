@@ -57,7 +57,7 @@ class gallerySimplethumbs {
         
         $per_row = config::getModuleIni('gallery_image_row_size');
         foreach ($vars['rows'] as $key => $val) {           
-            $src = "/files/default/gallery/$val[gallery_id]/full-$val[file_name]";
+            $src = "/files/default/gallery/$val[gallery_id]/med-$val[file_name]";
             $thumb_src = "/files/default/gallery/$val[gallery_id]/thumb-$val[file_name]";
             $thumb_img = html::createImage($thumb_src);
             $link = html::createLink($src, $thumb_img);
@@ -80,7 +80,7 @@ class gallerySimplethumbs {
     
     public static function getDefaultImage ($row) {
         $str = "<div id=\"imageview\">\n"; 
-        $str.= "<img src=\"/files/default/gallery/$row[gallery_id]/full-$row[file_name]\" alt=\"example\" />"; 
+        $str.= "<img src=\"/files/default/gallery/$row[gallery_id]/med-$row[file_name]\" alt=\"example\" />"; 
         $str.= "</div>";
         return $str;
     }
