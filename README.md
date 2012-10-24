@@ -3,9 +3,9 @@ the gallery.
 
 So far there is 3 drivers. 
 
-fancebox
-inline
-simplethumbs
+* fancebox
+* inline
+* simplethumbs
 
 The first one uses fancybox
 The next uses inline images, which is good for SEO
