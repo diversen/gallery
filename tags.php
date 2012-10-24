@@ -34,14 +34,11 @@ $per_page = 10;
 $pager = new pearPager($num_rows, $per_page);
         
 $references = tags::getAllReferenceTag ('gallery', $id, $pager->from, $per_page);
-        
-$q = new QBuilder();
-$q->setSelect('gallery');
-$q->filterIn("id IN ", $references);
-$q->order('updated', 'DESC');
+$rows = dbQ::setSelect('gallery')->
+        filterIn("id IN ", $references)->
+        order('updated', 'DESC')->
+        fetch();
 
-$rows = $q->fetch();
-//print_r($rows); die;
 $gallery = new gallery();
 foreach ($rows as $key => $val){
     $val['title'] = $val['title'];
@@ -52,7 +49,6 @@ foreach ($rows as $key => $val){
     if (config::getModuleIni('gallery_preview_display_all')) {
         $rows = $gallery->getAllFileInfo($val['id']);
         $options = array ('gallery_id' => $val['id'], 'no_admin' => true);
-
         $vars['rows'] = $rows; 
         $vars['options'] = $options;
         echo $str = galleryInline::getRows($vars, $options);
@@ -60,9 +56,7 @@ foreach ($rows as $key => $val){
         echo self::displaySingleRow($val['id']);
     }
     echo $val['description'] . "<br />\n";
-            
     echo galleryAdmin::adminOptions($val['id']);
-            
     echo "<hr />\n";    
 }
 
