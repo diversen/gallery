@@ -16,7 +16,7 @@ if (isset($_POST['submit'])){
         $res = $fileObj->deleteFile($fileObj->fileId);
         if ($res){
             //session::setActionMessage(lang::translate('File deleted'));
-            header("Location: /gallery/view/$fileObj->id");
+            http::locationHeader('/gallery/view/' . $fileObj->id);
         }
     } else {
         view_form_errors($fileObj->errors);

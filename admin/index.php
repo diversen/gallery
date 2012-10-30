@@ -18,7 +18,7 @@ if (!empty($_POST['submit'])){
     if (empty($gallery->errors)){
         $res = $gallery->createGallery();
         session::setActionMessage(lang::translate('Gallery created'));
-        header("Location: /gallery/admin/index");
+        http::locationHeader("/gallery/admin/index");
     } else {
         view_form_errors($gallery->errors);
         view_gallery_form('insert');

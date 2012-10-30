@@ -12,8 +12,8 @@ if (!empty($_POST['submit'])){
         $res = $gallery->updateGallery();
         if ($res){
             session::setActionMessage(
-            lang::translate('Gallery updated'));
-            header("Location: /gallery/index");
+                lang::translate('Gallery updated'));
+             http::locationHeader('/gallery/index');
         }
         view_confirm(lang::translate());
     } else {

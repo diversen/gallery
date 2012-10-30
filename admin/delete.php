@@ -13,7 +13,7 @@ if (!empty($_POST['submit'])){
     if ($res){
         session::setActionMessage(
             lang::translate('gallery_gallery_has_been_deleted'));
-        header("Location: /gallery/index");
+        http::locationHeader('/gallery/index');
     }
 } else { 
     view_gallery_form('delete', $row['id']);
