@@ -1,3 +1,5 @@
+### About
+
 Gallery module which supports HTML drivers for displaying 
 the gallery. 
 
@@ -11,7 +13,4 @@ The first one uses fancybox
 The next uses inline images, which is good for SEO
 The simplethumbs is used other modules, where you want e.g. a
 shop item connected to a gallery.
-
-Not much documentation but I will work on it  ... when there is some
-time.  
-
+ 
