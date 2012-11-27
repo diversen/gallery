@@ -1,5 +1,9 @@
 <?php
 
+if (!session::checkAccessControl('gallery_allow_edit')){
+    return;
+}
+
 include_once "coslib/upload.php";
 include_module ('gallery/admin');
 
