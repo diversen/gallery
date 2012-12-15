@@ -72,7 +72,7 @@ class galleryUpload {
             }
             
             $zip = "/tmp/" . $_FILES['file']['name'];
-            echo $command = "mv " . $_FILES['file']['tmp_name'] . " $zip";
+            $command = "mv " . $_FILES['file']['tmp_name'] . " $zip";
             //die;
             exec ($command, $output = array (), $res);
             if ($res) {
@@ -100,7 +100,7 @@ class galleryUpload {
 
             $info = pathinfo($unzipped);   
             $dir = $info['dirname'] . "/"  . $info['filename'];
-            $files = get_file_list_recursive($dir);
+            $files = file::scandirRecursive($dir);
 
             if (!empty($_POST['image_add'])) {
                 // rename files
@@ -188,3 +188,4 @@ if (!empty($_POST)) {
 }
 
 echo $gal->form();
+
