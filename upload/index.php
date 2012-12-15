@@ -59,10 +59,8 @@ class galleryUpload {
                 return false;
             }
             
-            $db = new db();
-            $db->begin();
+            $db = new db();            
             $gal = new galleryAdmin();
-            
             $id = $gal->createGallery();
             
             if ($id) {
@@ -74,7 +72,7 @@ class galleryUpload {
             }
             
             $zip = "/tmp/" . $_FILES['file']['name'];
-            $command = "mv " . $_FILES['file']['tmp_name'] . " $zip";
+            echo $command = "mv " . $_FILES['file']['tmp_name'] . " $zip";
             //die;
             exec ($command, $output = array (), $res);
             if ($res) {
@@ -90,7 +88,9 @@ class galleryUpload {
             }
             
             chdir("/tmp");
-            $command = "unzip -o -UU " . $zip;
+            $md5 = md5(uniqid());
+            $unzipped = "/tmp/$md5";
+            $command = "unzip -o -UU -d $unzipped " . $zip;
             exec ($command, $output = array (), $res);
             if ($res) {
                 $this->errors[] = lang::translate('galler_error_unzip');
@@ -98,18 +98,17 @@ class galleryUpload {
             }
            
 
-            $info = pathinfo($zip);            
+            $info = pathinfo($unzipped);   
             $dir = $info['dirname'] . "/"  . $info['filename'];
-            $files = scandir($dir);
-            unset($files[0], $files[1]);
-            //print_r($files); die;
+            $files = get_file_list_recursive($dir);
+
             if (!empty($_POST['image_add'])) {
                 // rename files
                 
                 $i = 0;
                 foreach ($files as $key => $file) {
                     $info = pathinfo($file);
-                    $oldname = "$dir/$file";
+                    $oldname = $file;
                     $image_add = strings::sanitizeUrlRigid($_POST['image_add']); 
                     $image_add = str_replace(' ', '-', $image_add);
                     $files[$key] = $name = $image_add . "-" . "$i.$info[extension]";
@@ -123,8 +122,8 @@ class galleryUpload {
                 }
             }
             
-            //$files = scandir($dir);
-            //unset($files[0], $files[1]);
+            $db->begin();
+
 
             foreach ($files as $file) {
                 $sizes = array (
@@ -132,28 +131,26 @@ class galleryUpload {
                     'full' => 'gallery_image_size', 
                     'med' => 'gallery_med_size', 
                     'small' => 'gallery_small_size');
+                $did_scale = null;
                 foreach ($sizes as $key => $size) { 
                     
                     $scaled = $dir . "/$key-$file";
-                    $res = gallery::scaleImage(
+                    $did_scale = gallery::scaleImage(
                             "$dir/$file", 
                             $scaled, 
                             config::getModuleIni($size)
                         );
-
-                    if (!$res) {
-                        $this->errors[] = lang::translate('gallery_zip_error_scale');
-                        $db->rollback();
-                        return false;
-                    }
+                    if (!$did_scale) continue;
                     
                 }
-                $res = $db->insert('gallery_file', 
+                if ($did_scale) {
+                    $res = $db->insert('gallery_file', 
                             array (
                                 'file_name' => $file, 
                                 'title' => $file ,
                                 'gallery_id' => $id)
                         );
+                }
             }
             
             $dest = _COS_PATH . "/htdocs/files/$domain/gallery/$id";
