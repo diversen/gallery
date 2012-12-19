@@ -9,7 +9,7 @@
 /**
  * @ignore
  */
-include_once "upload.php";
+include_once "coslib/upload.php";
 include_model('gallery/admin');
 
 
@@ -64,7 +64,7 @@ class gallery {
         
         $domain = config::getDomain ();
         if (!$domain) $domain = 'default';
-        self::$uploadDir = _COS_PATH . "/htdocs/files/$domain/gallery/" . self::$galleryId;
+        self::$uploadDir = _COS_HTDOCS . "/files/$domain/gallery/" . self::$galleryId;
         $options = array('upload_dir' => self::$uploadDir);
         $options['allow_mime'] = array (
             'image/gif', 
@@ -342,7 +342,7 @@ class gallery {
     
     
     public function getExifData ($web_src) {
-        $file = _COS_PATH . "/htdocs" . $web_src;
+        $file = _COS_HTDOCS . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
         if ($exif === false) return null;
         //print_r($exif);
@@ -660,7 +660,7 @@ class gallery {
     
     public static function getGalleryPath ($row) {
         $domain = config::getDomain();
-        return _COS_PATH . "/htdocs/files/$domain/gallery/$row[gallery_id]";
+        return _COS_HTDOCS . "/files/$domain/gallery/$row[gallery_id]";
     }
     
     /**

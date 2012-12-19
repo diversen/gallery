@@ -116,7 +116,7 @@ class galleryAdmin extends gallery {
         $domain = config::getDomain();
         if (!$domain) return false;
         
-        $path = _COS_PATH . "/htdocs/files/$domain/gallery/$id";
+        $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
         
         rrmdir($path);
         

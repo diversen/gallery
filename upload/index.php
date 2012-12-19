@@ -65,7 +65,7 @@ class galleryUpload {
             
             if ($id) {
                 $domain = config::getDomain();
-                $path = _COS_PATH . "/htdocs/files/$domain/gallery/$id";
+                $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
                 @mkdir ($path, 0777, true);
             } else {
                 return false;
@@ -153,7 +153,7 @@ class galleryUpload {
                 }
             }
             
-            $dest = _COS_PATH . "/htdocs/files/$domain/gallery/$id";
+            $dest = _COS_HTDOCS . "/files/$domain/gallery/$id";
             exec("mv $dir/* $dest", $output, $res);
             exec("rm -Rf $dir*");
             if ($res) {
