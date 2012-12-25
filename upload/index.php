@@ -33,7 +33,7 @@ class galleryUpload {
 );
         
         
-        html::fileWithLabel('file', get_module_ini('gallery_zip_max'));
+        html::fileWithLabel('file', config::getModuleIni('gallery_zip_max'));
         html::submit('submit', lang::system('system_submit_update'));
         html::formEnd();
         $str= html::getStr();
@@ -53,7 +53,7 @@ class galleryUpload {
                 $this->errors = upload::$errors;
                 return false;
             }
-            $res = upload::checkMaxSize('file', get_module_ini('gallery_zip_max'));
+            $res = upload::checkMaxSize('file', config::getModuleIni('gallery_zip_max'));
             if (!$res){
                 $this->errors = upload::$errors;
                 return false;
