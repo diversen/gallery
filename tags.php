@@ -1,8 +1,8 @@
 <?php
 
 
-include_model('tags');
-include_model('gallery/inline');
+moduleloader::includeModel('tags');
+moduleloader::includeModel('gallery/inline');
 
 $id = uri::getInstance()->fragment(2);
 $tag = tags::getTagSingle($id);

@@ -10,7 +10,7 @@
  * @ignore
  */
 include_once "coslib/upload.php";
-include_model('gallery/admin');
+moduleloader::includeModel('gallery/admin');
 
 
 /**

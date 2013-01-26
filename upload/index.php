@@ -5,7 +5,7 @@ if (!session::checkAccessControl('gallery_allow_edit')){
 }
 
 include_once "coslib/upload.php";
-include_module ('gallery/admin');
+moduleloader::includeModule ('gallery/admin');
 
 class galleryUpload {
     

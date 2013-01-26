@@ -1,7 +1,7 @@
 <?php
 
 include_once "coslib/gps.php";
-include_module('gallery');
+moduleloader::includeModule('gallery');
 //config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 $js_url = '/js/jquery.showhide.js';
