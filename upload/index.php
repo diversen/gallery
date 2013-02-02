@@ -86,7 +86,8 @@ class galleryUpload {
                 $this->errors[] = lang::translate('gallery_error_zip_chmod');
                 return false;
             }
-            
+
+             
             chdir("/tmp");
             $md5 = md5(uniqid());
             $unzipped = "/tmp/$md5";
@@ -121,7 +122,7 @@ class galleryUpload {
                     $i++;
                 }
             }
-            
+           
             $db->begin();
 
 
