@@ -118,7 +118,7 @@ class galleryAdmin extends gallery {
         
         $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
         
-        rrmdir($path);
+        file::rrmdir($path);
         
         $db = new db();
         $db->begin();
