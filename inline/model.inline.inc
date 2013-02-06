@@ -1,6 +1,7 @@
 <?php
 
 include_once "coslib/gps.php";
+moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');
 //config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");

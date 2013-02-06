@@ -5,7 +5,7 @@
  *
  * @package     gallery
  */
-moduleLoader::includeModel ('gallery');
+moduleLoader::includeModule ('gallery');
 
 /**
  * class for working with content categories in gallery
