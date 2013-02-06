@@ -5,7 +5,7 @@
  *
  * @package     gallery
  */
-moduleLoader::includeModule ('gallery');
+moduleloader::includeModule ('gallery');
 
 /**
  * class for working with content categories in gallery
@@ -239,8 +239,8 @@ class galleryAdmin extends gallery {
 
     public function displayAllGallery($from = 0, $limit = 10){
         $display_module = config::getModuleIni('gallery_display_module');         
-        moduleLoader::includeModule($display_module);
-        $module = moduleLoader::modulePathToClassName($display_module);           
+        moduleloader::includeModule($display_module);
+        $module = moduleloader::modulePathToClassName($display_module);           
         $module::displayAll($from, $limit);
     }
 }

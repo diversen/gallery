@@ -1,6 +1,6 @@
 <?php
 
-moduleLoader::includeModule('gallery');
+moduleloader::includeModule('gallery');
 
 $gallery = new galleryInline();
 $gallery->setMeta();

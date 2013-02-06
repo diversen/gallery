@@ -210,8 +210,8 @@ EOF;
         );
 
         $subs = array ('comment');
-        moduleLoader::includeModules($subs);
-        $ary = moduleLoader::subModuleGetPostContent($subs, $options);
+        moduleloader::includeModules($subs);
+        $ary = moduleloader::subModuleGetPostContent($subs, $options);
         
         echo implode("<hr />\n", $ary);
     }

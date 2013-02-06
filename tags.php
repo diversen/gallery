@@ -8,7 +8,7 @@ $id = uri::getInstance()->fragment(2);
 $tag = tags::getTagSingle($id);
         
 if (empty($tag)) {
-    moduleLoader::$status['404'] = true;
+    moduleloader::$status['404'] = true;
     return;
 }
         

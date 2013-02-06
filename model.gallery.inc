@@ -333,8 +333,8 @@ class gallery {
         
         $display_module = config::getModuleIni('gallery_display_module');
         if ($display_module) {            
-            moduleLoader::includeModule($display_module);
-            $module = moduleLoader::modulePathToClassName($display_module);           
+            moduleloader::includeModule($display_module);
+            $module = moduleloader::modulePathToClassName($display_module);           
             echo $module::displayGallery($vars);
         }
         return;

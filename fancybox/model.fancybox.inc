@@ -1,6 +1,6 @@
 <?php
 
-moduleLoader::includeTemplateCommon('fancybox');
+moduleloader::includeTemplateCommon('fancybox');
 fancybox_include();
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 
