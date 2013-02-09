@@ -644,16 +644,16 @@ class gallery {
                 $oldname = $path . "/" . rawurldecode($row['file_name']);
                 $newname = $path . "/" . rawurldecode($values['file_name']);
                 if (file_exists($newname)) return false;
-                cos_error_log($oldname);
-                cos_error_log($newname);
+                log::error($oldname);
+                log::error($newname);
                 
             } else {
                 $oldname = $path . "/$size-" . rawurldecode($row[file_name]);
                 $newname = $path . "/$size-" . rawurldecode($values[file_name]);
-                cos_error_log($newname);
+                log::error($newname);
             }
             $res = rename($oldname, $newname);
-            if (!$res) cos_error_log ('Error: Could not rename image in gallery::renameImages');
+            if (!$res) log::error ('Error: Could not rename image in gallery::renameImages');
         }
         return true;
     }
