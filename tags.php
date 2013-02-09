@@ -25,7 +25,7 @@ $headline = lang::translate('gallery_tags_list_entries_title');
 $headline.= MENU_SUB_SEPARATOR_SEC;
 $headline.= $tag['title'];
         
-headline_message($headline);
+html::headline($headline);
 
 $num_rows = tags::getAllReferenceTagNumRows('gallery', $id);
 
@@ -43,7 +43,7 @@ $gallery = new gallery();
 foreach ($rows as $key => $val){
     $val['title'] = $val['title'];
     $link = html::createLink("/gallery/view/$val[id]", $val['title']);
-    headline_message($link);
+    html::headline($link);
     $date_formatted = time::getDateString($val['updated']);
     echo user::getProfileSimple($val['user_id'], $date_formatted);
     if (config::getModuleIni('gallery_preview_display_all')) {

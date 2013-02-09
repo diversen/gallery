@@ -20,7 +20,7 @@ if (!empty($_POST['submit'])){
         session::setActionMessage(lang::translate('Gallery created'));
         http::locationHeader("/gallery/admin/index");
     } else {
-        view_form_errors($gallery->errors);
+        html::errors($gallery->errors);
         view_gallery_form('insert');
     }
 } else {

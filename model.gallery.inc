@@ -318,7 +318,7 @@ class gallery {
             $title.= MENU_SUB_SEPARATOR . $gal_info['title'];        
             template::setTitle($title);
             template::setMeta(array ('description' => $gal_info['description']));
-            headline_message($gal_info['title']);
+            html::headline($gal_info['title']);
             echo "<br />\n";
         }
         
@@ -561,11 +561,11 @@ class gallery {
                     header("Location: $_SERVER[REQUEST_URI]");
                     exit;
                 } else {
-                    view_form_errors(self::$errors);
+                    html::errors(self::$errors);
                     //die;
                 }
             } else {
-                view_form_errors(self::$errors);
+                html::errors(self::$errors);
                 //die;
             }
         }

@@ -15,9 +15,9 @@ if (!empty($_POST['submit'])){
                 lang::translate('Gallery updated'));
              http::locationHeader('/gallery/index');
         }
-        view_confirm(lang::translate());
+        html::confirm(lang::translate());
     } else {
-        view_form_errors(gallery::$errors);
+        html::errors(gallery::$errors);
         view_gallery_form('update', gallery::$galleryId);
     }
 } else {

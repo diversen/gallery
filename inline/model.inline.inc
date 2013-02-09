@@ -103,8 +103,8 @@ EOF;
         
         echo "<a name=\"image\"></a>\n";
  
-        headline_message($this->row['title']);
-        headline_message($pager_str);
+        html::headline($this->row['title']);
+        html::headline($pager_str);
         
         echo "<br />";
         echo $this->getImageSrc($this->row['id'], 'full', array ('width' => true));
@@ -424,6 +424,6 @@ EOF;
     
     public static function displayTitle ($val) {
         //$link = html::createLink("/gallery/view/$val[id]", $val['title']);
-        headline_message($val['title']);
+        html::headline($val['title']);
     }
 }

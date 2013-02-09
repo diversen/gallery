@@ -153,7 +153,7 @@ class galleryAdmin extends gallery {
     
     public static function displayTitle ($val) {
         $link = html::createLink("/gallery/view/$val[id]", $val['title']);
-        headline_message($link);
+        html::headline($link);
     }
     
     

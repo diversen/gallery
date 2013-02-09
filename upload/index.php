@@ -180,7 +180,7 @@ $gal = new galleryUpload();
 if (!empty($_POST)) {
     $res = $gal->uploadFile();
     if (!empty($gal->errors)) {
-        view_form_errors($gal->errors);
+        html::errors($gal->errors);
     } else {
         session::setActionMessage(lang::translate('gallery_zip_archive_uploaded'));
         http::locationHeader('/gallery/index');

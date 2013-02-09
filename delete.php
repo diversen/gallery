@@ -19,7 +19,7 @@ if (isset($_POST['submit'])){
             http::locationHeader('/gallery/view/' . $fileObj->id);
         }
     } else {
-        view_form_errors($fileObj->errors);
+        html::errors($fileObj->errors);
     }
 }
 if (!empty($fileObj->fileId)){
