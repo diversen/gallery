@@ -1,5 +1,6 @@
 <?php
 
+
 if (!session::checkAccessControl('gallery_allow_edit')){
     return;
 }
@@ -71,8 +72,9 @@ class galleryUpload {
                 return false;
             }
             
-            $zip = "/tmp/" . $_FILES['file']['name'];
-            $command = "mv " . $_FILES['file']['tmp_name'] . " $zip";
+            $zip = "/tmp/" . escapeshellcmd($_FILES['file']['name']);
+            //$zip = "/tmp/" . escapeshellcmd($_FILES['file']['name']);
+            $command = "mv " . escapeshellcmd($_FILES['file']['tmp_name']) . " $zip";
             //die;
             exec ($command, $output = array (), $res);
             if ($res) {
