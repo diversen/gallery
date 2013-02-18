@@ -252,15 +252,20 @@ class gallery {
     }
     
     public function getImageSrc ($id, $size = '') {
-        $row = $this->getRowAndSrc($id, $size);
+        $org = $this->getRowAndSrc($id);
+        
+        $row = $this->getRowAndSrc($id, 'full');
         
         $str = "<div id=\"imageview\">\n"; 
+        //print_r($row);
+        $str.= "<a href=\"$org[src]\">";
         $str.= "<img src=\"$row[src]\" alt=\"$row[description]\"";
         if (isset($row['width'])) {
-            $str.= " width=\"$row[width]\" ";
+            $str.= " width=\"$row[width]\">";
         }
-        $str.= "/>"; 
+        $str.= "</a>\n";
         $str.= "</div>";
+
         return $str;
     }
     
