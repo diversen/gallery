@@ -43,6 +43,18 @@ class galleryUpload {
     
     
     
+    public function extractZip ($zip, $unzipped) {
+        $arch = new ZipArchive;
+        $res = $arch->open($zip);
+        if ($res === TRUE) {
+            $res = $arch->extractTo($unzipped);
+            if (!$res) {
+                return false;
+            }
+            $arch->close();
+        } 
+        return true;
+    }
     
     
     public function uploadFile () {
@@ -64,49 +76,30 @@ class galleryUpload {
             $gal = new galleryAdmin();
             $id = $gal->createGallery();
             
-            if ($id) {
-                $domain = config::getDomain();
-                $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
-                @mkdir ($path, 0777, true);
-            } else {
-                return false;
-            }
-            
-            $zip = "/tmp/" . escapeshellcmd($_FILES['file']['name']);
-            //$zip = "/tmp/" . escapeshellcmd($_FILES['file']['name']);
-            $command = "mv " . escapeshellcmd($_FILES['file']['tmp_name']) . " $zip";
-            //die;
-            exec ($command, $output = array (), $res);
-            if ($res) {
+            $tmp_dir = sys_get_temp_dir();
+            $zip = $tmp_dir . '/' . escapeshellcmd($_FILES['file']['name']);
+
+            $res = copy (escapeshellcmd($_FILES['file']['tmp_name']) , $zip);
+            if (!$res) {
                 $this->errors[] = lang::translate('gallery_error_zip_mv');
                 return false;
             }
+
+            $md5 = md5(uniqid());
+            $unzipped = $tmp_dir . '/' . "$md5";
             
-            $command = "chmod 777 " . $zip;
-            exec ($command, $output = array (), $res);
-            if ($res) {
+            $res = $this->extractZip ($zip, $unzipped);
+            if (!$res ){
                 $this->errors[] = lang::translate('gallery_error_zip_chmod');
                 return false;
             }
-
-             
-            chdir("/tmp");
-            $md5 = md5(uniqid());
-            $unzipped = "/tmp/$md5";
-            $command = "unzip -o -UU -d $unzipped " . $zip;
-            exec ($command, $output = array (), $res);
-            if ($res) {
-                $this->errors[] = lang::translate('galler_error_unzip');
-                return false;
-            }
            
-
             $info = pathinfo($unzipped);   
-            $dir = $info['dirname'] . "/"  . $info['filename'];
+            $dir = $info['dirname'] . '/'  . $info['filename'];
             $files = file::scandirRecursive($dir);
 
+            // rename all files from given pattern
             if (!empty($_POST['image_add'])) {
-                // rename files
                 
                 $i = 0;
                 foreach ($files as $key => $file) {
@@ -127,7 +120,7 @@ class galleryUpload {
            
             $db->begin();
 
-
+            // scale images into different sizes
             foreach ($files as $file) {
                 $sizes = array (
                     'thumb' => 'gallery_thumb_size', 
@@ -156,19 +149,25 @@ class galleryUpload {
                 }
             }
             
-            $dest = _COS_HTDOCS . "/files/$domain/gallery/$id";
-            exec("mv $dir/* $dest", $output, $res);
-            exec("rm -Rf $dir*");
-            if ($res) {
+            // create web dir
+            if ($id) {
+                $domain = config::getDomain();
+                $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
+                @mkdir ($path, 0777, true);
+            } else {
+                return false;
+            }
+
+            // move dir and 
+            $res = rename($dir, $path);            
+            if (!$res) {
                 $this->errors[] = lang::translate('gallery_zip_mv_error');
-                //die('could not mv file');
                 return false;
             }
             
             $res = $db->commit();
             if (!$res) {
                 $this->errors[] = lang::translate('gallery_zip_commit_error');
-                //$db->rollback();
                 return false;
             } 
             return true;

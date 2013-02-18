@@ -107,8 +107,14 @@ EOF;
         html::headline($pager_str);
         
         echo "<br />";
-        echo $this->getImageSrc($this->row['id'], 'full', array ('width' => true));
-
+        $src = $this->getImageSrc($this->row['id'], 'full', array ('width' => true));
+        
+        
+        
+        echo html::createHrefImage($this->row['src'], $src);
+        
+        //$link = html::createLink(, lang::translate('gallery_view_original_size'));
+        
         $elements = array ();       
         $elements_content = array ();
         $exif = $this->getExifData($this->row['src']);
