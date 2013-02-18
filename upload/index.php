@@ -120,16 +120,22 @@ class galleryUpload {
            
             $db->begin();
 
+
+            $sizes = array (
+                    'thumb' => 'gallery_thumb_size', 
+                    'full' =>  'gallery_image_size', 
+                    'med' =>   'gallery_med_size', 
+                    'small' => 'gallery_small_size'
+            );
+            
+
+            
+            
             // scale images into different sizes
             foreach ($files as $file) {
-                $sizes = array (
-                    'thumb' => 'gallery_thumb_size', 
-                    'full' => 'gallery_image_size', 
-                    'med' => 'gallery_med_size', 
-                    'small' => 'gallery_small_size');
+                
                 $did_scale = null;
                 foreach ($sizes as $key => $size) { 
-                    
                     $scaled = $dir . "/$key-$file";
                     $did_scale = gallery::scaleImage(
                             "$dir/$file", 

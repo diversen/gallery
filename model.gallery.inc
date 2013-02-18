@@ -186,6 +186,7 @@ class gallery {
      * @param  int       the length of the image   
      */
     public static function scaleImage ($image, $thumb, $x){
+        
         include_once "imagescale.php";
         
         $scale = new imagescale();
