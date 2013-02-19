@@ -37,7 +37,8 @@ $_INSTALL['PUBLIC_CLONE_URL'] = 'git://github.com/diversen/gallery.git';
 $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
 
 
-function gallery_uninstall($version = null) {
+$_INSTALL['UNINSTALL'] = function ($version = null) {
+
     $domain = config::getDomain();
     $dir = _COS_HTDOCS . "/files/$domain/gallery";
     
@@ -46,8 +47,11 @@ function gallery_uninstall($version = null) {
         return;
     }
     
-    
     if (file_exists($dir)) {
         file::rrmdir($dir);
     }
-}
+};
+
+$_INSTALL['INSTALL'] = function ($version = null) {
+    echo $version;
+};
