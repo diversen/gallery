@@ -78,10 +78,8 @@ EOF;
     public function displayImage () { ?>
 <style type="text/css">
  .edit_details, .google_map, .gallery_exif { display: none }
-</style><?
-        include_once "coslib/pageSets.php";
+</style><?php
         
-        $gal_info = galleryAdmin::getGallery($this->row['gallery_id']);
         $rows = $this->getAllFileInfo($this->row['gallery_id']);
        
         // create a simple set for pagination
@@ -96,8 +94,7 @@ EOF;
             $page_opt['attach'] = '#image';
             
         }
-        
-        //$page_opt['current_title'] = $this->row['title'] ;
+
         $pager = new pageSets($page_opt);
         $pager_str = $pager->getPrevNext ($ary, $page_opt);
         
@@ -108,13 +105,7 @@ EOF;
         
         echo "<br />";
         echo $src = $this->getImageSrc($this->row['id'], 'full', array ('width' => true));
-        
-        
-        
-        //echo html::createHrefImage($this->row['src'], $src);
-        
-        //$link = html::createLink(, lang::translate('gallery_view_original_size'));
-        
+
         $elements = array ();       
         $elements_content = array ();
         $exif = $this->getExifData($this->row['src']);
@@ -134,8 +125,8 @@ EOF;
     </script> 
 EOF;
         
-            //$elements[] = $exif_str;
         }
+        
         $gps_map = null;
         if ($exif && isset($exif['GPS'])) {
             $gps = getGPS($exif['GPS'], true);
@@ -178,14 +169,11 @@ EOF;
         echo implode(MENU_SUB_SEPARATOR, $elements);
         echo implode("\n", $elements_content);
         
-        
-        
         $options = array ('gallery_id' => $this->row['gallery_id'], 'no_admin' => true);
 
         $vars['rows'] = $rows; 
         $vars['options'] = $options;
         echo $str = self::getRows($vars, $options);
-        //return $str;
     }
     
     /**
@@ -207,6 +195,9 @@ EOF;
         }
     }
     
+    /**
+     * displays inline module's submodules
+     */
     public function displaySubModules () {
         $return_url = gallery::getReturnUrlFromId($this->row['id']);
         $options = array (
@@ -218,7 +209,6 @@ EOF;
         $subs = array ('comment');
         moduleloader::includeModules($subs);
         $ary = moduleloader::subModuleGetPostContent($subs, $options);
-        
         echo implode("<hr />\n", $ary);
     }
     
@@ -237,7 +227,6 @@ EOF;
         $str = '';
         $num_rows = count($vars['rows']);
         
-        //print_r($vars);
         if ($num_rows == 0) {
             $str.= galleryAdmin::uploadForm ($vars);
             return $str;
@@ -254,10 +243,15 @@ EOF;
         return $str;
     }
     
+    /**
+     * returns gallery rows
+     * @param array $vars
+     * @param array|null $options
+     * @return string
+     */
     public static function getRows($vars, $options = null){
-
-        $vars = html::specialEncode($vars);
         
+        $vars = html::specialEncode($vars);      
         $str = ''; 
         $str.= "<div class=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
@@ -268,7 +262,6 @@ EOF;
             $domain = config::getDomain();
             $base_path = "/files/$domain/gallery";
 
-            $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";
             $image_url = "/gallery/inline/view/$val[id]";
             if ($use_anchors) {
                 $image_url.= "#image"; 
@@ -299,6 +292,12 @@ EOF;
         return $str;           
     }
     
+    /**
+     * get extra td
+     * @param type $num
+     * @return string
+     */
+    
     public static function getExtraTd ($num) {
         $str = '';
         while($num) {
@@ -308,6 +307,12 @@ EOF;
         return $str;
     }
     
+    /**
+     * return a single row
+     * @param type $vars
+     * @param type $options
+     * @return string
+     */
     public static function getSingleRow($vars, $options = null){
         
         $vars = html::specialEncode($vars);
@@ -319,7 +324,7 @@ EOF;
         $use_anchors = config::getModuleIni('gallery_image_anchors');
         $per_row = config::getModuleIni('gallery_image_row_size');
         
-        foreach ($vars as $key => $val) {
+        foreach ($vars as $val) {
             
             $domain = config::getDomain();
             $base_path = "/files/$domain/gallery";

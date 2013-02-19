@@ -9,7 +9,6 @@
 /**
  * @ignore
  */
-include_once "coslib/upload.php";
 moduleloader::includeModule('gallery/admin');
 
 
@@ -74,10 +73,7 @@ class gallery {
         );
         self::$options = $options;      
     }
-    
-    
-    
-
+   
     /**
      * method for delting a file
      *
@@ -124,15 +120,14 @@ class gallery {
         $db->update('gallery_file', array('default' => 1), array('id' => $file_id));
     }
         
- 
+
     /**
      * method for inserting a file
      *
      * @return  boolean true on success and false on failure
      */
     public static function insertFile(){
-        
-        //$upload = new upload(self::$options); 
+
         upload::setOptions(self::$options);
         $res = upload::moveFile('filename');
         if (!$res) {
@@ -142,7 +137,6 @@ class gallery {
         
         $savename = upload::$saveBasename;
 
-        // $values for db. 
         $values = array();
         $values['gallery_id'] = self::$galleryId;
         $values['file_name'] = $savename;
@@ -170,13 +164,11 @@ class gallery {
         $normal = self::$uploadDir . '/full-' . $savename;
         $res = self::scaleImage($filename, $normal, config::getModuleIni('gallery_image_size'));
         
-        
-        if (!$res) return false;
+        if (!$res) return false;        
         
         $db = new db();
         $res = $db->insert('gallery_file', $values);
         return $res;
-
     }
 
     /**
@@ -186,8 +178,6 @@ class gallery {
      * @param  int       the length of the image   
      */
     public static function scaleImage ($image, $thumb, $x){
-        
-        include_once "imagescale.php";
         
         $scale = new imagescale();
         $res = $scale->byX($image, $thumb, $x);
@@ -258,7 +248,6 @@ class gallery {
         $row = $this->getRowAndSrc($id, 'full');
         
         $str = "<div id=\"imageview\">\n"; 
-        //print_r($row);
         $str.= "<a href=\"$org[src]\">";
         $str.= "<img src=\"$row[src]\" alt=\"$row[description]\"";
         if (isset($row['width'])) {
@@ -269,13 +258,7 @@ class gallery {
 
         return $str;
     }
-    
-    /*
-    public function getImageUrl($id, $gallery_id, $type = 'full') {
-        $this->getSingleImage($id);
-        $path = "gallery/$gallery_id/$row[file_name]";
-        $file = config::getWebFilesPath($file);
-    }*/
+
 
     /**
      * method for getting all connected to a gallery
@@ -289,9 +272,8 @@ class gallery {
     }
     
 
-    // {{{ method getFilesHTML return string with all files
     /**
-     * method for getting files
+     * method for displaying a gallery
      * 
      * @param   array   array from a db query $rows
      * @param   array   array ('no_admin' => 1, 'gallery_galleryId => 1);
@@ -305,9 +287,7 @@ class gallery {
             $options['no_gallery_redirect'] = '/gallery/index';
         }
         
-        //$str = '';
         $vars = array();
-        
         $gal = new gallery($gallery_frag, $file_frag);  
         $id = self::$galleryId;
         $gal_info = galleryAdmin::getGallery($id);
@@ -330,8 +310,7 @@ class gallery {
         
         $row = $gal->getDefaultImage($id);
         $options['gallery_id'] = $id;
-        $options['default'] = $row; //array ('gallery_id' => $id, 'default' => $row);
-        //$files = $gal->getAllFiles();
+        $options['default'] = $row;
 
         $rows = $gal->getAllFileInfo($id);
         $vars['rows'] = $rows; 
@@ -350,15 +329,15 @@ class gallery {
     public function getExifData ($web_src) {
         $file = _COS_HTDOCS . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
-        if ($exif === false) return null;
-        //print_r($exif);
-        if (empty($exif)) return null;
+        if ($exif === false || empty($exif) ) { 
+            return null;
+        }
+
         foreach ($exif as $key => $val) {
             if (!in_array($key, array ('IFD0', 'EXIF', 'GPS'))) {
                 unset($exif[$key]);
             }
         }
-        
         return $exif;
     }
     
@@ -366,7 +345,7 @@ class gallery {
         
         $str = "<div class =\"gallery_exif\">\n";
         $str.= "<table>\n";
-        //print_r($exif);
+
         foreach ($exif as $key => $val) {
             if (!in_array($key, array ('IFD0', 'EXIF'))) continue;
             
@@ -386,8 +365,7 @@ class gallery {
     }
     
     public static function getBGImage () {
-        // DISPLAY FOR RANDOM BG-image
-        // XXXXXX
+
         $uri = uri::getInstance();
         echo $image_id = $uri->fragment(3);
         echo $gallery_id = $uri->fragment(2);
@@ -437,8 +415,8 @@ class gallery {
             $str.= '</form>';
             $str.= '</td>';
         }
+        
         if (session::isAdmin()){
-
             $str.= '<td>';
             $str.= '<form action="/gallery/view/' . $this->galleryId;
             $str.= '" method="post" name="test" enctype="multipart/form-data" >';
@@ -454,7 +432,6 @@ class gallery {
 
     /**
      * method for getting a random image url
-     *
      */
     public static function getRandomImageURL($thumb = false){
         $uri= URI::getInstance();
@@ -490,8 +467,7 @@ class gallery {
            return $image_url;
         }
     }
-    // }}} 
-    // {{{ getImageTag($imageSrc)
+
     /**
      * method for getting html image tag
      * 
@@ -537,9 +513,13 @@ class gallery {
         return $link;
     }
     
+    /**
+     * performs actions, add and delete based on url fragements
+     * @param  int $gallery_frag
+     * @param int $file_frag
+     * @return boolean $res true on success and false on failure
+     */
     public function postActions ($gallery_frag = 2, $file_frag = 3 ) {
-        //$gal = new gallery($gallery_frag, $file_frag);
-       // $gal_info = galleryAdmin::getGallery($gallery_frag);
         
         if (isset($_POST['submit'])){
             if (!session::checkAccessControl('gallery_allow_edit')){
@@ -549,37 +529,35 @@ class gallery {
             if (isset($_POST['file_id']) && $_POST['method'] == 'delete') {
                 $this->deleteFile($_POST['file_id']);
                 session::setActionMessage(lang::translate('gallery_file_deleted'));
-                header("Location: $_SERVER[REQUEST_URI]");
-                exit;
+                http::locationHeader($_SERVER[REQUEST_URI]);
+                
             }
             
             if (isset($_POST['file_id']) && $_POST['method'] == 'default_image') {
                 $this->setDefaultImage($_POST['file_id']);
                 session::setActionMessage(lang::translate('gallery_file_is_default'));
-                header("Location: $_SERVER[REQUEST_URI]");
-                exit;
+                http::locationHeader($_SERVER[REQUEST_URI]);
             }
             
             if (!isset(self::$errors)){
                 $res = $this->insertFile('filename');
                 if ($res){
                     session::setActionMessage(lang::translate('gallery_file_added'));
-                    header("Location: $_SERVER[REQUEST_URI]");
-                    exit;
+                    http::locationHeader($_SERVER[REQUEST_URI]);
                 } else {
                     html::errors(self::$errors);
-                    //die;
                 }
             } else {
                 html::errors(self::$errors);
-                //die;
             }
         }
     }
     
-
-    
-    
+    /**
+     * gets a default image. If no image we return a random
+     * @param int $gallery_id
+     * @return array $row image row
+     */
     public static function getDefaultImage ($gallery_id) {
         $db = new db();
         $row = $db->selectOne(
@@ -600,13 +578,11 @@ class gallery {
         if (empty($row)) { 
             return array();
         } 
-        
         return $row[0];               
-
     }
     
     /**
-     * method for updating a image's details, filename etc. 
+     * method for updating a image's details, filename  title, description. 
      * @param int $id image id
      * @return boolean $res true on success else false 
      */
@@ -641,6 +617,12 @@ class gallery {
         return $db->commit();
     }
     
+    /**
+     * renmae images
+     * @param type $row
+     * @param type $values
+     * @return boolean
+     */
     public static function renameImages ($row, $values) {
         $path = self::getGalleryPath($row);
         $newname = $oldname = null;
@@ -664,6 +646,11 @@ class gallery {
         return true;
     }
     
+    /**
+     * gets a url path to gallery
+     * @param array $row gallery row
+     * @return string $url url to gallery
+     */
     public static function getGalleryPath ($row) {
         $domain = config::getDomain();
         return _COS_HTDOCS . "/files/$domain/gallery/$row[gallery_id]";
@@ -704,25 +691,32 @@ class gallery {
     }
 }
 
+/**
+ * returns a form for editing a image inline. 
+ * @param type $values
+ * @return type
+ */
 function get_gallery_inline_form ($values = null) {
-
-    //$values = html::specialEncode($values);
+    
     $values['file_name'] = file::getFilename($values['file_name'], array ('utf8' => true));
     $values['file_name'] = rawurldecode($values['file_name']);
-    html::formStart('gallery_form');
-    html::init($values, 'submit');
+    
+    $form = new html();
+    $form->autoEncode = true;
+    $form->formStart('gallery_form');
+    $form->init($values, 'submit');
     $legend = lang::translate('gallery_set_image_details');
-    html::legend($legend);
-    html::hidden('gallery_details', 1);
-    html::label('file_name', lang::translate('gallery_file_name'));
-    html::text('file_name');
-    html::label('title', lang::system('system_form_label_title'));
-    html::text('title');
-    html::label('description', lang::system('system_form_label_abstract'));
-    html::textareaSmall('description');
-    html::submit('submit', lang::system('system_submit_update'));
-    html::formEnd();
-    $str = html::getStr();
+    $form->legend($legend);
+    $form->hidden('gallery_details', 1);
+    $form->label('file_name', lang::translate('gallery_file_name'));
+    $form->text('file_name');
+    $form->label('title', lang::system('system_form_label_title'));
+    $form->text('title');
+    $form->label('description', lang::system('system_form_label_abstract'));
+    $form->textareaSmall('description');
+    $form->submit('submit', lang::system('system_submit_update'));
+    $form->formEnd();
+    $str = $form->getStr();
     $str = "<div class =\"edit_details\" >\n$str</div>\n";
     return $str;
 }
