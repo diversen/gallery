@@ -35,3 +35,12 @@ if (config::getModuleIni('gallery_menu_item')) {
 $_INSTALL['VERSION'] = 1.81;
 $_INSTALL['PUBLIC_CLONE_URL'] = 'git://github.com/diversen/gallery.git';
 $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
+
+
+function gallery_uninstall($version) {
+    $domain = config::getDomain();
+    $dir = _COS_HTDOCS . "/files/$domain/gallery";
+    if (file_exists($dir)) {
+        file::rrmdir($dir);
+    }
+}
