@@ -36,14 +36,16 @@ $_INSTALL['VERSION'] = 1.812;
 $_INSTALL['PUBLIC_CLONE_URL'] = 'git://github.com/diversen/gallery.git';
 $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
 
-
+// try to remove files on uninstall
+// sql is in mysql
 $_INSTALL['UNINSTALL'] = function ($version = null) {
 
     $domain = config::getDomain();
     $dir = _COS_HTDOCS . "/files/$domain/gallery";
     
+    // only direct web user can remove gallery dir. 
     if (config::isCli()) {
-        echo "You may possible remove $dir manual\n";
+        echo "You have to remove $dir manual\n";
         return;
     }
     
@@ -52,6 +54,4 @@ $_INSTALL['UNINSTALL'] = function ($version = null) {
     }
 };
 
-$_INSTALL['INSTALL'] = function ($version = null) {
-    echo $version;
-};
+$_INSTALL['INSTALL'] = function ($version = null) {};
