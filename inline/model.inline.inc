@@ -206,7 +206,7 @@ EOF;
             'return_url' => $return_url
         );
 
-        $subs = array ('comment');
+        $subs = config::getModuleIni('gallery_sub_modules');
         moduleloader::includeModules($subs);
         $ary = moduleloader::subModuleGetPostContent($subs, $options);
         echo implode("<hr />\n", $ary);
