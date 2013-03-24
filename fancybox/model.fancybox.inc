@@ -3,6 +3,7 @@
 moduleloader::includeTemplateCommon('fancybox');
 fancybox_include();
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
+template::setInlineJs(_COS_MOD_PATH . '/gallery/fancybox.js');
 
 class galleryFancybox {
 
@@ -53,7 +54,7 @@ class galleryFancybox {
             $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";
             $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
 
-            $str.="<td><a rel=\"example_group\" href=\"$image_url\"><img src=\"$thumb_url\" /></a>";    
+            $str.="<td><a rel=\"gallery_group\" href=\"$image_url\" class=\"fancybox\"><img src=\"$thumb_url\" /></a>";    
             $str.=galleryAdmin::getAdminOptions($val, $vars);
             
             $str.="</td>\n";
