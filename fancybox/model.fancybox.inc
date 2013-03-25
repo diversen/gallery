@@ -2,8 +2,9 @@
 
 moduleloader::includeTemplateCommon('fancybox');
 fancybox_include();
-template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 template::setInlineJs(_COS_MOD_PATH . '/gallery/fancybox.js');
+template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
+
 
 class galleryFancybox {
 
