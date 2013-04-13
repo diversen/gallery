@@ -34,7 +34,7 @@ $per_page = 10;
 $pager = new pearPager($num_rows, $per_page);
         
 $references = tags::getAllReferenceTag ('gallery', $id, $pager->from, $per_page);
-$rows = dbQ::setSelect('gallery')->
+$rows = db_q::setSelect('gallery')->
         filterIn("id IN ", $references)->
         order('updated', 'DESC')->
         fetch();
