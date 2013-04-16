@@ -26,12 +26,12 @@ class galleryUpload {
         html::textareaSmall('description');
         
         event::triggerEvent(
-    config::getModuleIni('content_article_events'), 
-    array(
-        'action' => 'form',
-        'reference' => 'gallery',
-        /*'parent_id' => $vars['id']*/)
-);
+            config::getModuleIni('content_article_events'), 
+                array(
+                    'action' => 'form',
+                    'reference' => 'gallery',
+                    /*'parent_id' => $vars['id']*/)
+        );
         
         
         html::fileWithLabel('file', config::getModuleIni('gallery_zip_max'));
@@ -49,6 +49,7 @@ class galleryUpload {
         if ($res === TRUE) {
             $res = $arch->extractTo($unzipped);
             if (!$res) {
+                log::error("could not unzip $zip");
                 return false;
             }
             $arch->close();
@@ -116,33 +117,48 @@ class galleryUpload {
                     }
                     $i++;
                 }
+            } else {
+                $i = 0;
+                foreach ($files as $key => $file) {
+                    $info = pathinfo($file);
+
+                    $oldname = $file;
+                    $files[$key] =  $name = "$info[filename].$info[extension]";
+                    $newname = "$dir/" . $name;
+                    $res = rename($oldname, $newname);
+                    if (!$res) {
+                        $this->errors[] = lang::translate('gallery_zip_could_not_rename_file');
+                        return false;
+                    }
+                
+                    $i++;
+                }
             }
            
             $db->begin();
-
-
             $sizes = array (
                     'thumb' => 'gallery_thumb_size', 
                     'full' =>  'gallery_image_size', 
                     'med' =>   'gallery_med_size', 
                     'small' => 'gallery_small_size'
             );
-            
-
-            
-            
+                    
             // scale images into different sizes
             foreach ($files as $file) {
                 
                 $did_scale = null;
                 foreach ($sizes as $key => $size) { 
                     $scaled = $dir . "/$key-$file";
+                    
+                    $full_name = "$dir/$file";
                     $did_scale = gallery::scaleImage(
-                            "$dir/$file", 
+                            $full_name, 
                             $scaled, 
                             config::getModuleIni($size)
                         );
-                    if (!$did_scale) continue;
+                    if (!$did_scale) { 
+                        continue;
+                    }
                     
                 }
                 if ($did_scale) {

@@ -88,3 +88,5 @@ $_COS_LANG_MODULE['gallery_edit_details'] = 'Ret billiede';
 $_COS_LANG_MODULE['gallery_view_exif'] = 'Vis detaljer';
 
 $_COS_LANG_MODULE['gallery_view_gps'] = 'Vis kort';
+
+$_COS_LANG_MODULE['gallery: title: no title'] = 'Ingen titel';

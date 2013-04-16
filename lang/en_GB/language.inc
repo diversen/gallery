@@ -83,3 +83,5 @@ $_COS_LANG_MODULE['gallery_edit_details'] = 'Edit image details';
 $_COS_LANG_MODULE['gallery_view_exif'] = 'Image details (exif)';
 
 $_COS_LANG_MODULE['gallery_view_gps'] = 'GPS';
+
+$_COS_LANG_MODULE['gallery: title: no title'] = 'No title';

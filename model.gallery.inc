@@ -183,6 +183,7 @@ class gallery {
         $res = $scale->byX($image, $thumb, $x);
         
         if (!$res) {
+            
             self::$errors = imagescale::$errors;
             return false;
         }

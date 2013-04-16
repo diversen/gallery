@@ -152,6 +152,7 @@ class galleryAdmin extends gallery {
     }
     
     public static function displayTitle ($val) {
+        if (empty($val['title'])) $val['title'] = lang::translate('gallery: title: no title');
         $link = html::createLink("/gallery/view/$val[id]", $val['title']);
         html::headline($link);
     }
