@@ -12,7 +12,8 @@ class galleryUpload {
     
     public $errors = array ();
     public function form () {
-        $values = html::specialEncode($values);
+        
+        $values = html::specialEncode($_POST);
 
         html::formStart('gallery_upload');
         html::init($values, 'submit');
