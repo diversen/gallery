@@ -544,7 +544,7 @@ class gallery {
                 $res = $this->insertFile('filename');
                 if ($res){
                     session::setActionMessage(lang::translate('gallery_file_added'));
-                    http::locationHeader($_SERVER[REQUEST_URI]);
+                    http::locationHeader($_SERVER['REQUEST_URI']);
                 } else {
                     html::errors(self::$errors);
                 }
