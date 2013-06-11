@@ -9,6 +9,7 @@
 /**
  * @ignore
  */
+include_once "coslib/upload.php";
 moduleloader::includeModule('gallery/admin');
 
 
