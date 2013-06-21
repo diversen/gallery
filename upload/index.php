@@ -75,7 +75,7 @@ class galleryUpload {
             }
             
             $db = new db();            
-            $gal = new galleryAdmin();
+            $gal = new gallery_admin();
             $id = $gal->createGallery();
             
             $tmp_dir = sys_get_temp_dir();

@@ -1,8 +1,8 @@
 <?php
 
 
-moduleloader::includeModel('tags');
-moduleloader::includeModel('gallery/inline');
+moduleloader::includeModule('tags');
+moduleloader::includeModule('gallery/inline');
 
 $id = uri::getInstance()->fragment(2);
 $tag = tags::getTagSingle($id);
@@ -51,12 +51,12 @@ foreach ($rows as $key => $val){
         $options = array ('gallery_id' => $val['id'], 'no_admin' => true);
         $vars['rows'] = $rows; 
         $vars['options'] = $options;
-        echo $str = galleryInline::getRows($vars, $options);
+        echo $str = gallery_inline::getRows($vars, $options);
     } else {
         echo self::displaySingleRow($val['id']);
     }
     echo $val['description'] . "<br />\n";
-    echo galleryAdmin::adminOptions($val['id']);
+    echo gallery_admin::adminOptions($val['id']);
     echo "<hr />\n";    
 }
 

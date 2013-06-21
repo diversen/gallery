@@ -9,7 +9,7 @@ $js_url = '/js/jquery.showhide.js';
 template::setJs($js_url, null, array ('head' => true));
 
 
-class galleryinline extends gallery {
+class gallery_inline extends gallery {
     
     public $id = null;
     public $row = null;
@@ -228,7 +228,7 @@ EOF;
         $num_rows = count($vars['rows']);
         
         if ($num_rows == 0) {
-            $str.= galleryAdmin::uploadForm ($vars);
+            $str.= gallery_admin::uploadForm ($vars);
             return $str;
         } else {
             // more than one image
@@ -237,7 +237,7 @@ EOF;
             }
 
             $str.= self::getRows($vars);
-            $str.=galleryAdmin::uploadForm ($vars);
+            $str.=gallery_admin::uploadForm ($vars);
             return $str;
         }       
         return $str;
@@ -275,7 +275,7 @@ EOF;
                         'alt' => $val['file_name'])
             );
             $str.="<td><a href=\"$image_url\">$img_tag</a>";
-            $str.=galleryAdmin::getAdminOptions ($val, $vars);
+            $str.=gallery_admin::getAdminOptions ($val, $vars);
             $str.="</td>\n";
             $i++;
             $t = $i % $per_row;
@@ -378,7 +378,7 @@ EOF;
     public function displayAll () {
         include_once "pearPager.php";
         
-        $gallery = new galleryAdmin();
+        $gallery = new gallery_admin();
         $db = new db();
         $num_rows = $db->getNumRows('gallery');
 
@@ -405,7 +405,7 @@ EOF;
             }
             
             if (session::isAdmin()) {
-                array_unshift($ary, galleryAdmin::adminOptions($val['id']));
+                array_unshift($ary, gallery_admin::adminOptions($val['id']));
             }
             
             $event_params = array(

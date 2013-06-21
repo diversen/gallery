@@ -6,7 +6,7 @@ template::setInlineJs(_COS_MOD_PATH . '/gallery/fancybox.js');
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 
 
-class galleryFancybox {
+class gallery_fancybox {
 
     /**
      * method for getting files
@@ -56,7 +56,7 @@ class galleryFancybox {
             $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
 
             $str.="<td><a rel=\"gallery_group\" href=\"$image_url\" class=\"fancybox\"><img src=\"$thumb_url\" /></a>";    
-            $str.=galleryAdmin::getAdminOptions($val, $vars);
+            $str.=gallery_admin::getAdminOptions($val, $vars);
             
             $str.="</td>\n";
             $i++;
@@ -82,14 +82,14 @@ class galleryFancybox {
     }
     
     public static function getUploadForm ($vars) {
-        return galleryAdmin::uploadForm($vars);
+        return gallery_admin::uploadForm($vars);
     }
     
     public static function displayAll () {
-        $gallery = new galleryAdmin();
+        $gallery = new gallery_admin();
         $galleries = $gallery->getAllGallery();
         foreach ($galleries as $key => $val){
-            galleryAdmin::displayTitle($val);
+            gallery_admin::displayTitle($val);
             //echo self::displaySingleRow($val['id']);
             echo $val['description'] . "<br />\n";
             /*
@@ -103,7 +103,7 @@ class galleryFancybox {
                 $event_params
             );*/    
             
-            echo galleryAdmin::adminOptions($val['id']);
+            echo gallery_admin::adminOptions($val['id']);
             echo "<hr />\n";             
         }
     }

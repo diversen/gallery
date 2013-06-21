@@ -11,7 +11,7 @@ if (!session::checkAccessControl('gallery_allow_edit')){
 }
 
 template::setTitle(lang::translate('Add Gallery'));
-$gallery = new galleryAdmin(true);
+$gallery = new gallery_admin(true);
 if (!empty($_POST['submit'])){
 
     $gallery->validate();

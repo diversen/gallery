@@ -5,7 +5,7 @@ if (!session::checkAccessControl('gallery_allow_edit')){
 }
 
 template::setTitle(lang::translate('Delete Gallery'));
-$gallery = new galleryAdmin();
+$gallery = new gallery_admin();
 $row = $gallery->getGallery();
 
 if (!empty($_POST['submit'])){

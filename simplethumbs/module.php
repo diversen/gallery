@@ -4,7 +4,7 @@ template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/simpleth
 template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/command.js');
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 
-class gallerySimplethumbs {
+class gallery_simplethumbs {
 
     /**
      * method for getting files
@@ -46,7 +46,7 @@ class gallerySimplethumbs {
     }
     
     public static function getUploadForm ($vars) {
-        return galleryAdmin::uploadForm($vars);
+        return gallery_admin::uploadForm($vars);
     }
     
     public static function getRows ($vars) {
@@ -63,7 +63,7 @@ class gallerySimplethumbs {
             $link = html::createLink($src, $thumb_img);
 
             $str.="<td>$link";
-            $str.=galleryAdmin::getAdminOptions($val, $vars);
+            $str.=gallery_admin::getAdminOptions($val, $vars);
             
             $str.="</td>\n";
             $i++;
@@ -86,10 +86,10 @@ class gallerySimplethumbs {
     }
     
     public static function displayAll () {
-        $gallery = new galleryAdmin();
+        $gallery = new gallery_admin();
         $galleries = $gallery->getAllGallery();
         foreach ($galleries as $key => $val){
-            galleryAdmin::displayTitle($val);
+            gallery_admin::displayTitle($val);
             //echo self::displaySingleRow($val['id']);
             echo $val['description'] . "<br />\n";
 
@@ -103,7 +103,7 @@ class gallerySimplethumbs {
                 $event_params
             );    
             
-            echo galleryAdmin::adminOptions($val['id']);
+            echo gallery_admin::adminOptions($val['id']);
             echo "<hr />\n";             
         }
     }

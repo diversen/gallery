@@ -2,7 +2,7 @@
 
 moduleloader::includeModule('gallery');
 
-$gallery = new galleryInline();
+$gallery = new gallery_inline();
 $gallery->setMeta();
 $gallery->displayImage();
 $gallery->displaySubModules();

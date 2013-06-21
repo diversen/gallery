@@ -5,7 +5,7 @@ if (!session::checkAccessControl('gallery_allow_edit')){
 }
 
 template::setTitle(lang::translate('Edit gallery'));
-$gallery = new galleryAdmin();
+$gallery = new gallery_admin();
 if (!empty($_POST['submit'])){
     $gallery->validate();
     if (empty($gallery->errors)){
