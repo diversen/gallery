@@ -40,53 +40,51 @@ $_COS_LANG_MODULE['Upload image'] = 'Upload Billed';
 $_COS_LANG_MODULE['File seems to already exist. Only unique filenames allowed'] =
     'File eksisterer. Kun unikke filnavne er tilladte.';
 $_COS_LANG_MODULE['Edit gallery'] = 'Edit gallery';
-$_COS_LANG_MODULE['gallery_edit_files'] = 'Ret billeder';
-$_COS_LANG_MODULE['gallery_edit_name'] = 'Ret galleri';
+$_COS_LANG_MODULE['Edit Files'] = 'Ret billeder';
+$_COS_LANG_MODULE['Edit gallery'] = 'Ret galleri';
 $_COS_LANG_MODULE['gallery_form_title'] = 'Titel';
 $_COS_LANG_MODULE['gallery_submit_title'] = 'gallery_submit_title';
 $_COS_LANG_MODULE['Delete Gallery'] = 'Delete Gallery';
 $_COS_LANG_MODULE['has been deleted'] = 'has been deleted';
 $_COS_LANG_MODULE['File specified is to big'] = 'File specified is to big';
 $_COS_LANG_MODULE['Delete'] = 'Delete';
-$_COS_LANG_MODULE['gallery_file_deleted'] = 'Fil Slettet';
-$_COS_LANG_MODULE['gallery_file_added'] = 'Til tilføjet';
+$_COS_LANG_MODULE['Fil deleted'] = 'Fil Slettet';
+$_COS_LANG_MODULE['File added'] = 'Til tilføjet';
 $_COS_LANG_MODULE['Delete image'] = 'Delete image';
 $_COS_LANG_MODULE['File deleted'] = 'File deleted';
-$_COS_LANG_MODULE['gallery_default_image'] = 'Primært';
+$_COS_LANG_MODULE['Main image'] = 'Primært';
 
 $_COS_LANG_MODULE['gallery_form_label_path'] = 'Intast en fysisk sti. Fx /billeder/by/natur';
-$_COS_LANG_MODULE['gallery_file_is_default'] = 'Billedet er primært i gallery';
+$_COS_LANG_MODULE['File is gallery default'] = 'Billedet er primært i gallery';
 
 $_COS_LANG_MODULE['gallery_delete_has_files'] = 'Kan ikke slette galleri da der stadig er filer i det. Slet disse først.';
-$_COS_LANG_MODULE['gallery_delete_legend'] = 'Slet galleri';
+$_COS_LANG_MODULE['Delete gallery'] = 'Slet galleri';
 
 
-$_COS_LANG_MODULE['gallery_gallery_has_been_deleted'] = 'Galleri er blevet slettet';
+$_COS_LANG_MODULE['Gallery has been deleted'] = 'Galleri er blevet slettet';
 
-$_COS_LANG_MODULE['gallery_delete_gallery'] = 'Slet galleri';
+$_COS_LANG_MODULE['Delete gallery'] = 'Slet galleri';
 
-$_COS_LANG_MODULE['gallery_upload_zip_legend'] = 'Upload zip fil';
-$_COS_LANG_MODULE['gallery_label_zip_add_chars'] = 'Omdøb filer efter følgende titel';
-$_COS_LANG_MODULE['gallery_error_zip_mv'] = 'Kunne ikke flytte filer';
-$_COS_LANG_MODULE['gallery_error_zip_chmod'] = 'Kunne ikke ændre rettigheder';
-$_COS_LANG_MODULE['galler_error_unzip'] = 'Kunne ikke unzippe';
-$_COS_LANG_MODULE['gallery_zip_could_not_rename_file'] = 'Kunne ikke ændre fil navne';
-$_COS_LANG_MODULE['gallery_zip_error_scale'] = 'Skalerings fejl';
-$_COS_LANG_MODULE['gallery_zip_mv_error'] = 'Kunne ikke flytte filer';
-$_COS_LANG_MODULE['gallery_zip_commit_error'] = 'Kunne ikke commite til database';
-$_COS_LANG_MODULE['gallery_zip_archive_uploaded'] = 'Zip arkiv uploadet';
-$_COS_LANG_MODULE['gallery_set_image_details'] = 'Ændr billedets detaljer';
-$_COS_LANG_MODULE['gallery_file_name'] = 'Ændr fil navn';
-$_COS_LANG_MODULE['gallery_view_full_size'] = 'Stort billede';
-$_COS_LANG_MODULE['gallery_view_original_size'] = 'Se originalt billede';
-$_COS_LANG_MODULE['gallery_image_details_updated'] = 'Detaljer opdateret!';
+$_COS_LANG_MODULE['Upload zip file'] = 'Upload zip fil';
+$_COS_LANG_MODULE['Rename files after following title'] = 'Omdøb filer efter følgende titel';
+$_COS_LANG_MODULE['Could not move files'] = 'Kunne ikke flytte filer';
+$_COS_LANG_MODULE['Could not set correct permissions on files'] = 'Kunne ikke ændre rettigheder';
+$_COS_LANG_MODULE['Could not unzip file'] = 'Kunne ikke unzippe';
+$_COS_LANG_MODULE['Could not rename files'] = 'Kunne ikke ændre fil navne';
+$_COS_LANG_MODULE['Could not scale image files'] = 'Skalerings fejl';
+$_COS_LANG_MODULE['Could not move files'] = 'Kunne ikke flytte filer';
+$_COS_LANG_MODULE['Could not commit to database'] = 'Kunne ikke commite til database';
+$_COS_LANG_MODULE['Zip archive uploaded'] = 'Zip arkiv uploadet';
+$_COS_LANG_MODULE['Set image details'] = 'Ændr billedets detaljer';
+$_COS_LANG_MODULE['File name'] = 'Ændr fil navn';
+$_COS_LANG_MODULE['Large image'] = 'Stort billede';
+$_COS_LANG_MODULE['Original image'] = 'Se originalt billede';
+$_COS_LANG_MODULE['Image details has been updated'] = 'Detaljer opdateret!';
 
-$_COS_LANG_MODULE['gallery_tags_list_entries_title'] = 'Galleri tag';
-$_COS_LANG_MODULE['gallery_could_not_rename_file_exists'] = 'Kunne ikke omdøbe fil. Fil med navn eksisterer';
+$_COS_LANG_MODULE['Gallery tag'] = 'Galleri tag';
+$_COS_LANG_MODULE['Could not rename file. File name already exists'] = 'Kunne ikke omdøbe fil. Fil med navn eksisterer';
 
-$_COS_LANG_MODULE['gallery_edit_details'] = 'Ret billiede';
-$_COS_LANG_MODULE['gallery_view_exif'] = 'Vis detaljer';
+$_COS_LANG_MODULE['Edit image details'] = 'Ret billiede';
+$_COS_LANG_MODULE['Image details (exif)'] = 'Vis detaljer';
 
-$_COS_LANG_MODULE['gallery_view_gps'] = 'Vis kort';
-
-$_COS_LANG_MODULE['gallery: title: no title'] = 'Ingen titel';
+$_COS_LANG_MODULE['GPS'] = 'Vis kort';
