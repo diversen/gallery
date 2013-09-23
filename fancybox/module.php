@@ -39,7 +39,7 @@ class gallery_fancybox {
         }       
         return $str;
     }
-    public function getRows($vars, $options = null){
+    public static function getRows($vars, $options = null){
 
         $str = ''; 
         $str.= "<div id=\"gallery_thumbs\">\n";

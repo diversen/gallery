@@ -283,7 +283,7 @@ class gallery {
      * 
      * @return  string  html displaying files connect to article.
      */
-    public function viewGallery ($gallery_frag = 2, $file_frag = 3, $options = array () ) {
+    public static function viewGallery ($gallery_frag = 2, $file_frag = 3, $options = array () ) {
         
         // set a default redirct if there is no gallery for a URL
         if (!isset($options['no_gallery_redirect'])) {
