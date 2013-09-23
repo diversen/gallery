@@ -15,13 +15,13 @@ if (empty($tag)) {
 $url = strings::utf8Slug("/gallery/tags/$tag[id]", $tag['title']);
 http::permMovedHeader($url);
 
-$title = lang::translate('gallery_tags_list_entries_title');
+$title = lang::translate('Gallery tag');
 $title.= MENU_SUB_SEPARATOR;
 $title.= $tag['title'];
 
 template::setTitle($title);
         
-$headline = lang::translate('gallery_tags_list_entries_title');
+$headline = lang::translate('Gallery tag');
 $headline.= MENU_SUB_SEPARATOR_SEC;
 $headline.= $tag['title'];
         

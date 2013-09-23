@@ -4,7 +4,7 @@ if (!session::checkAccessControl('gallery_allow_edit')){
     return;
 }
 
-template::setTitle(lang::translate('Delete Gallery'));
+template::setTitle(lang::translate('Delete gallery'));
 $gallery = new gallery_admin();
 $row = $gallery->getGallery();
 
@@ -12,7 +12,7 @@ if (!empty($_POST['submit'])){
     $res = $gallery->deleteGallery($row['id']);
     if ($res){
         session::setActionMessage(
-            lang::translate('gallery_gallery_has_been_deleted'));
+            lang::translate('Gallery has been deleted'));
         http::locationHeader('/gallery/index');
     }
 } else { 

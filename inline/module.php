@@ -47,7 +47,7 @@ class gallery_inline extends gallery {
         }
 
         $title.= MENU_SUB_SEPARATOR;
-        $title.= lang::translate('gallery_view_full_size');
+        $title.= lang::translate('Large image');
         template::setTitle($title);
 
         if (!empty($this->row['description'])) {
@@ -112,7 +112,7 @@ EOF;
         
         if ($exif) {    
             $elements_content [] = $table = $this->getExifHTML($exif);
-            $view_exif = lang::translate('gallery_view_exif');
+            $view_exif = lang::translate('Image details (exif)');
 
             $elements[] = $exif_str = <<<EOF
 <a name = "exif"></a>
@@ -131,7 +131,7 @@ EOF;
         if ($exif && isset($exif['GPS'])) {
             $gps = getGPS($exif['GPS'], true);
             $elements_content[] = $gps_map = $this->getGmap($gps['latitude'], $gps['longitude'], 12);
-            $lang_gps = lang::translate('gallery_view_gps');
+            $lang_gps = lang::translate('GPS');
             $elements[] = $gps_str = <<<EOF
 <a name = "google_map"></a>
 <a href="#google_map" class="show_gps">$lang_gps</a>
@@ -147,7 +147,7 @@ EOF;
         }
         
         if (session::isAdmin()) {
-            $edit_details = lang::translate('gallery_edit_details');
+            $edit_details = lang::translate('Edit image details');
 
             $elements[] = <<<EOF
 <a name = "edit_details"></a>
@@ -163,7 +163,7 @@ EOF;
             $elements_content[] = $this->displayInlineForm();
         }
 
-        $elements[] = $link = html::createLink($this->row['src'], lang::translate('gallery_view_original_size'));
+        $elements[] = $link = html::createLink($this->row['src'], lang::translate('Original image'));
         
         $this->postActions();
         echo implode(MENU_SUB_SEPARATOR, $elements);
@@ -187,7 +187,7 @@ EOF;
                 $res = $this->updateImageDetails($this->id);
                 if ($res) {
                     $location = "/gallery/inline/view/" . $this->id;
-                    $message = lang::translate('gallery_image_details_updated');
+                    $message = lang::translate('Image details has been updated');
                     http::locationHeader($location, $message);
                 } 
             }

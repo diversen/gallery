@@ -10,7 +10,7 @@ if (!session::checkAccessControl('gallery_allow_edit')){
     return;
 }
 
-template::setTitle(lang::translate('Add Gallery'));
+template::setTitle(lang::translate('Add file'));
 $gallery = new gallery_admin(true);
 if (!empty($_POST['submit'])){
 

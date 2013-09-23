@@ -7,10 +7,10 @@
  */
 $_MODULE_MENU = array (
     array(
-        'title' => lang::translate('List Galleries'),
+        'title' => lang::translate('List galleries'),
         'url' => '/gallery/index'),
     array(
-        'title' => lang::translate('Add Gallery'),
+        'title' => lang::translate('Add file'),
         'url' => '/gallery/admin/index',
         'auth' => 'admin'),
 
@@ -20,7 +20,7 @@ $_MODULE_MENU = array (
 if (config::getModuleIni('gallery_allow_zip')) {
     $_MODULE_MENU[] =
         array(
-            'title' => lang::translate('gallery_menu_upload_zip'),
+            'title' => lang::translate('Upload zip'),
             'url' => '/gallery/upload/index',
             'auth' => 'admin');
 }

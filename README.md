@@ -1,7 +1,5 @@
 ### About
 
-Test
-
 Gallery module which supports HTML drivers for displaying 
 the gallery. 
 

@@ -531,21 +531,21 @@ class gallery {
             
             if (isset($_POST['file_id']) && $_POST['method'] == 'delete') {
                 $this->deleteFile($_POST['file_id']);
-                session::setActionMessage(lang::translate('gallery_file_deleted'));
+                session::setActionMessage(lang::translate('File deleted'));
                 http::locationHeader($_SERVER[REQUEST_URI]);
                 
             }
             
             if (isset($_POST['file_id']) && $_POST['method'] == 'default_image') {
                 $this->setDefaultImage($_POST['file_id']);
-                session::setActionMessage(lang::translate('gallery_file_is_default'));
+                session::setActionMessage(lang::translate('File is gallery default'));
                 http::locationHeader($_SERVER[REQUEST_URI]);
             }
             
             if (!isset(self::$errors)){
                 $res = $this->insertFile('filename');
                 if ($res){
-                    session::setActionMessage(lang::translate('gallery_file_added'));
+                    session::setActionMessage(lang::translate('File added'));
                     http::locationHeader($_SERVER['REQUEST_URI']);
                 } else {
                     html::errors(self::$errors);
@@ -607,7 +607,7 @@ class gallery {
                 $values['file_name'].= "." . $ext;
                 $res = $this->renameImages($row, $values);
                 if (!$res) {
-                    self::$errors[] = lang::translate('gallery_could_not_rename_file_exists');
+                    self::$errors[] = lang::translate('Could not rename file. File name already exists');
                     $db->rollback();
                     return false;
                 } 
