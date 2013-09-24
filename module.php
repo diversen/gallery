@@ -268,7 +268,7 @@ class gallery {
      *
      * @return      array   rows of a select query
      */
-    public function getAllFileInfo($gallery_id) { 
+    public static function getAllFileInfo($gallery_id) { 
         $db = new db();
         $rows = $db->select('gallery_file', 'gallery_id', $gallery_id);
         return $rows;

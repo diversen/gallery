@@ -330,7 +330,7 @@ function get_gallery_inline_form ($values = null) {
     $values['file_name'] = rawurldecode($values['file_name']);
     
     $form = new html();
-    $form->autoEncode = true;
+    html::$autoEncode = true;
     $form->formStart('gallery_form');
     $form->init($values, 'submit');
     $legend = lang::translate('Set image details');

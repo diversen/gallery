@@ -375,8 +375,8 @@ EOF;
     }
     
     
-    public function displayAll () {
-        include_once "pearPager.php";
+    public static function displayAll () {
+
         
         $gallery = new gallery_admin();
         $db = new db();
@@ -394,7 +394,7 @@ EOF;
             $date_formatted = time::getDateString($val['updated']);
             echo user::getProfileSimple($val['user_id'], $date_formatted);
             if (config::getModuleIni('gallery_preview_display_all')) {
-                $rows = $this->getAllFileInfo($val['id']);
+                $rows = self::getAllFileInfo($val['id']);
                 $options = array ('gallery_id' => $val['id'], 'no_admin' => true);
 
                 $vars['rows'] = $rows; 
