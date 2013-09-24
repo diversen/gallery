@@ -18,7 +18,6 @@ $_COS_LANG_MODULE['Could not rename file. File name already exists'] = 'Could no
 // Translation of file /modules/gallery/delete.php
 
 $_COS_LANG_MODULE['Delete image'] = 'Delete image';
-$_COS_LANG_MODULE['File deleted'] = 'File deleted';
 
 // Translation of file /modules/gallery/admin/module.php
 
@@ -34,17 +33,14 @@ $_COS_LANG_MODULE['File name'] = 'File name';
 
 // Translation of file /modules/gallery/admin/delete.php
 
-$_COS_LANG_MODULE['Delete gallery'] = 'Delete gallery';
 $_COS_LANG_MODULE['Gallery has been deleted'] = 'Gallery has been deleted';
 
 // Translation of file /modules/gallery/admin/edit.php
 
-$_COS_LANG_MODULE['Edit gallery'] = 'Edit gallery';
 $_COS_LANG_MODULE['Gallery updated'] = 'Gallery updated';
 
 // Translation of file /modules/gallery/admin/index.php
 
-$_COS_LANG_MODULE['Add file'] = 'Add file';
 $_COS_LANG_MODULE['Gallery created'] = 'Gallery created';
 
 // Translation of file /modules/gallery/upload/index.php

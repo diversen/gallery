@@ -10,7 +10,7 @@ $_MODULE_MENU = array (
         'title' => lang::translate('List galleries'),
         'url' => '/gallery/index'),
     array(
-        'title' => lang::translate('Add file'),
+        'title' => lang::translate('Add gallery'),
         'url' => '/gallery/admin/index',
         'auth' => 'admin'),
 
