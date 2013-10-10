@@ -17,11 +17,11 @@ class galleryUpload {
 
         html::formStart('gallery_upload');
         html::init($values, 'submit');
-        $legend = lang::translate('gallery_upload_zip_legend');
+        $legend = lang::translate('Upload zip file');
         html::legend($legend);
         html::label('title', lang::system('system_form_label_title'));
         html::text('title');
-        html::label('image_add', lang::translate('gallery_label_zip_add_chars'));
+        html::label('image_add', lang::translate('Rename files after following title'));
         html::text('image_add');
         html::label('description', lang::system('system_form_label_abstract'));
         html::textareaSmall('description');
@@ -83,7 +83,7 @@ class galleryUpload {
 
             $res = copy (escapeshellcmd($_FILES['file']['tmp_name']) , $zip);
             if (!$res) {
-                $this->errors[] = lang::translate('gallery_error_zip_mv');
+                $this->errors[] = lang::translate('Could not move files');
                 return false;
             }
 
@@ -92,7 +92,7 @@ class galleryUpload {
             
             $res = $this->extractZip ($zip, $unzipped);
             if (!$res ){
-                $this->errors[] = lang::translate('gallery_error_zip_chmod');
+                $this->errors[] = lang::translate('Could not set correct permissions on files');
                 return false;
             }
            
@@ -113,7 +113,7 @@ class galleryUpload {
                     $newname = "$dir/" . $name;
                     $res = rename($oldname, $newname);
                     if (!$res) {
-                        $this->errors[] = lang::translate('gallery_zip_could_not_rename_file');
+                        $this->errors[] = lang::translate('Could not rename files');
                         return false;
                     }
                     $i++;
@@ -128,7 +128,7 @@ class galleryUpload {
                     $newname = "$dir/" . $name;
                     $res = rename($oldname, $newname);
                     if (!$res) {
-                        $this->errors[] = lang::translate('gallery_zip_could_not_rename_file');
+                        $this->errors[] = lang::translate('Could not rename files');
                         return false;
                     }
                 
@@ -184,13 +184,13 @@ class galleryUpload {
             // move dir and 
             $res = rename($dir, $path);            
             if (!$res) {
-                $this->errors[] = lang::translate('gallery_zip_mv_error');
+                $this->errors[] = lang::translate('Could not move files');
                 return false;
             }
             
             $res = $db->commit();
             if (!$res) {
-                $this->errors[] = lang::translate('gallery_zip_commit_error');
+                $this->errors[] = lang::translate('Could not commit to database');
                 return false;
             } 
             return true;
@@ -206,7 +206,7 @@ if (!empty($_POST)) {
     if (!empty($gal->errors)) {
         html::errors($gal->errors);
     } else {
-        session::setActionMessage(lang::translate('gallery_zip_archive_uploaded'));
+        session::setActionMessage(lang::translate('Zip archive uploaded'));
         http::locationHeader('/gallery/index');
     }
     

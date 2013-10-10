@@ -53,11 +53,11 @@ class gallery_admin extends gallery {
     public static function adminOptions ($id) {
         $str = '';
         if (session::isAdmin()){
-            $str = html::createLink ("/gallery/view/$id", lang::translate('gallery_edit_files')) . " \n";
+            $str = html::createLink ("/gallery/view/$id", lang::translate('Edit files')) . " \n";
             $str.= MENU_SUB_SEPARATOR;
-            $str.= html::createLink("/gallery/admin/edit/$id", lang::translate('gallery_edit_name')) . " \n";
+            $str.= html::createLink("/gallery/admin/edit/$id", lang::translate('Edit gallery')) . " \n";
             $str.= MENU_SUB_SEPARATOR;
-            $str.= html::createLink("/gallery/admin/delete/$id", lang::translate('gallery_delete_gallery')) . " \n";
+            $str.= html::createLink("/gallery/admin/delete/$id", lang::translate('Delete gallery')) . " \n";
         }
         return $str;
     }
@@ -99,7 +99,7 @@ class gallery_admin extends gallery {
             $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
             $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
             $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('gallery_default_image') . '" />';
+            $str.= lang::translate('Main image') . '" />';
             $str.= '</form>';              
             $str.= "</td></tr>";
             $str.= "</table>\n";
@@ -152,7 +152,7 @@ class gallery_admin extends gallery {
     }
     
     public static function displayTitle ($val) {
-        if (empty($val['title'])) $val['title'] = lang::translate('gallery: title: no title');
+        if (empty($val['title'])) $val['title'] = lang::translate('No title');
         $link = html::createLink("/gallery/view/$val[id]", $val['title']);
         html::headline($link);
     }
@@ -258,7 +258,7 @@ function view_gallery_form($method, $id = null, $values = array()){
         html::$autoLoadTrigger = 'submit';
         //html::init($vars);
         html::formStart('gallery_from_delete');
-        html::legend(lang::translate('gallery_delete_legend'));
+        html::legend(lang::translate('Delete gallery'));
         html::submit('submit', lang::system('system_submit_delete'));
         html::formEnd();
         echo html::getStr();
@@ -279,9 +279,9 @@ function view_gallery_form($method, $id = null, $values = array()){
     }
 
     if (isset($id)) {
-        $legend = lang::translate('Edit Gallery');    
+        $legend = lang::translate('Edit gallery');    
     } else {
-        $legend = lang::translate('Add Gallery');
+        $legend = lang::translate('Add file');
         
     }
     
@@ -330,13 +330,13 @@ function get_gallery_inline_form ($values = null) {
     $values['file_name'] = rawurldecode($values['file_name']);
     
     $form = new html();
-    $form->autoEncode = true;
+    html::$autoEncode = true;
     $form->formStart('gallery_form');
     $form->init($values, 'submit');
-    $legend = lang::translate('gallery_set_image_details');
+    $legend = lang::translate('Set image details');
     $form->legend($legend);
     $form->hidden('gallery_details', 1);
-    $form->label('file_name', lang::translate('gallery_file_name'));
+    $form->label('file_name', lang::translate('File name'));
     $form->text('file_name');
     $form->label('title', lang::system('system_form_label_title'));
     $form->text('title');

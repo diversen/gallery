@@ -9,7 +9,7 @@
 /*
 $_MODULE_MENU = array (
     array(
-        'title' => lang::translate('Add Gallery'),
+        'title' => lang::translate('Add file'),
         'url' => '/gallery/admin/index',
         'auth' => 'admin'),
 
