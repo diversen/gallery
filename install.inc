@@ -8,7 +8,7 @@
 
 if (config::getModuleIni('gallery_menu_item')) {
     $_INSTALL['MAIN_MENU_ITEM'] = array (
-        'title' => 'Gallery',
+        'title' => lang::translate('Gallery', null, array ('no_translate' => true)),
         'url' => '/gallery/index',
         'module_name' => 'gallery',
         'parent' => 0,
