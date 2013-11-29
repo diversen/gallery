@@ -1,7 +1,6 @@
 <?php
 
 
-
 function fancybox_include () {
 
     // no cache css - as we just keep the orginal image paths.
@@ -10,7 +9,7 @@ function fancybox_include () {
 
 }
 
-//moduleloader::includeTemplateCommon('fancybox');
+
 fancybox_include();
 template::setInlineJs(_COS_MOD_PATH . '/gallery/fancybox.js');
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
