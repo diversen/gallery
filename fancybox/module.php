@@ -7,9 +7,9 @@ function fancybox_include () {
     template::setNoCacheCss('/templates/fancyBox/source/jquery.fancybox.css');
     template::setJs("/templates/fancyBox/source/jquery.fancybox.js", null, array ('head' => true));
     
-    //template::setNoCacheCss("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.css");
+    template::setNoCacheCss("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.css");
 	//<script type="text/javascript" src="/fancybox/source/helpers/jquery.fancybox-buttons.js?v=2.1.5"></script>
-        //template::setJs("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.js", null, array ('head' => true));
+        template::setJs("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.js", null, array ('head' => true));
 
 }
 

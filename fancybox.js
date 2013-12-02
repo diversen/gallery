@@ -3,6 +3,7 @@ $(document).ready(function() {
 		prevEffect		: 'none',
 		nextEffect		: 'none',
 		closeBtn		: false,
+                btnToggle: 'btnEnabled',
 		helpers		: {
 			title	: { type : 'inside' },
 			buttons	: {}
