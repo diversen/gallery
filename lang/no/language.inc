@@ -1,0 +1,37 @@
+<?php
+
+$_COS_LANG_MODULE['View gallery'] = 'Se galleri';
+$_COS_LANG_MODULE['Delete'] = 'Slett';
+$_COS_LANG_MODULE['Upload image'] = 'Last opp bilde';
+$_COS_LANG_MODULE['File deleted'] = 'Filen slettet';
+$_COS_LANG_MODULE['File is gallery default'] = 'Filen er gallery standard';
+$_COS_LANG_MODULE['File added'] = 'Filen lagt';
+$_COS_LANG_MODULE['Could not rename file. File name already exists'] = 'Kunne ikke endre navn på filen. Filnavnet finnes allerede';
+$_COS_LANG_MODULE['Upload zip file'] = 'Last opp zip-fil';
+$_COS_LANG_MODULE['Rename files after following title'] = 'Endre navn på filer etter å ha fulgt tittel';
+$_COS_LANG_MODULE['Could not move files'] = 'Kan ikke flytte filer';
+$_COS_LANG_MODULE['Could not set correct permissions on files'] = 'Kan ikke sette riktige rettigheter på filer';
+$_COS_LANG_MODULE['Could not rename files'] = 'Kunne ikke endre navn på filer';
+$_COS_LANG_MODULE['Could not commit to database'] = 'Kunne ikke forplikte seg til database';
+$_COS_LANG_MODULE['Zip archive uploaded'] = 'Zip-arkiv lastet opp';
+$_COS_LANG_MODULE['List galleries'] = 'List gallerier';
+$_COS_LANG_MODULE['Gallery title should be at least 3 chars long'] = 'Galleri tittel bør være minst 3 tegn lang';
+$_COS_LANG_MODULE['Edit files'] = 'Redigere filer';
+$_COS_LANG_MODULE['Edit gallery'] = 'Edit galleri';
+$_COS_LANG_MODULE['Delete gallery'] = 'Slett galleri';
+$_COS_LANG_MODULE['Main image'] = 'Hovedbildet';
+$_COS_LANG_MODULE['No title'] = 'Ingen tittel';
+$_COS_LANG_MODULE['Add file'] = 'Legg til fil';
+$_COS_LANG_MODULE['Set image details'] = 'Sett bildedetaljer';
+$_COS_LANG_MODULE['File name'] = 'Filnavn';
+$_COS_LANG_MODULE['Gallery created'] = 'Galleri opprettet';
+$_COS_LANG_MODULE['Gallery updated'] = 'Galleri oppdatert';
+$_COS_LANG_MODULE['Gallery has been deleted'] = 'Galleriet har blitt slettet';
+$_COS_LANG_MODULE['Large image'] = 'Stort bilde';
+$_COS_LANG_MODULE['Image details (exif)'] = 'Bildedetaljer (exif)';
+$_COS_LANG_MODULE['GPS'] = 'GPS';
+$_COS_LANG_MODULE['Edit image details'] = 'Redigere bildedetaljer';
+$_COS_LANG_MODULE['Original image'] = 'Original bilde';
+$_COS_LANG_MODULE['Image details has been updated'] = 'Bildedetaljer har blitt oppdatert';
+$_COS_LANG_MODULE['Gallery tag'] = 'Galleri tag';
+$_COS_LANG_MODULE['Delete image'] = 'Slett bilde';

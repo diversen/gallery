@@ -1,0 +1,37 @@
+<?php
+
+$_COS_LANG_MODULE['View gallery'] = 'Katso galleria';
+$_COS_LANG_MODULE['Delete'] = 'Poistaa';
+$_COS_LANG_MODULE['Upload image'] = 'Lähetä kuva';
+$_COS_LANG_MODULE['File deleted'] = 'Tiedosto poistetaan';
+$_COS_LANG_MODULE['File is gallery default'] = 'Tiedosto on oletuskieli';
+$_COS_LANG_MODULE['File added'] = 'Tiedoston lisännyt';
+$_COS_LANG_MODULE['Could not rename file. File name already exists'] = 'Ei voinut nimetä tiedoston. Tiedoston nimi on jo olemassa';
+$_COS_LANG_MODULE['Upload zip file'] = 'Lataa zip-tiedosto';
+$_COS_LANG_MODULE['Rename files after following title'] = 'Nimeä tiedostoja jälkeen seuraava otsikko';
+$_COS_LANG_MODULE['Could not move files'] = 'Ei voitu siirtää tiedostoja';
+$_COS_LANG_MODULE['Could not set correct permissions on files'] = 'Ei voitu asettaa oikein tiedostojen oikeuksia';
+$_COS_LANG_MODULE['Could not rename files'] = 'Ei voinut nimetä tiedostoja';
+$_COS_LANG_MODULE['Could not commit to database'] = 'Ei voinut sitoutua tietokantaan';
+$_COS_LANG_MODULE['Zip archive uploaded'] = 'Zip latasi';
+$_COS_LANG_MODULE['List galleries'] = 'List galleriat';
+$_COS_LANG_MODULE['Gallery title should be at least 3 chars long'] = 'Galleria otsikko pitäisi olla vähintään 3 merkkiä pitkä';
+$_COS_LANG_MODULE['Edit files'] = 'Muokata tiedostoja';
+$_COS_LANG_MODULE['Edit gallery'] = 'Edit galleria';
+$_COS_LANG_MODULE['Delete gallery'] = 'Poista galleria';
+$_COS_LANG_MODULE['Main image'] = 'Pääkuvaan';
+$_COS_LANG_MODULE['No title'] = 'Ei otsikkoa';
+$_COS_LANG_MODULE['Add file'] = 'Lisää tiedosto';
+$_COS_LANG_MODULE['Set image details'] = 'Aseta kuvan tiedot';
+$_COS_LANG_MODULE['File name'] = 'Tiedoston nimi';
+$_COS_LANG_MODULE['Gallery created'] = 'Galleria luotu';
+$_COS_LANG_MODULE['Gallery updated'] = 'Galleria päivitetty';
+$_COS_LANG_MODULE['Gallery has been deleted'] = 'Galleria on poistettu';
+$_COS_LANG_MODULE['Large image'] = 'Iso kuva';
+$_COS_LANG_MODULE['Image details (exif)'] = 'Kuvan yksityiskohdat (exif)';
+$_COS_LANG_MODULE['GPS'] = 'GPS';
+$_COS_LANG_MODULE['Edit image details'] = 'Muokkaa kuvan yksityiskohtien';
+$_COS_LANG_MODULE['Original image'] = 'Alkuperäinen kuva';
+$_COS_LANG_MODULE['Image details has been updated'] = 'Kuvan yksityiskohdat on päivitetty';
+$_COS_LANG_MODULE['Gallery tag'] = 'Galleria tag';
+$_COS_LANG_MODULE['Delete image'] = 'Poista kuva';

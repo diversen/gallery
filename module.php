@@ -459,6 +459,7 @@ class gallery {
         if (!empty($show)){
             $show = $show[0];
             $domain = config::getDomain();
+            //config::getFullFilesPath();
             $image_url = "/files/$domain/gallery/" .
                          $show['gallery_id'] . '/' .
                          $show['file_name'];
