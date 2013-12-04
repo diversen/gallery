@@ -525,7 +525,7 @@ class gallery {
     public function postActions ($gallery_frag = 2, $file_frag = 3 ) {
         
         if (isset($_POST['submit'])){
-            if (!session::checkAccessControl('gallery_allow_edit')){
+            if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
                 return;
             }
             

@@ -6,7 +6,7 @@
  *
  * @package gallery
  */
-if (!session::checkAccessControl('gallery_allow_edit')){
+if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
     return;
 }
 
