@@ -308,7 +308,7 @@ class gallery {
             template::setTitle($title);
             template::setMeta(array ('description' => $gal_info['description']));
             html::headline($gal_info['title']);
-            echo "<br />\n";
+            //echo "<br />\n";
         }
         
         $row = $gal->getDefaultImage($id);

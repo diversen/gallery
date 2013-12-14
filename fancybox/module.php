@@ -103,7 +103,7 @@ class gallery_fancybox {
         foreach ($galleries as $key => $val){
             gallery_admin::displayTitle($val);
             //echo self::displaySingleRow($val['id']);
-            echo $val['description'] . "<br />\n";
+            echo $val['description']; // . "<br />\n";
             /*
             $event_params = array(
                 'action' => 'view',
