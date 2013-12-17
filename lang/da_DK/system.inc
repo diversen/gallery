@@ -5,9 +5,6 @@
 
 $_COS_LANG_MODULE['Gallery'] = 'Galleri';
 
-// Translation of file /modules/gallery/admin/menu.inc
-
-$_COS_LANG_MODULE['Add file'] = 'Nyt Galleri';
 
 // Translation of file /modules/gallery/menu.inc
 

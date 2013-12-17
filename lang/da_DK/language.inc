@@ -33,7 +33,6 @@ $_COS_LANG_MODULE['Edit gallery'] = 'Ret galleri';
 $_COS_LANG_MODULE['Delete gallery'] = 'Slet galleri';
 $_COS_LANG_MODULE['Main image'] = 'Primært';
 $_COS_LANG_MODULE['No title'] = 'Ingen titel';
-$_COS_LANG_MODULE['Add file'] = 'Nyt Galleri';
 $_COS_LANG_MODULE['Set image details'] = 'Ændr billedets detaljer';
 $_COS_LANG_MODULE['File name'] = 'Ændr fil navn';
 
