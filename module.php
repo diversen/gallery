@@ -75,6 +75,10 @@ class gallery {
         );
         self::$options = $options;      
     }
+    
+    public function viewAction () {
+        gallery::viewGallery();
+    }
    
     /**
      * method for delting a file

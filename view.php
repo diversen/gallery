@@ -1,3 +1,3 @@
 <?php
 
-gallery::viewGallery();
+

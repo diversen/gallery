@@ -70,7 +70,7 @@ class gallery_admin extends gallery {
         $str = '';
         if (session::isAdmin() && !isset($vars['options']['no_admin'])){
             $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
-            $str.= '<input type="file" size="5" name="filename" value="Upload" />';
+            $str.= '<input accept="image/*" type="file" size="5" name="filename" value="Upload" />';
             $str.= '<input type="submit" name="submit" value="';
             $str.= lang::system('system_submit_upload') . '" />';
             $str.= '</form>';
@@ -200,7 +200,9 @@ class gallery_admin extends gallery {
      */
     public static function updateGallery ($id = null){
         
-        if (!$id) $id = self::$galleryId;
+        if (!$id) { 
+            $id = self::$galleryId;
+        }
         $db = new db();
         
         $values = db::prepareToPost();
