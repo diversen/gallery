@@ -58,14 +58,20 @@ class gallery {
      * @param type $file_frag 
      */
     function __construct($gallery_frag = 2, $file_frag = 3){
-
+        
         $uri = URI::getInstance();
         self::$galleryId = $uri->fragment($gallery_frag);
         self::$fileId = $uri->fragment($file_frag);
         
         $domain = config::getDomain ();
-        if (!$domain) $domain = 'default';
-        self::$uploadDir = _COS_HTDOCS . "/files/$domain/gallery/" . self::$galleryId;
+        if (!$domain) { 
+            $domain = 'default';
+        }
+        self::$uploadDir = 
+                _COS_HTDOCS . 
+                "/files/$domain/gallery/" . 
+                self::$galleryId;
+        
         $options = array('upload_dir' => self::$uploadDir);
         $options['allow_mime'] = array (
             'image/gif', 
@@ -73,7 +79,7 @@ class gallery {
             'image/pjpeg', 
             'image/png'
         );
-        self::$options = $options;      
+        self::$options = $options;
     }
     
     public function viewAction () {
