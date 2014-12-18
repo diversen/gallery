@@ -1,9 +1,10 @@
 <?php
 
 use diversen\gps;
+
 moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');
-//config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
+
 template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
 $js_url = '/js/jquery.showhide.js';
 template::setJs($js_url, null, array('head' => true));
