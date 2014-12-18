@@ -1,6 +1,6 @@
 <?php
 
-include_once "coslib/gps.php";
+use diversen\gps;
 moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');
 //config::loadPHPModuleConfig(config::getModulePath('gallery/inline') . "/config.php");
@@ -138,7 +138,7 @@ EOF;
 
         $gps_map = null;
         if ($exif && isset($exif['GPS'])) {
-            $gps = getGPS($exif['GPS'], true);
+            $gps = gps::get($exif['GPS'], true);
             $elements_content[] = $gps_map = $this->getGmap($gps['latitude'], $gps['longitude'], 12);
             $lang_gps = lang::translate('GPS');
             $elements[] = $gps_str = <<<EOF

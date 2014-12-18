@@ -1,5 +1,7 @@
 <?php
 
+use diversen\upload;
+
 /**
  * File holding basic operations for gallery module
  *
@@ -9,7 +11,7 @@
 /**
  * @ignore
  */
-include_once "coslib/upload.php";
+
 moduleloader::includeModule('gallery/admin');
 
 
