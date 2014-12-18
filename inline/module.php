@@ -1,6 +1,7 @@
 <?php
 
 use diversen\gps;
+use diversen\pagination as pearPager;
 
 moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');

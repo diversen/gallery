@@ -1,5 +1,6 @@
 <?php
 
+use diversen\pagination as pearPager;
 
 moduleloader::includeModule('tags');
 moduleloader::includeModule('gallery/inline');
