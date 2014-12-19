@@ -218,4 +218,3 @@ if (!empty($_POST)) {
 }
 
 echo $gal->form();
-

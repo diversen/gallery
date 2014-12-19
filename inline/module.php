@@ -2,6 +2,7 @@
 
 use diversen\gps;
 use diversen\pagination as pearPager;
+use diversen\pagination\sets as pageSets;
 
 moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');

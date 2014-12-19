@@ -61,7 +61,7 @@ class gallery {
      */
     function __construct($gallery_frag = 2, $file_frag = 3){
         
-        $uri = URI::getInstance();
+        $uri = uri::getInstance();
         self::$galleryId = $uri->fragment($gallery_frag);
         self::$fileId = $uri->fragment($file_frag);
         
