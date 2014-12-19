@@ -2,6 +2,9 @@
 
 use diversen\upload;
 use diversen\file;
+use diversen\strings;
+use diversen\html;
+
 if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
     return;
 }
