@@ -1,11 +1,11 @@
 <?php
 
-
+use diversen\upload;
+use diversen\file;
 if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
     return;
 }
 
-include_once "coslib/upload.php";
 moduleloader::includeModule ('gallery/admin');
 
 class galleryUpload {
@@ -100,11 +100,13 @@ class galleryUpload {
             $dir = $info['dirname'] . '/'  . $info['filename'];
             $files = file::scandirRecursive($dir);
 
+            
             // rename all files from given pattern
             if (!empty($_POST['image_add'])) {
                 
                 $i = 0;
                 foreach ($files as $key => $file) {
+                    
                     $info = pathinfo($file);
                     $oldname = $file;
                     $image_add = strings::sanitizeUrlRigid($_POST['image_add']); 

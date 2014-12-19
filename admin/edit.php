@@ -1,5 +1,6 @@
 <?php
 
+use diversen\upload;
 if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
     return;
 }
