@@ -458,12 +458,12 @@ class gallery {
         $num_rows = $db->getNumRows('gallery_file', $search);
 
         if (!$num_rows){
-            $query = "SELECT * FROM `gallery_file` ORDER BY RAND() LIMIT 1 ";
+            $query = "SELECT * FROM `gallery_file` LIMIT 1 ";
         } else {
             $query = "SELECT * FROM `gallery_file` WHERE gallery_id = ";
 
             $query.=  db::$dbh->quote($gallery_id) . ' ';
-           $query.= " ORDER BY RAND() LIMIT 1";
+           $query.= " LIMIT 1";
         }
         
         $show = $db->selectQuery($query);
@@ -588,7 +588,7 @@ class gallery {
         // select random
         $query = "SELECT * FROM `gallery_file` WHERE gallery_id = ";
         $query.= db::$dbh->quote($gallery_id) . ' ';
-        $query.= " ORDER BY RAND() LIMIT 1";       
+        $query.= " LIMIT 1";       
         $row = $db->selectQuery($query);
         
         if (empty($row)) { 

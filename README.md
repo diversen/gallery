@@ -1,5 +1,8 @@
 ### About
 
+Not working in web phars as it scales images, which uses 
+ imagepng()
+
 Gallery module which supports HTML drivers for displaying 
 the gallery. 
 
