@@ -134,10 +134,7 @@ EOF;
 <a name = "exif"></a>
 <a href="#exif" class="show_exif">$view_exif</a>
     <script>
-        $('.show_exif').showhide({
-  'element' : '.gallery_exif',
-  'hide_elements' : '.google_map, .edit_details'
-});
+
     </script> 
 EOF;
         }
@@ -151,11 +148,7 @@ EOF;
 <a name = "google_map"></a>
 <a href="#google_map" class="show_gps">$lang_gps</a>
     <script>
-        $('.show_gps').showhide({
-  'element' : '.google_map',
-  'hide_elements' : '.gallery_exif, .edit_details'
-});
-        
+
     </script> 
 EOF;
         }
@@ -167,10 +160,7 @@ EOF;
 <a name = "edit_details"></a>
 <a href="#edit_details" class="edit_image">$edit_details</a>
     <script>
-        $('.edit_image').showhide({
-  'element' : '.edit_details',
-  'hide_elements' : '.gallery_exif, .google_map'
-});
+
     </script> 
 
 EOF;
