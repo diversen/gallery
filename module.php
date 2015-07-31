@@ -1,6 +1,7 @@
 <?php
 
 use diversen\upload;
+use diversen\imagescale;
 
 /**
  * File holding basic operations for gallery module
@@ -70,7 +71,7 @@ class gallery {
             $domain = 'default';
         }
         self::$uploadDir = 
-                _COS_HTDOCS . 
+                conf::pathHtdocs() . 
                 "/files/$domain/gallery/" . 
                 self::$galleryId;
         
@@ -85,7 +86,22 @@ class gallery {
     }
     
     public function viewAction () {
+
         gallery::viewGallery();
+        
+    }
+    
+    public function indexAction () {
+        /**
+ * view file for admin gallery 
+ *
+ * @package    gallery
+ */
+moduleloader::includemodule("gallery/admin");
+template::setTitle(lang::translate('List galleries'));
+
+$gal = new gallery_admin();
+$gal->displayAllGallery();
     }
    
     /**
@@ -342,7 +358,7 @@ class gallery {
     
     
     public function getExifData ($web_src) {
-        $file = _COS_HTDOCS . $web_src;
+        $file = conf::pathHtdocs() . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
         if ($exif === false || empty($exif) ) { 
             return null;
@@ -669,7 +685,7 @@ class gallery {
      */
     public static function getGalleryPath ($row) {
         $domain = conf::getDomain();
-        return _COS_HTDOCS . "/files/$domain/gallery/$row[gallery_id]";
+        return conf::pathHtdocs() . "/files/$domain/gallery/$row[gallery_id]";
     }
     
     /**

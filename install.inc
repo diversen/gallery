@@ -41,7 +41,7 @@ $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
 $_INSTALL['UNINSTALL'] = function ($version = null) {
 
     $domain = conf::getDomain();
-    $dir = _COS_HTDOCS . "/files/$domain/gallery";
+    $dir = conf::pathHtdocs() . "/files/$domain/gallery";
     
     // only direct web user can remove gallery dir. 
     if (conf::isCli()) {

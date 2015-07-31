@@ -180,7 +180,7 @@ class galleryUpload {
             // create web dir
             if ($id) {
                 $domain = conf::getDomain();
-                $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
+                $path = conf::pathHtdocs() . "/files/$domain/gallery/$id";
                 @mkdir ($path, 0777, true);
             } else {
                 return false;

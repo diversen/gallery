@@ -14,7 +14,8 @@ function fancybox_include () {
 }
 
 fancybox_include();
-template::setInlineJs(_COS_MOD_PATH . '/gallery/fancybox.js');
+
+template::setInlineJs(conf::pathModules() . '/gallery/fancybox.js');
 template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
 
 

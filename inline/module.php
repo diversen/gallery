@@ -1,5 +1,6 @@
 <?php
 
+
 use diversen\gps;
 use diversen\pagination as pearPager;
 use diversen\pagination\sets as pageSets;
@@ -8,8 +9,10 @@ moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');
 
 template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
-$js_url = '/js/jquery.showhide.js';
-template::setJs($js_url, null, array('head' => true));
+//$js_url = '/js/jquery.showhide.js';
+//template::setJs($js_url, null, array('head' => true));
+
+template::setInlineJs(conf::getModulePath('gallery/inline') . "/assets/showhide.jquery.js");
 
 class gallery_inline extends gallery {
 
