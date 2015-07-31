@@ -356,11 +356,20 @@ $gal->displayAllGallery();
         return;
     }
     
-    
+    /**
+     * returns array with exif info. 
+     * empty if no exif data exists in the image
+     * @param string $web_src path to image
+     * @return array
+     */
     public function getExifData($web_src) {
         $file = conf::pathHtdocs() . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
 
+        if (!$exif) {
+            return array();
+        }
+        
         // flatten exif. Preserve keys
         function prefixKey($prefix, $array) {
             $result = array();
