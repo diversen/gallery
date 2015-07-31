@@ -47,7 +47,7 @@ foreach ($rows as $key => $val){
     html::headline($link);
     $date_formatted = time::getDateString($val['updated']);
     echo user::getProfileSimple($val['user_id'], $date_formatted);
-    if (config::getModuleIni('gallery_preview_display_all')) {
+    if (conf::getModuleIni('gallery_preview_display_all')) {
         $rows = $gallery->getAllFileInfo($val['id']);
         $options = array ('gallery_id' => $val['id'], 'no_admin' => true);
         $vars['rows'] = $rows; 

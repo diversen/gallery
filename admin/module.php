@@ -113,7 +113,7 @@ class gallery_admin extends gallery {
      */
     public static function deleteGallery($id){
         
-        $domain = config::getDomain();
+        $domain = conf::getDomain();
         if (!$domain) return false;
         
         $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
@@ -130,7 +130,7 @@ class gallery_admin extends gallery {
                 'parent_id' => $id);
             
         event::triggerEvent(
-            config::getModuleIni('gallery_events'),
+            conf::getModuleIni('gallery_events'),
             $event_params);
         $db->commit();
         return true;
@@ -185,7 +185,7 @@ class gallery_admin extends gallery {
             
         // trigger events
         event::triggerEvent(
-            config::getModuleIni('gallery_events'),
+            conf::getModuleIni('gallery_events'),
             $event_params
         );
         
@@ -215,7 +215,7 @@ class gallery_admin extends gallery {
             'parent_id' => $id);
             
         event::triggerEvent(
-            config::getModuleIni('gallery_events'),
+            conf::getModuleIni('gallery_events'),
             $event_params
         );
         
@@ -241,7 +241,7 @@ class gallery_admin extends gallery {
 
 
     public function displayAllGallery($from = 0, $limit = 10){
-        $display_module = config::getModuleIni('gallery_display_module');         
+        $display_module = conf::getModuleIni('gallery_display_module');         
         moduleloader::includeModule($display_module);
         $module = moduleloader::modulePathToClassName($display_module);           
         $module::displayAll($from, $limit);
@@ -296,7 +296,7 @@ function view_gallery_form($method, $id = null, $values = array()){
     // trigger form events
     if (isset($id)) {
         event::triggerEvent(
-            config::getModuleIni('gallery_events'), 
+            conf::getModuleIni('gallery_events'), 
             array(
                 'action' => 'form',
                 'reference' => 'gallery',
@@ -306,7 +306,7 @@ function view_gallery_form($method, $id = null, $values = array()){
     } else {
     
         event::triggerEvent(
-            config::getModuleIni('gallery_events'), 
+            conf::getModuleIni('gallery_events'), 
             array(
                 'action' => 'form',
                 'reference' => 'gallery'

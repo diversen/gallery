@@ -15,7 +15,7 @@ function fancybox_include () {
 
 fancybox_include();
 template::setInlineJs(_COS_MOD_PATH . '/gallery/fancybox.js');
-template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
+template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
 
 
 class gallery_fancybox {
@@ -41,7 +41,7 @@ class gallery_fancybox {
             //return $str;
         } else {
             // more than one image
-            if (config::getModuleIni('gallery_use_default_image')) {
+            if (conf::getModuleIni('gallery_use_default_image')) {
                 $str.= self::getDefaultImage($vars['options']['default']);
             }
 
@@ -58,10 +58,10 @@ class gallery_fancybox {
         $str.= "<table><tr>\n";
         $i = 0;
         
-        $per_row = config::getModuleIni('gallery_image_row_size');
+        $per_row = conf::getModuleIni('gallery_image_row_size');
         foreach ($vars['rows'] as $key => $val) {
 
-            $domain = config::getDomain();
+            $domain = conf::getDomain();
             $base_path = "/files/$domain/gallery";
 
             $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";

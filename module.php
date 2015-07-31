@@ -65,7 +65,7 @@ class gallery {
         self::$galleryId = $uri->fragment($gallery_frag);
         self::$fileId = $uri->fragment($file_frag);
         
-        $domain = config::getDomain ();
+        $domain = conf::getDomain ();
         if (!$domain) { 
             $domain = 'default';
         }
@@ -100,7 +100,7 @@ class gallery {
         db::$dbh->beginTransaction();
         $db = new db();
         
-        $domain = config::getDomain();
+        $domain = conf::getDomain();
         $row = $db->selectOne('gallery_file', 'id', $id);
         $path = $this->getGalleryPath($row);
         $filename = $path . "/" . $row['file_name'];
@@ -159,24 +159,24 @@ class gallery {
 
         // scale a thumb
         $thumb = self::$uploadDir . '/thumb-' . $savename;
-        $res = self::scaleImage($filename, $thumb, config::getModuleIni('gallery_thumb_size'));
+        $res = self::scaleImage($filename, $thumb, conf::getModuleIni('gallery_thumb_size'));
         
         if (!$res) return false;
         
         $med = self::$uploadDir . '/med-' . $savename;
-        $res = self::scaleImage($filename, $med, config::getModuleIni('gallery_med_size'));
+        $res = self::scaleImage($filename, $med, conf::getModuleIni('gallery_med_size'));
         
         if (!$res) return false;
         
         // scale large
         $normal = self::$uploadDir . '/small-' . $savename;
-        $res = self::scaleImage($filename, $normal, config::getModuleIni('gallery_small_size'));
+        $res = self::scaleImage($filename, $normal, conf::getModuleIni('gallery_small_size'));
         
         if (!$res) return false;
         
         // scale large
         $normal = self::$uploadDir . '/full-' . $savename;
-        $res = self::scaleImage($filename, $normal, config::getModuleIni('gallery_image_size'));
+        $res = self::scaleImage($filename, $normal, conf::getModuleIni('gallery_image_size'));
         
         if (!$res) return false;        
         
@@ -251,9 +251,9 @@ class gallery {
         $row = $this->getSingleImage($id);
         if (!$row) return false;
         
-        $domain = config::getDomain();
+        $domain = conf::getDomain();
         $row['src'] = "/files/$domain/gallery/$row[gallery_id]/" . $size . "$row[file_name]";
-        $row['width'] = config::getModuleIni('gallery_image_size');
+        $row['width'] = conf::getModuleIni('gallery_image_size');
         return $row;
     }
     
@@ -331,7 +331,7 @@ class gallery {
         $vars['rows'] = $rows; 
         $vars['options'] = $options;
         
-        $display_module = config::getModuleIni('gallery_display_module');
+        $display_module = conf::getModuleIni('gallery_display_module');
         if ($display_module) {            
             moduleloader::includeModule($display_module);
             $module = moduleloader::modulePathToClassName($display_module);           
@@ -400,7 +400,7 @@ class gallery {
         $str = '';
         $str.="<div id=\"gallery_pager\">";
         $str.="<table><tr>\n";
-        $domain = config::getDomain();
+        $domain = conf::getDomain();
         foreach ($rows as $key => $val) {
             $thumb_src = "/files/$domain/gallery/thumb-" . $val['file_name'];          
             $path = "/gallery/view/" . self::$galleryId . "/$val[id]";
@@ -470,7 +470,7 @@ class gallery {
 
         if (!empty($show)){
             $show = $show[0];
-            $domain = config::getDomain();
+            $domain = conf::getDomain();
             //config::getFullFilesPath();
             $image_url = "/files/$domain/gallery/" .
                          $show['gallery_id'] . '/' .
@@ -524,7 +524,7 @@ class gallery {
             return '';
         }
         
-        $domain = config::getDomain();
+        $domain = conf::getDomain();
         $link = "/files/$domain/gallery/$gallery_id/$type-$row[file_name]";
         return $link;
     }
@@ -668,7 +668,7 @@ class gallery {
      * @return string $url url to gallery
      */
     public static function getGalleryPath ($row) {
-        $domain = config::getDomain();
+        $domain = conf::getDomain();
         return _COS_HTDOCS . "/files/$domain/gallery/$row[gallery_id]";
     }
     

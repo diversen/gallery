@@ -6,7 +6,7 @@
  * @package    gallery
  */
 
-if (config::getModuleIni('gallery_menu_item')) {
+if (conf::getModuleIni('gallery_menu_item')) {
     $_INSTALL['MAIN_MENU_ITEM'] = array (
         'title' => lang::translate('Gallery', null, array ('no_translate' => true)),
         'url' => '/gallery/index',
@@ -16,17 +16,17 @@ if (config::getModuleIni('gallery_menu_item')) {
         'section' => 'content'
     );
     
-    $section = config::getModuleIni('gallery_section');
+    $section = conf::getModuleIni('gallery_section');
     if ($section) {
         $_INSTALL['MAIN_MENU_ITEM']['section'] = $section;
     }
     
-    $auth = config::getModuleIni('gallery_menu_item_auth');
+    $auth = conf::getModuleIni('gallery_menu_item_auth');
     if ($auth) {
         $_INSTALL['MAIN_MENU_ITEM']['auth'] = $auth;
     }
     
-    $admin_only = config::getModuleIni('gallery_menu_item_admin_only');
+    $admin_only = conf::getModuleIni('gallery_menu_item_admin_only');
     if ($admin_only) {
         $_INSTALL['MAIN_MENU_ITEM']['admin_only'] = $admin_only;
     }    
@@ -40,11 +40,11 @@ $_INSTALL['PRIVATE_CLONE_URL'] = 'git@github.com:diversen/gallery.git';
 // sql is in mysql
 $_INSTALL['UNINSTALL'] = function ($version = null) {
 
-    $domain = config::getDomain();
+    $domain = conf::getDomain();
     $dir = _COS_HTDOCS . "/files/$domain/gallery";
     
     // only direct web user can remove gallery dir. 
-    if (config::isCli()) {
+    if (conf::isCli()) {
         echo "You have to remove $dir manual\n";
         return;
     }

@@ -1,8 +1,8 @@
 <?php
 
-template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/simplethumbs.js');
-template::setInlineJs(config::getModulePath('gallery') . '/simplethumbs/command.js');
-template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
+template::setInlineJs(conf::getModulePath('gallery') . '/simplethumbs/simplethumbs.js');
+template::setInlineJs(conf::getModulePath('gallery') . '/simplethumbs/command.js');
+template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
 
 class gallery_simplethumbs {
 
@@ -55,7 +55,7 @@ class gallery_simplethumbs {
         $str.="<div id=\"thumbnails\">";    
         $str.="<table><tr>\n";
         
-        $per_row = config::getModuleIni('gallery_image_row_size');
+        $per_row = conf::getModuleIni('gallery_image_row_size');
         foreach ($vars['rows'] as $key => $val) {           
             $src = "/files/default/gallery/$val[gallery_id]/med-$val[file_name]";
             $thumb_src = "/files/default/gallery/$val[gallery_id]/thumb-$val[file_name]";
@@ -99,7 +99,7 @@ class gallery_simplethumbs {
                 'parent_id' => $val['id']);
             
             event::triggerEvent(
-                config::getModuleIni('gallery_events'), 
+                conf::getModuleIni('gallery_events'), 
                 $event_params
             );    
             

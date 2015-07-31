@@ -17,7 +17,7 @@ $_MODULE_MENU = array (
         
 );
 
-if (config::getModuleIni('gallery_allow_zip')) {
+if (conf::getModuleIni('gallery_allow_zip')) {
     $_MODULE_MENU[] =
         array(
             'title' => lang::translate('Upload zip'),

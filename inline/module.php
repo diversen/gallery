@@ -7,7 +7,7 @@ use diversen\pagination\sets as pageSets;
 moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');
 
-template::setInlineCss(config::getModulePath('gallery/inline') . "/assets/inline.css");
+template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
 $js_url = '/js/jquery.showhide.js';
 template::setJs($js_url, null, array('head' => true));
 
@@ -71,7 +71,7 @@ class gallery_inline extends gallery {
     }
 
     public function getGmap($ll, $spn, $z) {
-        $width = config::getModuleIni('gallery_image_size');
+        $width = conf::getModuleIni('gallery_image_size');
         $gmap = <<<EOF
 <div class ="google_map">
 <iframe 
@@ -104,7 +104,7 @@ EOF;
         }
 
         $page_opt = array();
-        if (config::getModuleIni('gallery_image_anchors')) {
+        if (conf::getModuleIni('gallery_image_anchors')) {
             $page_opt['attach'] = '#image';
         }
 
@@ -217,7 +217,7 @@ EOF;
             'return_url' => $return_url
         );
 
-        $subs = config::getModuleIni('gallery_sub_modules');
+        $subs = conf::getModuleIni('gallery_sub_modules');
         moduleloader::includeModules($subs);
         $ary = moduleloader::subModuleGetPostContent($subs, $options);
         echo implode("<hr />\n", $ary);
@@ -243,7 +243,7 @@ EOF;
             return $str;
         } else {
             // more than one image
-            if (config::getModuleIni('gallery_use_default_image')) {
+            if (conf::getModuleIni('gallery_use_default_image')) {
                 $str.= self::getDefaultImage($vars['options']['default']);
             }
 
@@ -267,10 +267,10 @@ EOF;
         $str.= "<div class=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
         $i = 0;
-        $per_row = config::getModuleIni('gallery_image_row_size');
-        $use_anchors = config::getModuleIni('gallery_image_anchors');
+        $per_row = conf::getModuleIni('gallery_image_row_size');
+        $use_anchors = conf::getModuleIni('gallery_image_anchors');
         foreach ($vars['rows'] as $key => $val) {
-            $domain = config::getDomain();
+            $domain = conf::getDomain();
             $base_path = "/files/$domain/gallery";
 
             $image_url = "/gallery/inline/view/$val[id]";
@@ -330,12 +330,12 @@ EOF;
         $str.= "<table width =\"600px\"><tr>\n";
         $i = 0;
 
-        $use_anchors = config::getModuleIni('gallery_image_anchors');
-        $per_row = config::getModuleIni('gallery_image_row_size');
+        $use_anchors = conf::getModuleIni('gallery_image_anchors');
+        $per_row = conf::getModuleIni('gallery_image_row_size');
 
         foreach ($vars as $val) {
 
-            $domain = config::getDomain();
+            $domain = conf::getDomain();
             $base_path = "/files/$domain/gallery";
 
             $image_url = "$base_path/$val[gallery_id]/full-$val[file_name]";
@@ -397,7 +397,7 @@ EOF;
             self::displayTitle($val);
             $date_formatted = time::getDateString($val['updated']);
             echo user::getProfile($val['user_id'], $date_formatted);
-            if (config::getModuleIni('gallery_preview_display_all')) {
+            if (conf::getModuleIni('gallery_preview_display_all')) {
                 $rows = self::getAllFileInfo($val['id']);
                 $options = array('gallery_id' => $val['id'], 'no_admin' => true);
 
@@ -419,7 +419,7 @@ EOF;
                 'return' => 'array');
 
             $events = event::triggerEvent(
-                            config::getModuleIni('gallery_events'), $event_params
+                            conf::getModuleIni('gallery_events'), $event_params
             );
 
             $ary = array_merge($ary, $events);

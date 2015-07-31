@@ -30,7 +30,7 @@ class galleryUpload {
         html::textareaSmall('description');
         
         event::triggerEvent(
-            config::getModuleIni('content_article_events'), 
+            conf::getModuleIni('content_article_events'), 
                 array(
                     'action' => 'form',
                     'reference' => 'gallery',
@@ -38,7 +38,7 @@ class galleryUpload {
         );
         
         
-        html::fileWithLabel('file', config::getModuleIni('gallery_zip_max'));
+        html::fileWithLabel('file', conf::getModuleIni('gallery_zip_max'));
         html::submit('submit', lang::system('system_submit_update'));
         html::formEnd();
         $str= html::getStr();
@@ -71,7 +71,7 @@ class galleryUpload {
                 $this->errors = upload::$errors;
                 return false;
             }
-            $res = upload::checkMaxSize('file', config::getModuleIni('gallery_zip_max'));
+            $res = upload::checkMaxSize('file', conf::getModuleIni('gallery_zip_max'));
             if (!$res){
                 $this->errors = upload::$errors;
                 return false;
@@ -160,7 +160,7 @@ class galleryUpload {
                     $did_scale = gallery::scaleImage(
                             $full_name, 
                             $scaled, 
-                            config::getModuleIni($size)
+                            conf::getModuleIni($size)
                         );
                     if (!$did_scale) { 
                         continue;
@@ -179,7 +179,7 @@ class galleryUpload {
             
             // create web dir
             if ($id) {
-                $domain = config::getDomain();
+                $domain = conf::getDomain();
                 $path = _COS_HTDOCS . "/files/$domain/gallery/$id";
                 @mkdir ($path, 0777, true);
             } else {
