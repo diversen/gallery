@@ -357,37 +357,39 @@ $gal->displayAllGallery();
     }
     
     
-    public function getExifData ($web_src) {
+    public function getExifData($web_src) {
         $file = conf::pathHtdocs() . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
-        if ($exif === false || empty($exif) ) { 
-            return null;
-        }
 
-        foreach ($exif as $key => $val) {
-            if (!in_array($key, array ('IFD0', 'EXIF', 'GPS'))) {
-                unset($exif[$key]);
+        // flatten exif. Preserve keys
+        function prefixKey($prefix, $array) {
+            $result = array();
+            foreach ($array as $key => $value) {
+                if (is_array($value)) {
+                    $result = array_merge($result, prefixKey($prefix . $key . '.', $value));
+                } else {
+                    $result[$prefix . $key] = $value;
+                }
             }
+            return $result;
         }
-        return $exif;
+        $res = prefixKey('', $exif);
+        return $res;
     }
-    
+
     public function getExifHTML ($exif) {
         
+        $exif = html::specialEncode($exif);
         $str = "<div class =\"gallery_exif\">\n";
         $str.= "<table>\n";
 
         foreach ($exif as $key => $val) {
-            if (!in_array($key, array ('IFD0', 'EXIF'))) continue;
-            
-            $str.= "<tr><th colspan=2>$key</th></tr>\n";
-            foreach ($val as $k => $v) {
-                if ($k == 'MakerNote') continue;
+
                 $str.= "<tr>\n";
-                $str.= "<td>$k</td>\n";
-                $str.= "<td>$v</td>\n";
+                $str.= "<td>$key</td>\n";
+                $str.= "<td>$val</td>\n";
                 $str.= "</tr>\n";
-            }
+
         }
         $str.= "</table>\n";
         $str.= "</div>\n";

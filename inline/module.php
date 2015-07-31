@@ -126,7 +126,7 @@ EOF;
         $elements_content = array();
         $exif = $this->getExifData($this->row['src']);
 
-        if ($exif) {
+        if (!empty($exif)) {
             $elements_content [] = $table = $this->getExifHTML($exif);
             $view_exif = lang::translate('Image details (exif)');
 
