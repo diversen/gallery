@@ -133,9 +133,6 @@ EOF;
             $elements[] = $exif_str = <<<EOF
 <a name = "exif"></a>
 <a href="#exif" class="show_exif">$view_exif</a>
-    <script>
-
-    </script> 
 EOF;
         }
 
@@ -147,9 +144,7 @@ EOF;
             $elements[] = $gps_str = <<<EOF
 <a name = "google_map"></a>
 <a href="#google_map" class="show_gps">$lang_gps</a>
-    <script>
 
-    </script> 
 EOF;
         }
 
@@ -159,10 +154,6 @@ EOF;
             $elements[] = <<<EOF
 <a name = "edit_details"></a>
 <a href="#edit_details" class="edit_image">$edit_details</a>
-    <script>
-
-    </script> 
-
 EOF;
             $elements_content[] = $this->displayInlineForm();
         }
