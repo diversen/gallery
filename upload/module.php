@@ -1,17 +1,20 @@
 <?php
 
-use diversen\upload;
+use diversen\conf;
+use diversen\db;
 use diversen\file;
-use diversen\strings;
 use diversen\html;
-
-if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
-    return;
-}
+use diversen\http;
+use diversen\lang;
+use diversen\log;
+use diversen\moduleloader;
+use diversen\session;
+use diversen\strings;
+use diversen\upload;
 
 moduleloader::includeModule ('gallery/admin');
 
-class galleryUpload {
+class gallery_upload {
     
     public $errors = array ();
     public function form () {
@@ -27,16 +30,7 @@ class galleryUpload {
         html::label('image_add', lang::translate('Rename files after following title'));
         html::text('image_add');
         html::label('description', lang::system('system_form_label_abstract'));
-        html::textareaSmall('description');
-        
-        event::triggerEvent(
-            conf::getModuleIni('content_article_events'), 
-                array(
-                    'action' => 'form',
-                    'reference' => 'gallery',
-                    /*'parent_id' => $vars['id']*/)
-        );
-        
+        html::textareaSmall('description');        
         
         html::fileWithLabel('file', conf::getModuleIni('gallery_zip_max'));
         html::submit('submit', lang::system('system_submit_update'));
@@ -45,8 +39,24 @@ class galleryUpload {
         return $str;
     }
     
-    
-    
+    public function indexAction() {
+
+        set_time_limit(0);
+        $gal = new gallery_upload();
+
+        if (!empty($_POST)) {
+            $res = $gal->uploadFile();
+            if (!empty($gal->errors)) {
+                html::errors($gal->errors);
+            } else {
+                session::setActionMessage(lang::translate('Zip archive uploaded'));
+                http::locationHeader('/gallery/index');
+            }
+        }
+
+        echo $gal->form();
+    }
+
     public function extractZip ($zip, $unzipped) {
         $arch = new ZipArchive;
         $res = $arch->open($zip);
@@ -202,19 +212,3 @@ class galleryUpload {
         }
     }
 }
-
-set_time_limit(0);
-$gal = new galleryUpload();
-
-if (!empty($_POST)) {
-    $res = $gal->uploadFile();
-    if (!empty($gal->errors)) {
-        html::errors($gal->errors);
-    } else {
-        session::setActionMessage(lang::translate('Zip archive uploaded'));
-        http::locationHeader('/gallery/index');
-    }
-    
-}
-
-echo $gal->form();

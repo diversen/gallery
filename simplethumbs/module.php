@@ -1,5 +1,11 @@
 <?php
 
+use diversen\conf;
+use diversen\event;
+use diversen\html;
+use diversen\session;
+use diversen\template;
+
 template::setInlineJs(conf::getModulePath('gallery') . '/simplethumbs/simplethumbs.js');
 template::setInlineJs(conf::getModulePath('gallery') . '/simplethumbs/command.js');
 template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");

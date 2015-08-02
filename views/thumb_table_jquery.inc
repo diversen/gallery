@@ -1,5 +1,9 @@
 <?php
 
+use diversen\conf;
+use diversen\lang;
+use diversen\session;
+
 $str = '';       
 $str.="<div>";
 $str.="<table><tr>\n";

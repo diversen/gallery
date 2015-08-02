@@ -1,9 +1,19 @@
 <?php
 
-
+use diversen\conf;
+use diversen\db;
 use diversen\gps;
-use diversen\pagination as pearPager;
-use diversen\pagination\sets as pageSets;
+use diversen\html;
+use diversen\http;
+use diversen\lang;
+use diversen\moduleloader;
+use diversen\pagination;
+use diversen\pagination\sets;
+use diversen\session;
+use diversen\template;
+use diversen\time;
+use diversen\uri;
+use diversen\user;
 
 moduleloader::includeModule('gallery/admin');
 moduleloader::includeModule('gallery');
@@ -111,7 +121,7 @@ EOF;
             $page_opt['attach'] = '#image';
         }
 
-        $pager = new pageSets($page_opt);
+        $pager = new sets($page_opt);
         $pager_str = $pager->getPrevNext($ary, $page_opt);
 
         echo "<a name=\"image\"></a>\n";
@@ -371,7 +381,7 @@ EOF;
         $num_rows = $db->getNumRows('gallery');
 
         $per_page = 10;
-        $pager = new pearPager($num_rows, $per_page);
+        $pager = new pagination($num_rows, $per_page);
         $rows = $db->selectAll('gallery', null, null, $pager->from, $per_page, 'updated');
         $rows = html::specialEncode($rows);
 
@@ -396,17 +406,6 @@ EOF;
                 array_unshift($ary, gallery_admin::adminOptions($val['id']));
             }
 
-            $event_params = array(
-                'action' => 'get',
-                'reference' => 'gallery',
-                'parent_id' => $val['id'],
-                'return' => 'array');
-
-            $events = event::triggerEvent(
-                            conf::getModuleIni('gallery_events'), $event_params
-            );
-
-            $ary = array_merge($ary, $events);
             if (empty($val['description'])) {
                 $val['description'] = '...';
             }
@@ -421,7 +420,6 @@ EOF;
     }
 
     public static function displayTitle($val) {
-        //$link = html::createLink("/gallery/view/$val[id]", $val['title']);
         html::headline($val['title']);
     }
 

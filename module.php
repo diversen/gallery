@@ -1,7 +1,19 @@
 <?php
 
-use diversen\upload;
+use diversen\conf;
+use diversen\db;
+use diversen\file;
+use diversen\html;
+use diversen\http;
 use diversen\imagescale;
+use diversen\lang;
+use diversen\log;
+use diversen\moduleloader;
+use diversen\session;
+use diversen\strings;
+use diversen\template;
+use diversen\upload;
+use diversen\uri;
 
 /**
  * File holding basic operations for gallery module
@@ -83,6 +95,29 @@ class gallery {
             'image/png'
         );
         self::$options = $options;
+    }
+    
+    public function deleteAction () {
+        if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
+    return;
+}
+
+template::setTitle(lang::translate('Delete image'));
+$fileObj = new gallery();
+if (isset($_POST['submit'])){
+    if (!isset($fileObj->errors)){
+        $res = $fileObj->deleteFile($fileObj->fileId);
+        if ($res){
+            //session::setActionMessage(lang::translate('File deleted'));
+            http::locationHeader('/gallery/view/' . $fileObj->id);
+        }
+    } else {
+        html::errors($fileObj->errors);
+    }
+}
+if (!empty($fileObj->fileId)){
+    view_image_form('delete');
+}
     }
     
     public function viewAction () {
@@ -476,7 +511,7 @@ $gal->displayAllGallery();
      * method for getting a random image url
      */
     public static function getRandomImageURL($thumb = false){
-        $uri= URI::getInstance();
+        $uri= uri::getInstance();
         $module = $uri->fragment(0);
         $gallery_id = $uri->fragment(2);
 

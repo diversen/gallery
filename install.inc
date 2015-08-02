@@ -1,5 +1,9 @@
 <?php
 
+use diversen\conf;
+use diversen\file;
+use diversen\lang;
+
 /**
  * installer file for gallery module
  *
