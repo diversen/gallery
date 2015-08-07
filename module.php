@@ -282,7 +282,7 @@ $gal->displayAllGallery();
     public static function getLinkFromId ($id){
         $url = self::getReturnUrlFromId($id);
         $row = self::getSingleImage($id);
-        if (empty($row)) return lang::system('comment_reference_does_not_exists');
+        if (empty($row)) return lang::translate('comment_reference_does_not_exists');
         $link = html::createLink($url, rawurldecode($row['file_name']));
         return $link;
     }

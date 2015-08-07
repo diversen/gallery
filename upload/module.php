@@ -25,15 +25,15 @@ class gallery_upload {
         html::init($values, 'submit');
         $legend = lang::translate('Upload zip file');
         html::legend($legend);
-        html::label('title', lang::system('system_form_label_title'));
+        html::label('title', lang::translate('system_form_label_title'));
         html::text('title');
         html::label('image_add', lang::translate('Rename files after following title'));
         html::text('image_add');
-        html::label('description', lang::system('system_form_label_abstract'));
+        html::label('description', lang::translate('system_form_label_abstract'));
         html::textareaSmall('description');        
         
         html::fileWithLabel('file', conf::getModuleIni('gallery_zip_max'));
-        html::submit('submit', lang::system('system_submit_update'));
+        html::submit('submit', lang::translate('system_submit_update'));
         html::formEnd();
         $str= html::getStr();
         return $str;
