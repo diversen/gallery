@@ -25,7 +25,7 @@ foreach ($vars['rows'] as $key => $val) {
         $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
         $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
         $str.= '<input type="submit" name="submit" value="';
-        $str.= lang::translate('system_submit_delete') . '" />';
+        $str.= lang::translate('Delete') . '" />';
         $str.= '</form>';
         $str.= "</td></tr></table>\n";
     }
@@ -43,7 +43,7 @@ if (session::isAdmin() && !isset($vars['options']['no_admin'])){
     $str.= '<form enctype="multipart/form-data" method="post" action="" />';   
     $str.= '<input type="file" size="5" name="filename" value="Upload" />';
     $str.= '<input type="submit" name="submit" value="';
-    $str.= lang::translate('system_submit_upload') . '" />';
+    $str.= lang::translate('Upload') . '" />';
     $str.= '</form>';
 }
 

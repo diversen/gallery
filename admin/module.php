@@ -155,7 +155,7 @@ class gallery_admin extends gallery {
             $str.= '<form enctype="multipart/form-data" method="post" action="" />';
             $str.= '<input accept="image/*" type="file" size="5" name="filename" value="Upload" />';
             $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('system_submit_upload') . '" />';
+            $str.= lang::translate('Upload file') . '" />';
             $str.= '</form>';
         }
         return $str;
@@ -172,7 +172,7 @@ class gallery_admin extends gallery {
             $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
             $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
             $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('system_submit_delete') . '" />';
+            $str.= lang::translate('Delete') . '" />';
             $str.= '</form>';
             $str.= "</td></tr>";
             $str.= "<tr><td>\n";
@@ -340,7 +340,7 @@ function view_gallery_form($method, $id = null, $values = array()) {
         //html::init($vars);
         html::formStart('gallery_from_delete');
         html::legend(lang::translate('Delete gallery'));
-        html::submit('submit', lang::translate('system_submit_delete'));
+        html::submit('submit', lang::translate('Delete'));
         html::formEnd();
         echo html::getStr();
         return;
@@ -365,9 +365,9 @@ function view_gallery_form($method, $id = null, $values = array()) {
     }
 
     html::legend($legend);
-    html::label('title', lang::translate('system_form_label_title'));
+    html::label('title', lang::translate('Title'));
     html::text('title');
-    html::label('description', lang::translate('system_form_label_abstract'));
+    html::label('description', lang::translate('Abstract'));
     html::textareaSmall('description');
 
     // trigger form events
@@ -389,7 +389,7 @@ function view_gallery_form($method, $id = null, $values = array()) {
         );
     }
 
-    html::submit('submit', lang::translate('system_submit_add'));
+    html::submit('submit', lang::translate('Add'));
     html::formEnd();
     echo html::getStr();
     return;
@@ -414,11 +414,11 @@ function get_gallery_inline_form($values = null) {
     $form->hidden('gallery_details', 1);
     $form->label('file_name', lang::translate('File name'));
     $form->text('file_name');
-    $form->label('title', lang::translate('system_form_label_title'));
+    $form->label('title', lang::translate('Title'));
     $form->text('title');
-    $form->label('description', lang::translate('system_form_label_abstract'));
+    $form->label('description', lang::translate('Abstract'));
     $form->textareaSmall('description');
-    $form->submit('submit', lang::translate('system_submit_update'));
+    $form->submit('submit', lang::translate('Update'));
     $form->formEnd();
     $str = $form->getStr();
     $str = "<div class =\"edit_details\" >\n$str</div>\n";
