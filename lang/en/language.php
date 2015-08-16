@@ -36,12 +36,12 @@ $LANG['Upload file'] = 'Upload file';
 $LANG['Delete'] = 'Delete';
 $LANG['Main image'] = 'Main image';
 $LANG['No title'] = 'No title';
-$LANG['Title'] = 'Title';
-$LANG['Abstract'] = 'Abstract';
-$LANG['Add'] = 'Add';
 $LANG['Set image details'] = 'Set image details';
 $LANG['File name'] = 'File name';
+$LANG['Title'] = 'Title';
+$LANG['Abstract'] = 'Abstract';
 $LANG['Update'] = 'Update';
+$LANG['Add'] = 'Add';
 // Translation of file modules/gallery/install.inc
 
 $LANG['Gallery'] = 'Gallery';
