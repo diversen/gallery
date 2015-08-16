@@ -1,5 +1,7 @@
 <?php
 
+namespace modules\gallery;
+
 use diversen\conf;
 use diversen\db;
 use diversen\file;
@@ -25,8 +27,8 @@ use diversen\uri;
  * @ignore
  */
 
-moduleloader::includeModule('gallery/admin');
-
+//moduleloader::includeModule('gallery/admin');
+use modules\gallery\admin\module as adminModule;
 
 
 /**
@@ -34,7 +36,7 @@ moduleloader::includeModule('gallery/admin');
  *
  * @package gallery
  */
-class gallery {
+class module {
 
     /**
      * var holding errors
@@ -97,32 +99,32 @@ class gallery {
         self::$options = $options;
     }
     
-    public function deleteAction () {
-        if (!session::checkAccessFromModuleIni('gallery_allow_edit')){
-    return;
-}
-
-template::setTitle(lang::translate('Delete image'));
-$fileObj = new gallery();
-if (isset($_POST['submit'])){
-    if (!isset($fileObj->errors)){
-        $res = $fileObj->deleteFile($fileObj->fileId);
-        if ($res){
-            //session::setActionMessage(lang::translate('File deleted'));
-            http::locationHeader('/gallery/view/' . $fileObj->id);
+    public function deleteAction() {
+        if (!session::checkAccessFromModuleIni('gallery_allow_edit')) {
+            return;
         }
-    } else {
-        html::errors($fileObj->errors);
+
+        template::setTitle(lang::translate('Delete image'));
+        $fileObj = new self();
+        if (isset($_POST['submit'])) {
+            if (!isset($fileObj->errors)) {
+                $res = $fileObj->deleteFile($fileObj->fileId);
+                if ($res) {
+                    //session::setActionMessage(lang::translate('File deleted'));
+                    http::locationHeader('/gallery/view/' . $fileObj->id);
+                }
+            } else {
+                html::errors($fileObj->errors);
+            }
+        }
+        if (!empty($fileObj->fileId)) {
+            view_image_form('delete');
+        }
     }
-}
-if (!empty($fileObj->fileId)){
-    view_image_form('delete');
-}
-    }
-    
+
     public function viewAction () {
 
-        gallery::viewGallery();
+        self::viewGallery();
         
     }
     
@@ -135,7 +137,7 @@ if (!empty($fileObj->fileId)){
 moduleloader::includemodule("gallery/admin");
 template::setTitle(lang::translate('List galleries'));
 
-$gal = new gallery_admin();
+$gal = new adminModule();
 $gal->displayAllGallery();
     }
    
@@ -356,9 +358,9 @@ $gal->displayAllGallery();
         }
         
         $vars = array();
-        $gal = new gallery($gallery_frag, $file_frag);  
+        $gal = new self($gallery_frag, $file_frag);  
         $id = self::$galleryId;
-        $gal_info = gallery_admin::getGallery($id);
+        $gal_info = adminModule::getGallery($id);
         
         if (empty($gal_info)) {
             if (!isset($options['no_redirect'])) {
@@ -387,7 +389,7 @@ $gal->displayAllGallery();
         $display_module = conf::getModuleIni('gallery_display_module');
         if ($display_module) {            
             moduleloader::includeModule($display_module);
-            $module = moduleloader::modulePathToClassName($display_module);           
+            $module = "modules\\" . moduleloader::modulePathToClassName($display_module) . "\\module";
             echo $module::displayGallery($vars);
         }
         return;

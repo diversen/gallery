@@ -1,5 +1,7 @@
 <?php
 
+namespace modules\gallery\upload;
+
 use diversen\conf;
 use diversen\db;
 use diversen\file;
@@ -12,9 +14,10 @@ use diversen\session;
 use diversen\strings;
 use diversen\upload;
 
-moduleloader::includeModule ('gallery/admin');
 
-class gallery_upload {
+use modules\gallery\module as gallery;
+use modules\gallery\admin\module as adminModule;
+class module {
     
     public $errors = array ();
     public function form () {
@@ -42,7 +45,7 @@ class gallery_upload {
     public function indexAction() {
 
         set_time_limit(0);
-        $gal = new gallery_upload();
+        $gal = new self();
 
         if (!empty($_POST)) {
             $res = $gal->uploadFile();
@@ -58,7 +61,7 @@ class gallery_upload {
     }
 
     public function extractZip ($zip, $unzipped) {
-        $arch = new ZipArchive;
+        $arch = new \ZipArchive;
         $res = $arch->open($zip);
         if ($res === TRUE) {
             $res = $arch->extractTo($unzipped);
@@ -88,7 +91,7 @@ class gallery_upload {
             }
             
             $db = new db();            
-            $gal = new gallery_admin();
+            $gal = new adminModule();
             $id = $gal->createGallery();
             
             $tmp_dir = sys_get_temp_dir();

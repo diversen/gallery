@@ -1,5 +1,7 @@
 <?php
 
+namespace modules\gallery\admin;
+
 use diversen\conf;
 use diversen\db;
 use diversen\event;
@@ -11,20 +13,22 @@ use diversen\moduleloader;
 use diversen\session;
 use diversen\template;
 use diversen\uri;
-
+use diversen\user;
 /**
  * file containing administration class for gallery
  *
  * @package     gallery
  */
-moduleloader::includeModule('gallery');
+use modules\gallery\module as gallery;
+
+//moduleloader::includeModule('gallery');
 
 /**
  * class for working with content categories in gallery
  *
  * @package     gallery
  */
-class gallery_admin extends gallery {
+class module extends gallery {
 
     /**
      *
@@ -60,7 +64,7 @@ class gallery_admin extends gallery {
         }
 
         template::setTitle(lang::translate('Delete gallery'));
-        $gallery = new gallery_admin();
+        $gallery = new self();
         $row = $gallery->getGallery();
 
         if (!empty($_POST['submit'])) {
@@ -71,7 +75,7 @@ class gallery_admin extends gallery {
                 http::locationHeader('/gallery/index');
             }
         } else {
-            view_gallery_form('delete', $row['id']);
+            self::formGallery('delete', $row['id']);
         }
     }
 
@@ -82,7 +86,7 @@ class gallery_admin extends gallery {
         }
 
         template::setTitle(lang::translate('Edit gallery'));
-        $gallery = new gallery_admin();
+        $gallery = new self();
         if (!empty($_POST['submit'])) {
             $gallery->validate();
             if (empty($gallery->errors)) {
@@ -95,11 +99,11 @@ class gallery_admin extends gallery {
                 html::confirm(lang::translate());
             } else {
                 html::errors(gallery::$errors);
-                view_gallery_form('update', gallery::$galleryId);
+                self::formGallery('update', gallery::$galleryId);
             }
         } else {
             //$row = $category->getGallery();
-            view_gallery_form('update', gallery::$galleryId);
+            self::formGallery('update', gallery::$galleryId);
         }
     }
 
@@ -109,7 +113,7 @@ class gallery_admin extends gallery {
         }
 
         template::setTitle(lang::translate('Add file'));
-        $gallery = new gallery_admin(true);
+        $gallery = new self(true);
         if (!empty($_POST['submit'])) {
 
             $gallery->validate();
@@ -119,10 +123,10 @@ class gallery_admin extends gallery {
                 http::locationHeader("/gallery/admin/index");
             } else {
                 html::errors($gallery->errors);
-                view_gallery_form('insert');
+                self::formGallery('insert');
             }
         } else {
-            view_gallery_form('insert');
+            self::formGallery('insert');
         }
     }
 
@@ -237,10 +241,12 @@ class gallery_admin extends gallery {
     }
 
     public static function displayTitle($val) {
-        if (empty($val['title']))
+        if (empty($val['title'])) {
             $val['title'] = lang::translate('No title');
+        }
         $link = html::createLink("/gallery/view/$val[id]", $val['title']);
         html::headline($link);
+        echo user::getProfile($val['user_id'], $val['updated']);
     }
 
     /**
@@ -321,106 +327,105 @@ class gallery_admin extends gallery {
     public function displayAllGallery($from = 0, $limit = 10) {
         $display_module = conf::getModuleIni('gallery_display_module');
         moduleloader::includeModule($display_module);
-        $module = moduleloader::modulePathToClassName($display_module);
+        $module = "modules\\" . moduleloader::modulePathToClassName($display_module) . "\\module";
         $module::displayAll($from, $limit);
     }
 
-}
+    /**
+     * returns a form for editing a image inline. 
+     * @param type $values
+     * @return type
+     */
+    public static function get_gallery_inline_form($values = null) {
 
-/**
- * function for creating crud form for files
- *
- * @param string create, delete or update
- * @param int if delete or update set this to id
- */
-function view_gallery_form($method, $id = null, $values = array()) {
+        $values['file_name'] = file::getFilename($values['file_name'], array('utf8' => true));
+        $values['file_name'] = rawurldecode($values['file_name']);
 
-    if ($method == 'delete') {
-        html::$autoLoadTrigger = 'submit';
-        //html::init($vars);
-        html::formStart('gallery_from_delete');
-        html::legend(lang::translate('Delete gallery'));
-        html::submit('submit', lang::translate('Delete'));
+        $form = new html();
+        html::$autoEncode = true;
+        $form->formStart('gallery_form');
+        $form->init($values, 'submit');
+        $legend = lang::translate('Set image details');
+        $form->legend($legend);
+        $form->hidden('gallery_details', 1);
+        $form->label('file_name', lang::translate('File name'));
+        $form->text('file_name');
+        $form->label('title', lang::translate('Title'));
+        $form->text('title');
+        $form->label('description', lang::translate('Abstract'));
+        $form->textareaSmall('description');
+        $form->submit('submit', lang::translate('Update'));
+        $form->formEnd();
+        $str = $form->getStr();
+        $str = "<div class =\"edit_details\" >\n$str</div>\n";
+        return $str;
+    }
+
+    /**
+     * function for creating crud form for files
+     *
+     * @param string create, delete or update
+     * @param int if delete or update set this to id
+     */
+    public static function formGallery($method, $id = null, $values = array()) {
+
+        if ($method == 'delete') {
+            html::$autoLoadTrigger = 'submit';
+            //html::init($vars);
+            html::formStart('gallery_from_delete');
+            html::legend(lang::translate('Delete gallery'));
+            html::submit('submit', lang::translate('Delete'));
+            html::formEnd();
+            echo html::getStr();
+            return;
+        }
+
+        html::formStart('gallery_form');
+
+        if (isset($_POST['submit'])) {
+            $_POST['submit'] = html::specialEncode($values);
+        }
+
+        if (isset($id)) {
+            $gallery = self::getGallery($id);
+            html::init($gallery, 'submit');
+        }
+
+        if (isset($id)) {
+            $legend = lang::translate('Edit gallery');
+        } else {
+            $legend = lang::translate('Add file');
+        }
+
+        html::legend($legend);
+        html::label('title', lang::translate('Title'));
+        html::text('title');
+        html::label('description', lang::translate('Abstract'));
+        html::textareaSmall('description');
+
+        // trigger form events
+        if (isset($id)) {
+            event::triggerEvent(
+                    conf::getModuleIni('gallery_events'), array(
+                'action' => 'form',
+                'reference' => 'gallery',
+                'parent_id' => $id
+                    )
+            );
+        } else {
+
+            event::triggerEvent(
+                    conf::getModuleIni('gallery_events'), array(
+                'action' => 'form',
+                'reference' => 'gallery'
+                    )
+            );
+        }
+
+        html::submit('submit', lang::translate('Add'));
         html::formEnd();
         echo html::getStr();
         return;
     }
 
-    html::formStart('gallery_form');
-
-    if (isset($_POST['submit'])) {
-        $_POST['submit'] = html::specialEncode($values);
-    }
-
-    if (isset($id)) {
-        $gallery = gallery_admin::getGallery($id);
-
-        html::init($gallery, 'submit');
-    }
-
-    if (isset($id)) {
-        $legend = lang::translate('Edit gallery');
-    } else {
-        $legend = lang::translate('Add file');
-    }
-
-    html::legend($legend);
-    html::label('title', lang::translate('Title'));
-    html::text('title');
-    html::label('description', lang::translate('Abstract'));
-    html::textareaSmall('description');
-
-    // trigger form events
-    if (isset($id)) {
-        event::triggerEvent(
-                conf::getModuleIni('gallery_events'), array(
-            'action' => 'form',
-            'reference' => 'gallery',
-            'parent_id' => $id
-                )
-        );
-    } else {
-
-        event::triggerEvent(
-                conf::getModuleIni('gallery_events'), array(
-            'action' => 'form',
-            'reference' => 'gallery'
-                )
-        );
-    }
-
-    html::submit('submit', lang::translate('Add'));
-    html::formEnd();
-    echo html::getStr();
-    return;
-}
-
-/**
- * returns a form for editing a image inline. 
- * @param type $values
- * @return type
- */
-function get_gallery_inline_form($values = null) {
-
-    $values['file_name'] = file::getFilename($values['file_name'], array('utf8' => true));
-    $values['file_name'] = rawurldecode($values['file_name']);
-
-    $form = new html();
-    html::$autoEncode = true;
-    $form->formStart('gallery_form');
-    $form->init($values, 'submit');
-    $legend = lang::translate('Set image details');
-    $form->legend($legend);
-    $form->hidden('gallery_details', 1);
-    $form->label('file_name', lang::translate('File name'));
-    $form->text('file_name');
-    $form->label('title', lang::translate('Title'));
-    $form->text('title');
-    $form->label('description', lang::translate('Abstract'));
-    $form->textareaSmall('description');
-    $form->submit('submit', lang::translate('Update'));
-    $form->formEnd();
-    $str = $form->getStr();
-    $str = "<div class =\"edit_details\" >\n$str</div>\n";
-    return $str;
 }

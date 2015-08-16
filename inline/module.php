@@ -1,5 +1,7 @@
 <?php
 
+namespace modules\gallery\inline;
+
 use diversen\conf;
 use diversen\db;
 use diversen\gps;
@@ -15,16 +17,17 @@ use diversen\time;
 use diversen\uri;
 use diversen\user;
 
-moduleloader::includeModule('gallery/admin');
-moduleloader::includeModule('gallery');
+
+//moduleloader::includeModule('gallery/admin');
+//moduleloader::includeModule('gallery');
+
+use modules\gallery\module as gallery;
+use modules\gallery\admin\module as adminModule;
 
 template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
-//$js_url = '/js/jquery.showhide.js';
-//template::setJs($js_url, null, array('head' => true));
-
 template::setInlineJs(conf::getModulePath('gallery/inline') . "/assets/showhide.jquery.js");
 
-class gallery_inline extends gallery {
+class module extends gallery {
 
     public $id = null;
     public $row = null;
@@ -39,7 +42,7 @@ class gallery_inline extends gallery {
         moduleloader::includeModule('gallery');
 
         
-        $gallery = new gallery_inline();
+        $gallery = new self();
 
         $gallery->setMeta();
         $gallery->displayImage();
@@ -196,7 +199,7 @@ EOF;
                     http::locationHeader($location, $message);
                 }
             }
-            return get_gallery_inline_form($this->row);
+            return adminModule::get_gallery_inline_form($this->row);
         }
     }
 
@@ -233,7 +236,7 @@ EOF;
         $num_rows = count($vars['rows']);
 
         if ($num_rows == 0) {
-            $str.= gallery_admin::uploadForm($vars);
+            $str.= adminModule::uploadForm($vars);
             return $str;
         } else {
             // more than one image
@@ -242,7 +245,7 @@ EOF;
             }
 
             $str.= self::getRows($vars);
-            $str.=gallery_admin::uploadForm($vars);
+            $str.=adminModule::uploadForm($vars);
             return $str;
         }
         return $str;
@@ -279,7 +282,7 @@ EOF;
                         'alt' => $val['file_name'])
             );
             $str.="<td><a href=\"$image_url\">$img_tag</a>";
-            $str.=gallery_admin::getAdminOptions($val, $vars);
+            $str.=adminModule::getAdminOptions($val, $vars);
             $str.="</td>\n";
             $i++;
             $t = $i % $per_row;
@@ -376,7 +379,7 @@ EOF;
     public static function displayAll() {
 
 
-        $gallery = new gallery_admin();
+        $gallery = new adminModule();
         $db = new db();
         $num_rows = $db->getNumRows('gallery');
 
@@ -403,7 +406,7 @@ EOF;
             }
 
             if (session::isAdmin()) {
-                array_unshift($ary, gallery_admin::adminOptions($val['id']));
+                array_unshift($ary, adminModule::adminOptions($val['id']));
             }
 
             if (empty($val['description'])) {

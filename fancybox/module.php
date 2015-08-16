@@ -1,16 +1,18 @@
 <?php
 
+namespace modules\gallery\fancybox;
+
 use diversen\conf;
 use diversen\template;
+
+use modules\gallery\admin\module as adminModule;
 
 function fancybox_include() {
 
     // no cache css - as we just keep the orginal image paths.
     template::setNoCacheCss('/templates/fancyBox/source/jquery.fancybox.css');
     template::setJs("/templates/fancyBox/source/jquery.fancybox.js", null, array('head' => true));
-
     template::setNoCacheCss("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.css");
-
     template::setJs("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.js", null, array('head' => true));
 }
 
@@ -19,7 +21,7 @@ fancybox_include();
 template::setInlineJs(conf::pathModules() . '/gallery/fancybox.js');
 template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
 
-class gallery_fancybox {
+class module {
 
     /**
      * method for getting files
@@ -32,23 +34,18 @@ class gallery_fancybox {
      */
     public static function displayGallery($vars) {
 
-        $i = 0;
-
         $str = '';
         $num_rows = count($vars['rows']);
         if ($num_rows == 0) {
             // no images
             $str.= self::getUploadForm($vars);
-            //return $str;
         } else {
             // more than one image
             if (conf::getModuleIni('gallery_use_default_image')) {
                 $str.= self::getDefaultImage($vars['options']['default']);
             }
-
             $str.= self::getRows($vars);
             $str.= self::getUploadForm($vars);
-            //return $str;
         }
         return $str;
     }
@@ -70,7 +67,7 @@ class gallery_fancybox {
             $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
 
             $str.="<td><a rel=\"gallery_group\" href=\"$image_url\" class=\"fancybox\"><img src=\"$thumb_url\" /></a>";
-            $str.=gallery_admin::getAdminOptions($val, $vars);
+            $str.=adminModule::getAdminOptions($val, $vars);
 
             $str.="</td>\n";
             $i++;
@@ -94,28 +91,17 @@ class gallery_fancybox {
     }
 
     public static function getUploadForm($vars) {
-        return gallery_admin::uploadForm($vars);
+        return adminModule::uploadForm($vars);
     }
 
     public static function displayAll() {
-        $gallery = new gallery_admin();
+        $gallery = new adminModule();
         $galleries = $gallery->getAllGallery();
-        foreach ($galleries as $key => $val) {
-            gallery_admin::displayTitle($val);
-            //echo self::displaySingleRow($val['id']);
-            echo $val['description']; // . "<br />\n";
-            /*
-              $event_params = array(
-              'action' => 'view',
-              'reference' => 'gallery',
-              'parent_id' => $val['id']);
-
-              event::triggerEvent(
-              config::getModuleIni('gallery_events'),
-              $event_params
-              ); */
-
-            echo gallery_admin::adminOptions($val['id']);
+        foreach ($galleries as $val) {
+            adminModule::displayTitle($val);
+            echo "<br />";
+            echo $val['description']; 
+            echo adminModule::adminOptions($val['id']);
             echo "<hr />\n";
         }
     }
