@@ -4,7 +4,6 @@ namespace modules\gallery\admin;
 
 use diversen\conf;
 use diversen\db;
-use diversen\event;
 use diversen\file;
 use diversen\html;
 use diversen\http;
@@ -212,15 +211,9 @@ class module extends gallery {
         $db->begin();
         $db->delete('gallery_file', 'gallery_id', $id);
         $db->delete('gallery', 'id', $id);
-        $event_params = array(
-            'action' => 'delete',
-            'reference' => 'gallery',
-            'parent_id' => $id);
 
-        event::triggerEvent(
-                conf::getModuleIni('gallery_events'), $event_params);
-        $db->commit();
-        return true;
+        return $db->commit();
+
     }
 
     /**
@@ -266,20 +259,8 @@ class module extends gallery {
         $res = $db->insert('gallery', $values);
 
         $last_insert_id = $db->lastInsertId();
-
-        // create params for events that may be triggered
-        $event_params = array(
-            'action' => 'insert',
-            'reference' => 'gallery',
-            'parent_id' => $last_insert_id);
-
-        // trigger events
-        event::triggerEvent(
-                conf::getModuleIni('gallery_events'), $event_params
-        );
-
         return $last_insert_id;
-        //return $res;
+
     }
 
     /**
@@ -297,17 +278,6 @@ class module extends gallery {
         $values = db::prepareToPost();
         $values['user_id'] = session::getUserId();
         $values = html::specialDecode($values);
-
-        $event_params = array(
-            'action' => 'update',
-            'reference' => 'gallery',
-            'parent_id' => $id);
-
-        event::triggerEvent(
-                conf::getModuleIni('gallery_events'), $event_params
-        );
-
-        unset($values['tags']);
 
         $res = $db->update('gallery', $values, $id);
         return $res;
@@ -402,25 +372,6 @@ class module extends gallery {
         html::text('title');
         html::label('description', lang::translate('Abstract'));
         html::textareaSmall('description');
-
-        // trigger form events
-        if (isset($id)) {
-            event::triggerEvent(
-                    conf::getModuleIni('gallery_events'), array(
-                'action' => 'form',
-                'reference' => 'gallery',
-                'parent_id' => $id
-                    )
-            );
-        } else {
-
-            event::triggerEvent(
-                    conf::getModuleIni('gallery_events'), array(
-                'action' => 'form',
-                'reference' => 'gallery'
-                    )
-            );
-        }
 
         html::submit('submit', lang::translate('Add'));
         html::formEnd();
