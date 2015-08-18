@@ -101,6 +101,7 @@ class module {
             adminModule::displayTitle($val);
             echo "<br />";
             echo $val['description']; 
+            echo "<hr />\n";
             echo adminModule::adminOptions($val['id']);
             echo "<hr />\n";
         }
