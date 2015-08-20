@@ -294,6 +294,11 @@ class module extends gallery {
         return $rows;
     }
 
+    /**
+     * display a gallery based on driver
+     * @param int $from
+     * @param int $limit
+     */
     public function displayAllGallery($from = 0, $limit = 10) {
         $display_module = conf::getModuleIni('gallery_display_module');
         moduleloader::includeModule($display_module);

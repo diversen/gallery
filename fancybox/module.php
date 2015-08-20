@@ -4,6 +4,7 @@ namespace modules\gallery\fancybox;
 
 use diversen\conf;
 use diversen\template;
+use diversen\session;
 
 use modules\gallery\admin\module as adminModule;
 
@@ -58,7 +59,7 @@ class module {
         $i = 0;
 
         $per_row = conf::getModuleIni('gallery_image_row_size');
-        foreach ($vars['rows'] as $key => $val) {
+        foreach ($vars['rows'] as $val) {
 
             $domain = conf::getDomain();
             $base_path = "/files/$domain/gallery";
@@ -102,8 +103,11 @@ class module {
             echo "<br />";
             echo $val['description']; 
             echo "<hr />\n";
-            echo adminModule::adminOptions($val['id']);
-            echo "<hr />\n";
+            if (session::authIni('gallery_allow_edit', false)) {
+                echo adminModule::adminOptions($val['id']);
+                echo "<hr />\n";
+            }
+            
         }
     }
 

@@ -128,19 +128,18 @@ class module {
         
     }
     
-    public function indexAction () {
-        /**
- * view file for admin gallery 
- *
- * @package    gallery
- */
-moduleloader::includemodule("gallery/admin");
-template::setTitle(lang::translate('List galleries'));
+    /**
+     * /gallery/index action
+     */
+    public function indexAction() {
 
-$gal = new adminModule();
-$gal->displayAllGallery();
+        moduleloader::includemodule("gallery/admin");
+        template::setTitle(lang::translate('List galleries'));
+
+        $gal = new adminModule();
+        $gal->displayAllGallery();
     }
-   
+
     /**
      * method for delting a file
      *

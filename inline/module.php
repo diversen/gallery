@@ -120,9 +120,9 @@ EOF;
         }
 
         $page_opt = array();
-        if (conf::getModuleIni('gallery_image_anchors')) {
+        //if (conf::getModuleIni('gallery_image_anchors')) {
             $page_opt['attach'] = '#image';
-        }
+        //}
 
         $pager = new sets($page_opt);
         $pager_str = $pager->getPrevNext($ary, $page_opt);
@@ -394,16 +394,13 @@ EOF;
             self::displayTitle($val);
             $date_formatted = time::getDateString($val['updated']);
             echo user::getProfile($val['user_id'], $date_formatted);
-            if (conf::getModuleIni('gallery_preview_display_all')) {
-                $rows = self::getAllFileInfo($val['id']);
-                $options = array('gallery_id' => $val['id'], 'no_admin' => true);
 
-                $vars['rows'] = $rows;
-                $vars['options'] = $options;
-                echo $str = self::getRows($vars, $options);
-            } else {
-                echo self::displaySingleRow($val['id']);
-            }
+            $rows = self::getAllFileInfo($val['id']);
+            $options = array('gallery_id' => $val['id'], 'no_admin' => true);
+
+            $vars['rows'] = $rows;
+            $vars['options'] = $options;
+            echo $str = self::getRows($vars, $options);
 
             if (session::isAdmin()) {
                 array_unshift($ary, adminModule::adminOptions($val['id']));
