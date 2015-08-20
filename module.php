@@ -611,14 +611,14 @@ $gal->displayAllGallery();
             if (isset($_POST['file_id']) && $_POST['method'] == 'delete') {
                 $this->deleteFile($_POST['file_id']);
                 session::setActionMessage(lang::translate('File deleted'));
-                http::locationHeader($_SERVER[REQUEST_URI]);
+                http::locationHeader($_SERVER['REQUEST_URI']);
                 
             }
             
             if (isset($_POST['file_id']) && $_POST['method'] == 'default_image') {
                 $this->setDefaultImage($_POST['file_id']);
                 session::setActionMessage(lang::translate('File is gallery default'));
-                http::locationHeader($_SERVER[REQUEST_URI]);
+                http::locationHeader($_SERVER['REQUEST_URI']);
             }
             
             if (!isset(self::$errors)){
