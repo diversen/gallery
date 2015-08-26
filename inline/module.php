@@ -416,7 +416,7 @@ EOF;
         }
 
         echo "<br />\n";
-        $pager->pearPage();
+        $pager->echoPagerHTML();
     }
 
     public static function displayTitle($val) {
