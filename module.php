@@ -17,19 +17,13 @@ use diversen\template;
 use diversen\upload;
 use diversen\uri;
 
+use modules\gallery\admin\module as adminModule;
+
 /**
- * File holding basic operations for gallery module
+ * File holding basic operations for the gallery module
  *
  * @package gallery
  */
-
-/**
- * @ignore
- */
-
-//moduleloader::includeModule('gallery/admin');
-use modules\gallery\admin\module as adminModule;
-
 
 /**
  * Class for creating galleries
