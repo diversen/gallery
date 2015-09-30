@@ -7,7 +7,6 @@ use diversen\db;
 use diversen\file;
 use diversen\html;
 use diversen\http;
-use diversen\imagescale;
 use diversen\lang;
 use diversen\log;
 use diversen\moduleloader;
@@ -16,6 +15,8 @@ use diversen\strings;
 use diversen\template;
 use diversen\upload;
 use diversen\uri;
+use Gregwar\Image\Image;
+use Exception;
 
 use modules\gallery\admin\module as adminModule;
 
@@ -207,24 +208,32 @@ class module {
         $thumb = self::$uploadDir . '/thumb-' . $savename;
         $res = self::scaleImage($filename, $thumb, conf::getModuleIni('gallery_thumb_size'));
         
-        if (!$res) return false;
+        if (!$res) { 
+            return false;
+        }
         
         $med = self::$uploadDir . '/med-' . $savename;
         $res = self::scaleImage($filename, $med, conf::getModuleIni('gallery_med_size'));
         
-        if (!$res) return false;
+        if (!$res) { 
+            return false;
+        }
         
         // scale large
         $normal = self::$uploadDir . '/small-' . $savename;
         $res = self::scaleImage($filename, $normal, conf::getModuleIni('gallery_small_size'));
         
-        if (!$res) return false;
+        if (!$res) { 
+            return false;
+        }
         
         // scale large
         $normal = self::$uploadDir . '/full-' . $savename;
         $res = self::scaleImage($filename, $normal, conf::getModuleIni('gallery_image_size'));
         
-        if (!$res) return false;        
+        if (!$res) { 
+            return false;
+        }
         
         $db = new db();
         $res = $db->insert('gallery_file', $values);
@@ -238,17 +247,15 @@ class module {
      * @param  int       the length of the image   
      */
     public static function scaleImage ($image, $thumb, $x){
-        
-        $scale = new imagescale();
-        $res = $scale->byX($image, $thumb, $x);
-        
-        if (!$res) {
-            
-            self::$errors = imagescale::$errors;
+
+        try {
+            Image::open($image)->cropResize($x)->save($thumb);
+        } catch (Exception $e) {
+            self::$errors[] = $e->getMessage();
             return false;
         }
-
         return true;
+
     }
 
     /**
