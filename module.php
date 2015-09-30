@@ -395,6 +395,17 @@ class module {
         return;
     }
     
+    public function getExifGps($web_src) {
+        $file = conf::pathHtdocs() . $web_src;
+        $exif = @exif_read_data($file, 'EXIF', true);
+        if (!isset($exif['GPS'])) {
+            return array();
+        }
+        
+        return $exif['GPS'];
+    }
+    
+    
     /**
      * returns array with exif info. 
      * empty if no exif data exists in the image
@@ -404,7 +415,6 @@ class module {
     public function getExifData($web_src) {
         $file = conf::pathHtdocs() . $web_src;
         $exif = @exif_read_data($file, 'FILE,ANY_TAG, IFD0, COMMENT, EXIF', true);
-
         if (!$exif) {
             return array();
         }

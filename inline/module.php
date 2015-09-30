@@ -120,9 +120,7 @@ EOF;
         }
 
         $page_opt = array();
-        //if (conf::getModuleIni('gallery_image_anchors')) {
-            $page_opt['attach'] = '#image';
-        //}
+        $page_opt['attach'] = '#image';
 
         $pager = new sets($page_opt);
         $pager_str = $pager->getPrevNext($ary, $page_opt);
@@ -150,8 +148,11 @@ EOF;
         }
 
         $gps_map = null;
-        if ($exif && isset($exif['GPS'])) {
-            $gps = gps::get($exif['GPS'], true);
+        
+        $gps_data = $this->getExifGps($this->row['src']);
+        
+        if (!empty($gps_data)) {
+            $gps = gps::get($gps_data, true);
             $elements_content[] = $gps_map = $this->getGmap($gps['latitude'], $gps['longitude'], 12);
             $lang_gps = lang::translate('GPS');
             $elements[] = $gps_str = <<<EOF

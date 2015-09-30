@@ -7,5 +7,4 @@ gallery_display_module = "gallery/inline"
 gallery_use_default_image = 0
 gallery_allow_zip = 1
 gallery_image_row_size = 5
-gallery_zip_max = 100000000
-
+gallery_zip_max = 10000000
