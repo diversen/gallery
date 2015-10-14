@@ -401,7 +401,10 @@ class module {
         if (!isset($exif['GPS'])) {
             return array();
         }
-        
+
+        if (!isset($exif['GPS']['GPSLatitude']) || !isset($exif['GPS']['GPSLatitude'])) {
+            return array();
+        }
         return $exif['GPS'];
     }
     
