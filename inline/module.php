@@ -16,6 +16,7 @@ use diversen\template;
 use diversen\time;
 use diversen\uri;
 use diversen\user;
+use diversen\template\assets;
 
 
 //moduleloader::includeModule('gallery/admin');
@@ -24,8 +25,8 @@ use diversen\user;
 use modules\gallery\module as gallery;
 use modules\gallery\admin\module as adminModule;
 
-template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
-template::setInlineJs(conf::getModulePath('gallery/inline') . "/assets/showhide.jquery.js");
+assets::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
+assets::setInlineJs(conf::getModulePath('gallery/inline') . "/assets/showhide.jquery.js");
 
 class module extends gallery {
 
@@ -39,6 +40,7 @@ class module extends gallery {
 
     public function viewAction() {
         
+
         moduleloader::includeModule('gallery');
 
         

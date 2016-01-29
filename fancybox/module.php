@@ -5,22 +5,23 @@ namespace modules\gallery\fancybox;
 use diversen\conf;
 use diversen\template;
 use diversen\session;
+use diversen\template\assets;
 
 use modules\gallery\admin\module as adminModule;
 
 function fancybox_include() {
 
     // no cache css - as we just keep the orginal image paths.
-    template::setNoCacheCss('/templates/fancyBox/source/jquery.fancybox.css');
-    template::setJs("/templates/fancyBox/source/jquery.fancybox.js", null, array('head' => true));
-    template::setNoCacheCss("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.css");
-    template::setJs("/templates/fancyBox/source/helpers/jquery.fancybox-buttons.js", null, array('head' => true));
+    assets::setRelAsset('css', '/templates/fancyBox/source/jquery.fancybox.css', null, array(
+        'head' => true,
+        'no_cache' => true));
+    assets::setRelAsset('js', '/templates/fancyBox/source/jquery.fancybox.js', null, array('head' => true));
 }
 
 fancybox_include();
 
-template::setInlineJs(conf::pathModules() . '/gallery/fancybox.js');
-template::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
+assets::setInlineJs(conf::pathModules() . '/gallery/fancybox.js');
+
 
 class module {
 

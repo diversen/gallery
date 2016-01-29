@@ -9,14 +9,13 @@ use diversen\html;
 use diversen\http;
 use diversen\lang;
 use diversen\log;
-use diversen\moduleloader;
 use diversen\session;
 use diversen\strings;
 use diversen\upload;
-
-
-use modules\gallery\module as gallery;
 use modules\gallery\admin\module as adminModule;
+use modules\gallery\module as gallery;
+use ZipArchive;
+
 class module {
     
     public $errors = array ();
@@ -45,23 +44,23 @@ class module {
     public function indexAction() {
 
         set_time_limit(0);
-        $gal = new self();
+
 
         if (!empty($_POST)) {
-            $res = $gal->uploadFile();
-            if (!empty($gal->errors)) {
-                html::errors($gal->errors);
+            $res = $this->uploadFile();
+            if (!empty($this->errors)) {
+                echo html::getErrors($this->errors);
             } else {
                 session::setActionMessage(lang::translate('Zip archive uploaded'));
                 http::locationHeader('/gallery/index');
             }
         }
 
-        echo $gal->form();
+        echo $this->form();
     }
 
     public function extractZip ($zip, $unzipped) {
-        $arch = new \ZipArchive;
+        $arch = new ZipArchive;
         $res = $arch->open($zip);
         if ($res === TRUE) {
             $res = $arch->extractTo($unzipped);
@@ -76,15 +75,15 @@ class module {
     
     
     public function uploadFile () {
-       
+
         if (isset($_POST['submit']) && isset($_FILES['file'])) {
-            
-            $res = upload::checkUploadNative('file');
+
+            $res = upload::checkUploadNative($_FILES['file']);
             if (!$res) {
                 $this->errors = upload::$errors;
                 return false;
             }
-            $res = upload::checkMaxSize('file', conf::getModuleIni('gallery_zip_max'));
+            $res = upload::checkMaxSize($_FILES['file'], conf::getModuleIni('gallery_zip_max'));
             if (!$res){
                 $this->errors = upload::$errors;
                 return false;
@@ -116,7 +115,6 @@ class module {
             $dir = $info['dirname'] . '/'  . $info['filename'];
             $files = file::scandirRecursive($dir);
 
-            
             // rename all files from given pattern
             if (!empty($_POST['image_add'])) {
                 
