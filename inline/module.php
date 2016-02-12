@@ -72,7 +72,7 @@ frameborder="0"
 scrolling="no" 
 marginheight="0" 
 marginwidth="0" 
-src="http://maps.google.com/?ie=UTF8&amp;hq=&amp;hnear=Termestrup,+Denmark&amp;t=h&amp;ll=$lat,$long&amp;spn=0.016643,0.036478&amp;z=14&amp;output=embed"></iframe>
+src="https://maps.google.com/?ie=UTF8&amp;hq=&amp;hnear=Termestrup,+Denmark&amp;t=h&amp;ll=$lat,$long&amp;spn=0.016643,0.036478&amp;z=14&amp;output=embed"></iframe>
 </div>
 EOF;
 
