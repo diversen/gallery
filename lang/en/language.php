@@ -8,20 +8,8 @@ $LANG['Delete image'] = 'Delete image';
 $LANG['File deleted'] = 'File deleted';
 $LANG['List galleries'] = 'List galleries';
 $LANG['Reference has been removed'] = 'Reference has been removed';
-$LANG['View gallery'] = 'View gallery';
-$LANG['Delete'] = 'Delete';
-$LANG['Upload image'] = 'Upload image';
 $LANG['File is gallery default'] = 'File is gallery default';
-$LANG['File added'] = 'File added';
-$LANG['Could not rename file. File name already exists'] = 'Could not rename file. File name already exists';
-// Translation of file modules/gallery/views/thumb_table_jquery.inc
-
-$LANG['Delete'] = 'Delete';
-$LANG['Upload'] = 'Upload';
-// Translation of file modules/gallery/views/simple_thumbs_gallery.inc
-
-$LANG['Delete'] = 'Delete';
-$LANG['Upload'] = 'Upload';
+$LANG['File(s) added'] = 'File(s) added';
 // Translation of file modules/gallery/admin/module.php
 
 $LANG['Gallery title should be at least 3 chars long'] = 'Gallery title should be at least 3 chars long';
@@ -34,7 +22,6 @@ $LANG['Gallery created'] = 'Gallery created';
 $LANG['Edit files'] = 'Edit files';
 $LANG['Upload file'] = 'Upload file';
 $LANG['Delete'] = 'Delete';
-$LANG['Main image'] = 'Main image';
 $LANG['No title'] = 'No title';
 $LANG['Set image details'] = 'Set image details';
 $LANG['File name'] = 'File name';
