@@ -8,19 +8,17 @@ use diversen\file;
 use diversen\html;
 use diversen\http;
 use diversen\lang;
-use diversen\moduleloader;
 use diversen\session;
 use diversen\template;
 use diversen\uri;
 use diversen\user;
+
 /**
  * file containing administration class for gallery
  *
  * @package     gallery
  */
 use modules\gallery\module as gallery;
-
-//moduleloader::includeModule('gallery');
 
 /**
  * class for working with content categories in gallery
@@ -29,17 +27,12 @@ use modules\gallery\module as gallery;
  */
 class module extends gallery {
 
-    /**
-     *
-     * @var object  holding URI instance
-     */
-    public $uri;
 
     /**
      * Sets galleryId
      */
-    function __construct() {
-        self::$galleryId = uri::getInstance()->fragment(3);
+    public function __construct() {
+        $this->galleryId = uri::fragment(3);
     }
 
     /**
@@ -56,6 +49,10 @@ class module extends gallery {
         }
     }
 
+    /**
+     * /gallery/admin/delete action
+     * @return void
+     */
     public function deleteAction() {
 
         if (!session::checkAccessFromModuleIni('gallery_allow_edit')) {
@@ -63,21 +60,25 @@ class module extends gallery {
         }
 
         template::setTitle(lang::translate('Delete gallery'));
-        $gallery = new self();
-        $row = $gallery->getGallery();
+
+        $row = $this->getGallery($this->galleryId);
 
         if (!empty($_POST['submit'])) {
-            $res = $gallery->deleteGallery($row['id']);
+            $res = $this->deleteGallery($row['id']);
             if ($res) {
                 session::setActionMessage(
                         lang::translate('Gallery has been deleted'));
                 http::locationHeader('/gallery/index');
             }
         } else {
-            self::formGallery('delete', $row['id']);
+            $this->formGallery('delete', $row['id']);
         }
     }
 
+    /**
+     * gallery/edit action
+     * @return void
+     */
     public function editAction() {
 
         if (!session::checkAccessFromModuleIni('gallery_allow_edit')) {
@@ -95,17 +96,20 @@ class module extends gallery {
                             lang::translate('Gallery updated'));
                     http::locationHeader('/gallery/index');
                 }
-                html::confirm(lang::translate());
+                echo html::getConfirm(lang::translate());
             } else {
-                html::errors(gallery::$errors);
-                self::formGallery('update', gallery::$galleryId);
+                echo html::getErrors($this->errors);
+
             }
         } else {
-            //$row = $category->getGallery();
-            self::formGallery('update', gallery::$galleryId);
+            $this->formGallery('update', $this->galleryId);
         }
     }
 
+    /**
+     * /gallery/index action
+     * @return type
+     */
     public function indexAction() {
         if (!session::checkAccessFromModuleIni('gallery_allow_edit')) {
             return;
@@ -117,15 +121,15 @@ class module extends gallery {
 
             $gallery->validate();
             if (empty($gallery->errors)) {
-                $res = $gallery->createGallery();
+                $gallery->createGallery();
                 session::setActionMessage(lang::translate('Gallery created'));
                 http::locationHeader("/gallery/admin/index");
             } else {
                 html::errors($gallery->errors);
-                self::formGallery('insert');
+                $this->formGallery('insert');
             }
         } else {
-            self::formGallery('insert');
+            $this->formGallery('insert');
         }
     }
 
@@ -136,6 +140,11 @@ class module extends gallery {
         $_POST = html::specialEncode($_POST);
     }
 
+    /**
+     * Admin options
+     * @param int $id gallery id
+     * @return string $html
+     */
     public static function adminOptions($id) {
         $str = '';
         if (session::isAdmin()) {
@@ -148,48 +157,50 @@ class module extends gallery {
         return $str;
     }
 
-    public static function getRows($vars, $options) {
+    /**
+     * Image files upload form
+     * @return void
+     */
+    public function formUpload() {
+        $str = '';
         
-    }
-
-    public static function uploadForm($vars) {
-        $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])) {
-            $str.= '<form enctype="multipart/form-data" method="post" action="" />';
-            $str.= '<input accept="image/*" type="file" size="5" name="filename" value="Upload" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('Upload file') . '" />';
-            $str.= '</form>';
+        if (session::isAdmin()) {
+            $f = new html();
+            $f->formStart();
+            $f->label('files[]', lang::translate('Upload file') );
+            $f->fileWithLabel('files[]', conf::getModuleIni('gallery_file_max'), array('multiple' => 'multiple'));
+            $f->submit('submit', lang::translate('Upload file'));
+            $f->formEnd();
+            return $f->getStr();
         }
-        return $str;
     }
 
+    /**
+     * 
+     * @param type $val
+     * @param type $vars
+     * @return string
+     */
     public static function getAdminOptions($val, $vars) {
+        
         $str = '';
-        if (session::isAdmin() && !isset($vars['options']['no_admin'])) {
+        if (session::isAdmin() ) {
             $str.= "<table>";
             $str.= "<tr><td>\n";
-            $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= " method=\"post\" enctype=\"multipart/form-data\">";
-            $str.= "<input type=\"hidden\" name=\"method\" value=\"delete\" />\n";
-            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('Delete') . '" />';
-            $str.= '</form>';
-            $str.= "</td></tr>";
-            $str.= "<tr><td>\n";
-            $str.= '<form name="gallery_delete_image" action="" ';
-            $str.= ' method="post" enctype="multipart/form-data">';
-            $str.= "<input type=\"hidden\" name=\"method\" value=\"default_image\" />\n";
-            $str.= '<input type="hidden" name="file_id" value="' . $val['id'] . '" />';
-            $str.= '<input type="hidden" name="gallery_id" value="' . $vars['options']['gallery_id'] . '" />';
-            $str.= '<input type="submit" name="submit" value="';
-            $str.= lang::translate('Main image') . '" />';
-            $str.= '</form>';
+
+            $f = new html();
+            $f->formStart();
+            $f->hidden('file_id', $val['id']);
+            $f->hidden('method', 'delete');
+            $f->hidden('gallery_id', $vars['options']['gallery_id']);
+            $f->submit('submit', lang::translate('Delete'));
+            $f->formEnd();
+            
+            $str.= $f->getStr();
             $str.= "</td></tr>";
             $str.= "</table>\n";
         }
+
         return $str;
     }
 
@@ -197,7 +208,7 @@ class module extends gallery {
      * 
      * @return type 
      */
-    public static function deleteGallery($id) {
+    public function deleteGallery($id) {
 
         $domain = conf::getDomain();
         if (!$domain)
@@ -221,11 +232,7 @@ class module extends gallery {
      *
      * @return array  containing the selected category
      */
-    public static function getGallery($id = null) {
-        if (!$id)
-            $id = self::$galleryId;
-        if (!$id)
-            return array();
+    public function getGallery($id) {
 
         $db = new db();
         $row = $db->selectOne('gallery', 'id', $id);
@@ -233,21 +240,24 @@ class module extends gallery {
         return $row;
     }
 
-    public static function displayTitle($val) {
+    /**
+     * Method that display a title
+     * @param type $val
+     */
+    public function displayTitle($val) {
         if (empty($val['title'])) {
             $val['title'] = lang::translate('No title');
         }
         $link = html::createLink("/gallery/view/$val[id]", $val['title']);
-        html::headline($link);
+        echo html::getHeadline($link);
         echo user::getProfile($val['user_id'], $val['updated']);
     }
 
     /**
-     * method for creating a category
-     *
+     * method for creating a callery
      * @return int insert id
      */
-    public static function createGallery($values = null) {
+    public function createGallery($values = null) {
         if (!$values) {
             $values = array(
                 'title' => $_POST['title'],
@@ -268,10 +278,10 @@ class module extends gallery {
      *
      * @return int affected rows
      */
-    public static function updateGallery($id = null) {
+    public function updateGallery($id = null) {
 
         if (!$id) {
-            $id = self::$galleryId;
+            $id = $this->galleryId;
         }
         $db = new db();
 
@@ -288,30 +298,19 @@ class module extends gallery {
      *
      * @return array array categories
      */
-    public static function getAllGallery($from = null, $limit = null) {
+    public function getAllGallery($from = null, $limit = null) {
         $db = new db();
         $rows = $db->selectAll('gallery', null, null, $from, $limit, 'updated');
         return $rows;
     }
 
-    /**
-     * display a gallery based on driver
-     * @param int $from
-     * @param int $limit
-     */
-    public function displayAllGallery($from = 0, $limit = 10) {
-        $display_module = conf::getModuleIni('gallery_display_module');
-        moduleloader::includeModule($display_module);
-        $module = "modules\\" . moduleloader::modulePathToClassName($display_module) . "\\module";
-        $module::displayAll($from, $limit);
-    }
 
     /**
      * returns a form for editing a image inline. 
      * @param type $values
      * @return type
      */
-    public static function get_gallery_inline_form($values = null) {
+    public static function formInline($values = null) {
 
         $values['file_name'] = file::getFilename($values['file_name'], array('utf8' => true));
         $values['file_name'] = rawurldecode($values['file_name']);
@@ -342,7 +341,7 @@ class module extends gallery {
      * @param string create, delete or update
      * @param int if delete or update set this to id
      */
-    public static function formGallery($method, $id = null, $values = array()) {
+    public function formGallery($method, $id = null, $values = array()) {
 
         if ($method == 'delete') {
             html::$autoLoadTrigger = 'submit';
@@ -383,5 +382,4 @@ class module extends gallery {
         echo html::getStr();
         return;
     }
-
 }

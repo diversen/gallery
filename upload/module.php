@@ -12,7 +12,7 @@ use diversen\log;
 use diversen\session;
 use diversen\strings;
 use diversen\upload;
-use modules\gallery\admin\module as adminModule;
+use modules\gallery\admin\module as admin;
 use modules\gallery\module as gallery;
 use ZipArchive;
 
@@ -90,7 +90,7 @@ class module {
             }
             
             $db = new db();            
-            $gal = new adminModule();
+            $gal = new admin();
             $id = $gal->createGallery();
             
             $tmp_dir = sys_get_temp_dir();

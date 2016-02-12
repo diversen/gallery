@@ -4,11 +4,11 @@ namespace modules\gallery\inline;
 
 use diversen\conf;
 use diversen\db;
+use diversen\db\q;
 use diversen\gps;
 use diversen\html;
 use diversen\http;
 use diversen\lang;
-use diversen\moduleloader;
 use diversen\pagination;
 use diversen\pagination\sets;
 use diversen\session;
@@ -18,12 +18,8 @@ use diversen\uri;
 use diversen\user;
 use diversen\template\assets;
 
-
-//moduleloader::includeModule('gallery/admin');
-//moduleloader::includeModule('gallery');
-
 use modules\gallery\module as gallery;
-use modules\gallery\admin\module as adminModule;
+use modules\gallery\admin\module as admin;
 
 assets::setInlineCss(conf::getModulePath('gallery/inline') . "/assets/inline.css");
 assets::setInlineJs(conf::getModulePath('gallery/inline') . "/assets/showhide.jquery.js");
@@ -32,47 +28,13 @@ class module extends gallery {
 
     public $id = null;
     public $row = null;
-
-    function __construct($gallery_frag = 2, $file_frag = 3) {
-        parent::__construct($gallery_frag, $file_frag);
-        $this->getRow();
-    }
-
-    public function viewAction() {
-        
-
-        moduleloader::includeModule('gallery');
-
-        
-        $gallery = new self();
-
-        $gallery->setMeta();
-        $gallery->displayImage();
-
-        $gallery->displaySubModules();
-    }
-
-    public function getRow() {
-        $this->id = uri::getInstance()->fragment(3);
-
-        //$row = null;
-        if (!$this->id) {
-            http::permMovedHeader('/gallery/index');
-            return;
-        }
-
-        $this->row = $this->getRowAndSrc($this->id);
-        $this->row = html::specialEncode($this->row);
-
-        if (empty($this->row)) {
-            http::permMovedHeader('/gallery/index');
-            return;
-        }
+    
+    public function __construct() {
+        $this->id = uri::fragment(3);
     }
 
     public function setMeta() {
 
-        //$row = $this->getRow();
         $title = rawurldecode($this->row['file_name']);
         if (!empty($this->row['title'])) {
             $title.= MENU_SUB_SEPARATOR;
@@ -88,7 +50,7 @@ class module extends gallery {
         }
     }
 
-    public function getGmap($ll, $spn, $z) {
+    public function getGmap($lat, $long) {
         $width = conf::getModuleIni('gallery_image_size');
         $gmap = <<<EOF
 <div class ="google_map">
@@ -99,20 +61,37 @@ frameborder="0"
 scrolling="no" 
 marginheight="0" 
 marginwidth="0" 
-src="http://maps.google.com/?ie=UTF8&amp;hq=&amp;hnear=Termestrup,+Denmark&amp;t=h&amp;ll=$ll,$spn&amp;spn=0.016643,0.036478&amp;z=14&amp;output=embed"></iframe>
+src="http://maps.google.com/?ie=UTF8&amp;hq=&amp;hnear=Termestrup,+Denmark&amp;t=h&amp;ll=$lat,$long&amp;spn=0.016643,0.036478&amp;z=14&amp;output=embed"></iframe>
 </div>
 EOF;
 
         return $gmap;
     }
+    
+    
+    /**
+     * gallery/inline/view action
+     */
+    public function viewAction () {
+        $image_id = uri::fragment(3);  
+        echo $this->displayImage($image_id);        
+    } 
+    
+    /**
+     * Display image 
+     * @param int $id image id
+     */
+    public function displayImage($id) {
 
-    public function displayImage() {
+        $row = $this->getImageDbAndSrc($id);
+        $gallery_id = $this->getGalleryIdFromImageId($id);
+
         ?>
         <style type="text/css">
             .edit_details, .google_map, .gallery_exif { display: none }
         </style><?php
 
-        $rows = $this->getAllFileInfo($this->row['gallery_id']);
+        $rows = $this->getImagesFromGalleryId($gallery_id);
 
         // create a simple set for pagination
         $ary = array();
@@ -129,15 +108,15 @@ EOF;
 
         echo "<a name=\"image\"></a>\n";
 
-        html::headline($this->row['title']);
-        html::headline($pager_str);
+        echo html::getHeadline($row['title']);
+        echo html::getHeadline($pager_str);
 
         echo "<br />";
-        echo $src = $this->getImageSrc($this->row['id'], 'full', array('width' => true));
+        echo $src = $this->getImageSrcDiv($row['id'], 'full', array('width' => true));
 
         $elements = array();
         $elements_content = array();
-        $exif = $this->getExifData($this->row['src']);
+        $exif = $this->getExifData($row['src']);
 
         if (!empty($exif)) {
             $elements_content [] = $table = $this->getExifHTML($exif);
@@ -151,11 +130,12 @@ EOF;
 
         $gps_map = null;
         
-        $gps_data = $this->getExifGps($this->row['src']);
-        
-        if (!empty($gps_data)) {
-            $gps = gps::get($gps_data, true);
-            $elements_content[] = $gps_map = $this->getGmap($gps['latitude'], $gps['longitude'], 12);
+        $gps = new gps();
+        $ary = $gps->getGpsPosition(conf::pathHtdocs() . $row['src']);        
+        if (!empty($ary)) {
+            
+            //$gps = gps::get($gps_data, true);
+            $elements_content[] = $this->getGmap($ary['latitude'], $ary['longitude']);
             $lang_gps = lang::translate('GPS');
             $elements[] = $gps_str = <<<EOF
 <a name = "google_map"></a>
@@ -174,17 +154,17 @@ EOF;
             $elements_content[] = $this->displayInlineForm();
         }
 
-        $elements[] = $link = html::createLink($this->row['src'], lang::translate('Original image'));
+        $elements[] = $link = html::createLink($row['src'], lang::translate('Original image'));
 
         $this->postActions();
         echo implode(MENU_SUB_SEPARATOR, $elements);
         echo implode("\n", $elements_content);
 
-        $options = array('gallery_id' => $this->row['gallery_id'], 'no_admin' => true);
+        $options = array('gallery_id' => $row['gallery_id']);
 
         $vars['rows'] = $rows;
         $vars['options'] = $options;
-        echo $str = self::getRows($vars, $options);
+        echo $str = $this->getRows($vars, $options);
     }
 
     /**
@@ -195,64 +175,18 @@ EOF;
     public function displayInlineForm() {
         if (session::isAdmin()) {
             if (isset($_POST['gallery_details'])) {
-                $res = $this->updateImageDetails($this->id);
+                $res = $this->updateImage($this->id);
                 if ($res) {
                     $location = "/gallery/inline/view/" . $this->id;
                     $message = lang::translate('Image details has been updated');
                     http::locationHeader($location, $message);
                 }
             }
-            return adminModule::get_gallery_inline_form($this->row);
+            $row = $this->getImageDbAndSrc($this->id);
+            return admin::formInline($row);
         }
     }
 
-    /**
-     * displays inline module's submodules
-     */
-    public function displaySubModules() {
-        $return_url = gallery::getReturnUrlFromId($this->row['id']);
-        $options = array(
-            'parent_id' => $this->row['id'],
-            'reference' => 'gallery',
-            'return_url' => $return_url
-        );
-
-        $subs = conf::getModuleIni('gallery_sub_modules');
-        moduleloader::includeModules($subs);
-        $ary = moduleloader::subModuleGetPostContent($subs, $options);
-        echo implode("<hr />\n", $ary);
-    }
-
-    /**
-     * method for getting files
-     *
-     * @param   array   array from a db query $rows
-     * @param   array    opt unused so far
-     * @return  string  html displaying files connect to article.
-     * 
-     * 
-     */
-    public static function displayGallery($vars) {
-
-        $i = 0;
-        $str = '';
-        $num_rows = count($vars['rows']);
-
-        if ($num_rows == 0) {
-            $str.= adminModule::uploadForm($vars);
-            return $str;
-        } else {
-            // more than one image
-            if (conf::getModuleIni('gallery_use_default_image')) {
-                $str.= self::getDefaultImage($vars['options']['default']);
-            }
-
-            $str.= self::getRows($vars);
-            $str.=adminModule::uploadForm($vars);
-            return $str;
-        }
-        return $str;
-    }
 
     /**
      * returns gallery rows
@@ -260,23 +194,21 @@ EOF;
      * @param array|null $options
      * @return string
      */
-    public static function getRows($vars, $options = null) {
+    public function getRows($vars, $options = array()) {
 
         $vars = html::specialEncode($vars);
+        
         $str = '';
         $str.= "<div class=\"gallery_thumbs\">\n";
         $str.= "<table><tr>\n";
         $i = 0;
         $per_row = conf::getModuleIni('gallery_image_row_size');
-        $use_anchors = conf::getModuleIni('gallery_image_anchors');
-        foreach ($vars['rows'] as $key => $val) {
+        foreach ($vars['rows'] as $val) {
             $domain = conf::getDomain();
             $base_path = "/files/$domain/gallery";
 
             $image_url = "/gallery/inline/view/$val[id]";
-            if ($use_anchors) {
-                $image_url.= "#image";
-            }
+            $image_url.= "#image";
 
             $thumb_url = "$base_path/$val[gallery_id]/thumb-$val[file_name]";
             $img_tag = html::createImage(
@@ -285,7 +217,10 @@ EOF;
                         'alt' => $val['file_name'])
             );
             $str.="<td><a href=\"$image_url\">$img_tag</a>";
-            $str.=adminModule::getAdminOptions($val, $vars);
+            
+            if (isset($options['admin']))  {
+                $str.=admin::getAdminOptions($val, $vars);
+            }
             $str.="</td>\n";
             $i++;
             $t = $i % $per_row;
@@ -295,26 +230,12 @@ EOF;
             }
         }
 
-        $extra = $per_row - ($i % $per_row);
-        $str.= self::getExtraTd($extra);
+
         $str.="</tr></table>\n";
         $str.="</div>\n";
         return $str;
     }
 
-    /**
-     * get extra td
-     * @param type $num
-     * @return string
-     */
-    public static function getExtraTd($num) {
-        $str = '';
-        while ($num) {
-            $str.= "<td>&nbsp;</td>\n";
-            $num--;
-        }
-        return $str;
-    }
 
     /**
      * return a single row
@@ -372,58 +293,53 @@ EOF;
         return $str;
     }
 
-    public static function displaySingleRow($id) {
+    public function displaySingleRow($id) {
         $gal = new gallery;
-        $rows = $gal->getAllFileInfo($id);
-        $str = self::getSingleRow($rows);
+        $rows = $gal->getImagesFromGalleryId($id);
+        $str = $this->getSingleRow($rows);
         return $str;
     }
 
-    public static function displayAll() {
+    
+    public function displayAllGalleries($options = array()) {
 
-
-        $gallery = new adminModule();
         $db = new db();
         $num_rows = $db->getNumRows('gallery');
-
         $per_page = 10;
         $pager = new pagination($num_rows, $per_page);
-        $rows = $db->selectAll('gallery', null, null, $pager->from, $per_page, 'updated');
-        $rows = html::specialEncode($rows);
 
-        foreach ($rows as $key => $val) {
-            $ary = array();
-
-            self::displayTitle($val);
-            $date_formatted = time::getDateString($val['updated']);
-            echo user::getProfile($val['user_id'], $date_formatted);
-
-            $rows = self::getAllFileInfo($val['id']);
-            $options = array('gallery_id' => $val['id'], 'no_admin' => true);
-
-            $vars['rows'] = $rows;
-            $vars['options'] = $options;
-            echo $str = self::getRows($vars, $options);
-
-            if (session::isAdmin()) {
-                array_unshift($ary, adminModule::adminOptions($val['id']));
-            }
-
-            if (empty($val['description'])) {
-                $val['description'] = '...';
-            }
-
-            array_unshift($ary, $val['description']);
-            echo implode("<hr />\n", $ary);
-            echo "<hr />\n";
+        $rows = q::select('gallery')->order('updated', 'DESC')->limit($pager->from, $per_page)->fetch();
+        foreach ($rows as $row) {
+            $this->displayGallery($row, $options);
         }
 
-        echo "<br />\n";
         $pager->echoPagerHTML();
     }
+    
+    public function displayGallery($val, $options) {
+        $ary = array();
 
-    public static function displayTitle($val) {
-        html::headline($val['title']);
+        echo html::getHeadline($val['title']);
+        $date_formatted = time::getDateString($val['updated']);
+        echo user::getProfile($val['user_id'], $date_formatted);
+
+        $rows = $this->getImagesFromGalleryId($val['id']);
+        $options['gallery_id'] = $val['id'];
+
+        $vars['rows'] = $rows;
+        $vars['options'] = $options;
+        echo $this->getRows($vars, $options);
+
+
+        if (empty($val['description'])) {
+            $val['description'] = '...';
+        }
+
+        echo $val['description'];
+        echo "<hr />";
+        if (!isset($options['admin'])) {
+            echo admin::adminOptions($val['id']);
+        }
     }
 
 }
