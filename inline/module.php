@@ -17,6 +17,7 @@ use diversen\time;
 use diversen\uri;
 use diversen\user;
 use diversen\template\assets;
+use diversen\template\meta;
 
 use modules\gallery\module as gallery;
 use modules\gallery\admin\module as admin;
@@ -31,23 +32,33 @@ class module extends gallery {
     
     public function __construct() {
         $this->id = uri::fragment(3);
+        $this->row = $this->getImageDbAndSrc($this->id);
     }
 
     public function setMeta() {
 
+        
+        
+        //print_r($this->row); die;
+        
+        
+        
         $title = rawurldecode($this->row['file_name']);
         if (!empty($this->row['title'])) {
             $title.= MENU_SUB_SEPARATOR;
-            $title.= htmlspecialchars($this->row['title']);
+            $title.= $this->row['title'];
         }
 
         $title.= MENU_SUB_SEPARATOR;
         $title.= lang::translate('Large image');
-        template::setTitle($title);
 
         if (!empty($this->row['description'])) {
             template::setMeta(array('description' => htmlspecialchars($this->row['description'])));
         }
+        
+        $abs = $this->row['src'];
+        meta::setMetaAll($title, $this->row['description'], '', $abs);
+        
     }
 
     public function getGmap($lat, $long) {
@@ -73,6 +84,8 @@ EOF;
      * gallery/inline/view action
      */
     public function viewAction () {
+        
+        $this->setMeta();
         $image_id = uri::fragment(3);  
         echo $this->displayImage($image_id);        
     } 
