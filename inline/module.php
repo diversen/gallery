@@ -35,14 +35,11 @@ class module extends gallery {
         $this->row = $this->getImageDbAndSrc($this->id);
     }
 
+    /**
+     * Sets all meta for gallery/inline/view image
+     */
     public function setMeta() {
 
-        
-        
-        //print_r($this->row); die;
-        
-        
-        
         $title = rawurldecode($this->row['file_name']);
         if (!empty($this->row['title'])) {
             $title.= MENU_SUB_SEPARATOR;
@@ -61,6 +58,12 @@ class module extends gallery {
         
     }
 
+    /**
+     * Returns a gmap from GPS lat and long
+     * @param float $lat
+     * @param float $long
+     * @return string $html
+     */
     public function getGmap($lat, $long) {
         $width = conf::getModuleIni('gallery_image_size');
         $gmap = <<<EOF
@@ -75,13 +78,13 @@ marginwidth="0"
 src="https://maps.google.com/?ie=UTF8&amp;hq=&amp;hnear=Termestrup,+Denmark&amp;t=h&amp;ll=$lat,$long&amp;spn=0.016643,0.036478&amp;z=14&amp;output=embed"></iframe>
 </div>
 EOF;
-
         return $gmap;
     }
     
     
     /**
      * gallery/inline/view action
+     * Displays a gallery image and belonging gallery below
      */
     public function viewAction () {
         
@@ -140,8 +143,6 @@ EOF;
 <a href="#exif" class="show_exif">$view_exif</a>
 EOF;
         }
-
-        $gps_map = null;
         
         $gps = new gps();
         $ary = $gps->getGpsPosition(conf::pathHtdocs() . $row['src']);        
