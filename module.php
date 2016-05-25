@@ -16,6 +16,7 @@ use diversen\strings;
 use diversen\template;
 use diversen\upload;
 use diversen\uri;
+use diversen\imageRotate;
 use Exception;
 use Gregwar\Image\Image;
 use modules\gallery\admin\module as admin;
@@ -117,8 +118,6 @@ class module {
         $row = q::select('gallery')->filter('id =', $id)->fetchSingle();
         $view->displayGallery($row, array('admin' => 1));
 
-
-        
         $a = new admin();
         echo $a->formUpload();
         return;
@@ -247,6 +246,9 @@ class module {
         $values['file_name'] = $savename;
               
         $filename = $this->uploadDir . '/' . $savename;
+        
+        $rotate = new imageRotate();
+        $rotate->fixOrientation($filename);
 
         // scale a thumb
         $thumb = $this->uploadDir . '/thumb-' . $savename;
